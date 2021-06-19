@@ -7,13 +7,21 @@ import Signal from './signal';
 interface IChannelDTO {
   name: string;
 }
+interface ICrossData {
+  message: string;
+  coords: ICellCoords;
+  player: string;
+  field: Array<string>;
+  winner: string;
+}
 
 class ChatModel {
   currentUser: IAuthData;
   socket: WebSocket;
   userList: Array<string> = [];
-  onMessage: Signal<{ message: string; coords: ICellCoords; player: string }> = new Signal();
-  onPlayerList: Signal<string> = new Signal();
+  onMessage: Signal<string> = new Signal();
+  onCrossMove: Signal<ICrossData> = new Signal();
+  onPlayerList: Signal<{ player: string; players: Array<string> }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
   constructor() {
@@ -26,16 +34,23 @@ class ChatModel {
       let data = JSON.parse(ev.data);
       console.log(data);
       if (data.type === 'message') {
-        this.onMessage.emit({
-          message: data.senderNick + ' -> ' + data.messageText,
-          coords: JSON.parse(data.messageText),
-          player: data.senderNick
-        });
+        this.onMessage.emit(data.senderNick + ' -> ' + data.messageText);
       }
       if (data.type === 'player') {
-        console.log('player click');
+        this.onPlayerList.emit({ player: data.senderNick, players: data.players });
+      }
 
-        this.onPlayerList.emit(data.senderNick);
+      if (data.type === 'crossMove') {
+        console.log('cross move');
+        console.log(data);
+
+        this.onCrossMove.emit({
+          message: data.senderNick + ' -> ' + data.messageText,
+          coords: JSON.parse(data.messageText),
+          player: data.senderNick,
+          field: data.field,
+          winner: data.winner
+        });
       }
       /*if (data.type = 'userLeave'){
         this.onMessage.emit(data.senderNick);
@@ -115,6 +130,19 @@ class ChatModel {
     );
   }
 
+  crossMove(message: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'crossMove',
+        params: {
+          messageText: message,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+
   setCurrentUser(user: IAuthData) {
     this.currentUser = user;
   }
@@ -141,27 +169,22 @@ export class Chat extends Component {
     btnEnter.element.onclick = () => {
       this.model.joinPlayer();
     };
-    this.model.onPlayerList.add((player) => {
-      const players = this.cross.getPlayers();
-      if (this.cross.getPlayers().length < 2) {
-        this.cross.setPlayers(player);
-        console.log(player);
-        console.log(players);
-      } 
-      if (this.cross.getPlayers().length === 2){
-        this.cross.startTimerCountDown();
-      }
+    this.model.onPlayerList.add(({ player, players }) => {
+      
     });
 
     this.cross.onCellClick = (coords: ICellCoords) => {
-      this.model.sendMessage(JSON.stringify(coords));
+      this.model.crossMove(JSON.stringify(coords));
     };
-    this.model.onMessage.add(({ message, coords, player }) => {
-      console.log(message, coords);
-      const gamePlayer = this.cross.getCurrentPlayer();
-      if (player === gamePlayer) {
-        this.cross.blockCell(coords, player);
+    this.model.onCrossMove.add(({ message, coords, player, field, winner }) => {
+      this.cross.updateGetGameField(field);
+      if(winner) {
+        console.log(`Winner: ${winner}`);
+        this.cross.clearData();
       }
+    });
+
+    this.model.onMessage.add((message) => {
       let msg = new Component(this.messageContainer.element, 'div', [], message);
     });
 

@@ -1,4 +1,3 @@
-import { node } from 'webpack';
 import { Component } from './../component/Component';
 import './cross.css';
 
@@ -35,6 +34,7 @@ class Timer extends Component {
     if (this.counter) {
       window.clearInterval(this.counter);
       this.counter = 0;
+      this.element.textContent = '0';
     }
   }
 
@@ -53,188 +53,39 @@ class Timer extends Component {
   }
 }
 
-class CrossModel {
-  currentPlayer: string = '';
-  players: string[];
-  signs: string[];
-  cells: Array<ICellData> = [];
-  winner: string = '';
-
-  constructor() {
-    this.players = [];
-    this.signs = [ 'X', 'O' ];
-  }
-
-  getCurrentPlayer(): string {
-    return this.currentPlayer;
-  }
-
-  setCurrentPlayer(player: string): void {
-    this.currentPlayer = this.players.find((playerItem) => playerItem !== player);
-  }
-
-  getCurrentSign(): string {
-    return this.signs[this.players.indexOf(this.currentPlayer)];
-  }
-
-  setInitialCellArray(arr: ICellCoords): void {
-    this.cells.push({ ...arr, sign: '' });
-  }
-
-  updateCellArray(coords: ICellCoords, sign: string): void {
-    const clickedCell = this.cells.find((cell) => cell.x === coords.x && cell.y === coords.y);
-    if (clickedCell) {
-      clickedCell.sign = sign;
-    }
-  }
-
-  checkWinner(coords: ICellCoords, sign: string): void {
-    let countHor = 1;
-    let countVer = 1;
-    let countDiagPrim = 1;
-    let countDiagSec = 1;
-
-    const { x: fromX, y: fromY } = coords;
-    const moveHor = [ { x: -1, y: 0 }, { x: 1, y: 0 } ];
-    const moveVer = [ { x: 0, y: 1 }, { x: 0, y: -1 } ];
-    const moveDiagPrim = [ { x: -1, y: -1 }, { x: 1, y: 1 } ];
-
-    const moveDiagSec = [ { x: -1, y: 1 }, { x: 1, y: -1 } ];
-
-    moveHor.forEach((move) => {
-      let toX = fromX;
-      let toY = fromY;
-      for (let i = 0; i < size; i++) {
-        toX += move.x;
-        toY += move.y;
-        if (toY >= 0 && toY < size && toX >= 0 && toX < size) {
-          const checkCell = this.cells.find((cell) => cell.x === toX && cell.y === toY);
-          if (checkCell.sign === sign) {
-            countHor++;
-          } else break;
-        }
-      }
-    });
-
-    moveVer.forEach((move) => {
-      let toX = fromX;
-      let toY = fromY;
-      for (let i = 0; i < size; i++) {
-        toX += move.x;
-        toY += move.y;
-        if (toY >= 0 && toY < size && toX >= 0 && toX < size) {
-          const checkCell = this.cells.find((cell) => cell.x === toX && cell.y === toY);
-          if (checkCell.sign === sign) {
-            countVer++;
-          } else break;
-        }
-      }
-    });
-
-    moveDiagPrim.forEach((move) => {
-      let toX = fromX;
-      let toY = fromY;
-      for (let i = 0; i < size; i++) {
-        toX += move.x;
-        toY += move.y;
-        if (toY >= 0 && toY < size && toX >= 0 && toX < size) {
-          const checkCell = this.cells.find((cell) => cell.x === toX && cell.y === toY);
-          if (checkCell.sign === sign) {
-            countDiagPrim++;
-          } else break;
-        }
-      }
-    });
-
-    moveDiagSec.forEach((move) => {
-      let toX = fromX;
-      let toY = fromY;
-      for (let i = 0; i < size; i++) {
-        toX += move.x;
-        toY += move.y;
-        if (toY >= 0 && toY < size && toX >= 0 && toX < size) {
-          const checkCell = this.cells.find((cell) => cell.x === toX && cell.y === toY);
-          if (checkCell.sign === sign) {
-            countDiagSec++;
-          } else break;
-        }
-      }
-    });
-
-    if (countHor === size || countVer === size || countDiagPrim === size || countDiagSec === size) {
-      this.winner = this.currentPlayer;
-      console.log(`Win! The player ${this.currentPlayer} wins the game`);
-    }
-  }
-
-  getWinner(): string {
-    return this.winner;
-  }
-
-  getPlayers(): Array<string> {
-    return this.players;
-  }
-
-  setPlayers(player: string): void {
-    this.players.push(player);
-    this.currentPlayer = this.players[0];
-  }
-}
-
 class Cross extends Component {
   private cells: Array<Cell> = [];
   public onCellClick: (coords: ICellCoords) => void = () => {};
-  model: CrossModel;
   timer: Timer;
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', [ 'cross-board' ]);
-    this.model = new CrossModel();
+    // this.model = new CrossModel();
     this.timer = new Timer(parentNode);
 
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         const cell = new Cell(this.element, i, j);
         cell.onCellClick = (coords: ICellCoords) => {
-          if (this.model.getPlayers().length >= 2) {
             this.onCellClick(coords);
-          }
         };
         this.cells.push(cell);
-        this.model.setInitialCellArray({ x: j, y: i });
       }
     }
   }
 
-  blockCell(coords: ICellCoords, player: string) {
-    const clickedCell = this.cells.find(
-      (cell) => cell.coords.x === coords.x && cell.coords.y === coords.y
-    );
-
-    if (clickedCell) {
-      if (!this.model.getWinner()) {
-        clickedCell.clickedCell(this.model.getCurrentSign());
-        this.model.updateCellArray(coords, this.model.getCurrentSign());
-        this.model.checkWinner(coords, this.model.getCurrentSign());
-        if (this.model.getWinner()) {
-          this.timer.clear();
-        }
-
-        this.model.setCurrentPlayer(player);
+  updateGetGameField(field: Array<string> ): void {
+    this.cells.forEach((cell) => {
+      const {x , y} = cell.getCellCoord();
+      if(field[y][x]) {
+        cell.clickedCell(field[y][x]);
       }
-    }
+    })
+    
   }
 
-  getCurrentPlayer(): string {
-    return this.model.getCurrentPlayer();
-  }
-
-  getPlayers(): Array<string> {
-    return this.model.getPlayers();
-  }
-
-  setPlayers(player: string) {
-    return this.model.setPlayers(player);
+  clearData() {
+    this.cells.forEach(cell => cell.clearCell());
   }
 
   startTimerCountDown() {
@@ -257,9 +108,18 @@ class Cell extends Component {
     };
   }
 
+  getCellCoord(): ICellCoords {
+    return this.coords;
+  }
+
   clickedCell(sign: string) {
     this.element.classList.add('clicked');
     this.element.textContent = sign;
+  }
+
+  clearCell() {
+    this.element.classList.remove('clicked');
+    this.element.textContent = '';
   }
 }
 
