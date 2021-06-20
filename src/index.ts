@@ -2,7 +2,7 @@ import './styles.scss';
 import './header.scss';
 import Signal from './signal';
 import { PopupService, popupService } from './component/Popupservice';
-import { Component } from './component/Component';
+import { Component } from './utilities/Component';
 import {Chat} from './chatPage';
 import { Header } from './component/Header';
 import { Main } from './component/Main';

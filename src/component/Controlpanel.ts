@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from "../utilities/Component";
 
 export class ControlPanel extends Component {
     private button: Component;

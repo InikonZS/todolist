@@ -1,18 +1,13 @@
 import { IAuthData } from './authPage';
-import { Component } from './component/Component';
+import { Component } from './utilities/Component';
 import { popupService } from './component/Popupservice';
-import Cross, { ICellCoords } from './cross/cross';
+import Cross from './cross/cross';
 import Signal from './signal';
+import ICrossData, { ICellCoords } from './utilities/interfaces';
+import './chatPage.css';
 
 interface IChannelDTO {
   name: string;
-}
-interface ICrossData {
-  message: string;
-  coords: ICellCoords;
-  player: string;
-  field: Array<string>;
-  winner: string;
 }
 
 class ChatModel {
@@ -21,7 +16,7 @@ class ChatModel {
   userList: Array<string> = [];
   onMessage: Signal<string> = new Signal();
   onCrossMove: Signal<ICrossData> = new Signal();
-  onPlayerList: Signal<{ player: string; players: Array<string> }> = new Signal();
+  onPlayerList: Signal<{ player: string; time: number }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
   constructor() {
@@ -37,7 +32,7 @@ class ChatModel {
         this.onMessage.emit(data.senderNick + ' -> ' + data.messageText);
       }
       if (data.type === 'player') {
-        this.onPlayerList.emit({ player: data.senderNick, players: data.players });
+        this.onPlayerList.emit({ player: data.senderNick, time: data.time });
       }
 
       if (data.type === 'crossMove') {
@@ -49,7 +44,8 @@ class ChatModel {
           coords: JSON.parse(data.messageText),
           player: data.senderNick,
           field: data.field,
-          winner: data.winner
+          winner: data.winner,
+          sign: data.sign
         });
       }
       /*if (data.type = 'userLeave'){
@@ -163,22 +159,24 @@ export class Chat extends Component {
     this.channelListContainer = new Component(this.element);
     this.messageContainer = new Component(this.element);
     this.chatInput = new Component(this.element, 'input');
-    this.cross = new Cross(this.element);
+    const chatAction = new Component(this.element, 'div', ['chat_action'])
+    this.cross = new Cross(chatAction.element);
     const btnEnter = new Component(this.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
       this.model.joinPlayer();
     };
-    this.model.onPlayerList.add(({ player, players }) => {
-      
+    this.model.onPlayerList.add(({ player, time }) => {
+      this.cross.setPlayer(player, time);
     });
 
     this.cross.onCellClick = (coords: ICellCoords) => {
       this.model.crossMove(JSON.stringify(coords));
     };
-    this.model.onCrossMove.add(({ message, coords, player, field, winner }) => {
-      this.cross.updateGetGameField(field);
-      if(winner) {
+    this.model.onCrossMove.add(({ message, coords, player, field, winner, sign }) => {
+      this.cross.updateGameField(field);
+      this.cross.setHistoryMove(sign, coords, '0:02');
+      if (winner) {
         console.log(`Winner: ${winner}`);
         this.cross.clearData();
       }

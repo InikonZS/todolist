@@ -1,0 +1,168 @@
+.chat_wrapper{
+  display: flex;
+  color: #bbb;
+  height: 100%;
+}
+
+.chat_channels{
+  height: 100%;
+  width: 100px;
+  background-color: #333;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+.chat_messages{
+  height: 50%;
+  width: 100%;
+  padding: 10px;
+  background-color: #555;
+  overflow-y: scroll;
+}
+
+.chat_users{
+  height: 100%;
+  width: 100%;
+  width: 150px;
+  background-color: #333;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+
+
+.chat_main{
+  display: flex;
+  flex-direction: column;
+}
+
+.chat_action{
+  background-color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  height: 100%;
+}
+
+
+.chat_message{
+  margin-bottom:10px;
+}
+
+.chat_input{
+  display: flex;
+  padding: 10px;
+  background-color: #555;
+  
+}
+
+.chat_input_field{
+  width: 100%;
+  background-color: #777;
+  border: none;
+  padding: 10px;
+  color: #fff;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.chat_send_button{
+  width: 50px;
+  background-color: #444;
+  border: none;
+  padding: 10px;
+  color: #fff;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+
+.chat_user{
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.message_avatar{
+  width: 40px;
+  height: 40px;
+  border:1px solid #fff;
+  border-radius: 100%;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+.message_wrapper{
+ display: flex;
+}
+.message_main{
+  width: 100%;
+}
+.message_header{
+  display: flex;
+  justify-content: space-between;
+}
+.message_user{
+  display: flex;
+  color: #fff;
+  font-size: bold;
+}
+.message_date{
+
+}
+.message_body{
+
+}
+
+.chat_channels_controls{
+  display: flex;
+  padding: 10px 10px;
+}
+
+.default_button{
+  background-color: #494;
+  border: none;
+  padding: 5px;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.chat_channels_list{
+  padding: 10px;
+}
+
+.chat_channel{
+  background-color: #555;
+  padding: 5px 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.chat_category{
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.chat_category_name{
+  margin-bottom: 5px;
+}
+
+.chat_category_list{
+
+}
+
+.default_avatar_small{
+  width: 28px;
+  height: 28px;
+  border:1px solid #fff;
+  border-radius: 100%;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.default_name{
+  color: #fff;
+}
+

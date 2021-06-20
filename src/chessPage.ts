@@ -1,5 +1,5 @@
 import Chess from './chess/modules/chess';
-import { Component } from './component/Component';
+import { Component } from './utilities/Component';
 
 export class ChessPage extends Component {
   public game: Chess;

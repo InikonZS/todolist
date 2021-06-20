@@ -1,4 +1,4 @@
-import { Component } from "./component/Component";
+import { Component } from "./utilities/Component";
 import { IDashboardRecord } from "./component/IdashboardRecord";
 
 export class EditPopup extends Component {

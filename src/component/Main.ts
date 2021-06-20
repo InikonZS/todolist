@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from "../utilities/Component";
 import { ControlPanel } from "./Controlpanel";
 import { Dashboard } from "./Dashboard";
 import { popupService } from "./Popupservice";

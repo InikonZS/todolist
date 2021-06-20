@@ -1,4 +1,4 @@
-import { Component } from "./component/Component";
+import { Component } from "./utilities/Component";
 
 class NavItem extends Component {
   private link: HTMLAnchorElement;

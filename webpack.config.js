@@ -7,9 +7,10 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 
 const devServer = (isDev) => !isDev ? {} : {
   devServer: {
-    open: true,
+    open: 'Google Chrome',
+    hot: true,
     port: 8080,
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: path.join(__dirname, './dist'),
   },
 };
 
@@ -66,6 +67,9 @@ module.exports = ({ development }) => ({
   ],
   resolve: {
     extensions: ['.ts', '.js'],
+    alias: {
+      utilities: path.resolve(__dirname, 'src/utilities/')
+    },
   },
   ...devServer(development)
 });

@@ -1,4 +1,4 @@
-import { Component } from './Component';
+import { Component } from '../utilities/Component';
 import { IDashboardRecord } from './IdashboardRecord';
 
 export class DashboardItem extends Component {

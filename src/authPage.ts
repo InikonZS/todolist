@@ -1,7 +1,7 @@
-import { Component } from "./component/Component";
+import { Component } from "./utilities/Component";
 import { popupService } from "./component/Popupservice";
 import Signal from "./signal";
-import { digestMessage, apiRequest } from './utils';
+import { digestMessage, apiRequest } from './utilities/utils';
 import { RegForm } from './component/regForm/regForm';
 import { AuthForm } from "./component/authForm.ts/authForm";
 

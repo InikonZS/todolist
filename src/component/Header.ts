@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from "../utilities/Component";
 
 export class Header extends Component {
     constructor(parentNode: HTMLElement | null = null) {

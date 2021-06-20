@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from "../utilities/Component";
 import { DashBoardController } from "./Dashboardcontroller";
 import  {DashboardItem} from "./Dashboarditem";
 import { DashBoardModel, DashBoardServerModel } from "./Dashboardmodel";
