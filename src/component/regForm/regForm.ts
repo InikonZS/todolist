@@ -1,7 +1,7 @@
 import Control from '../../chess/modules/components/control';
 import Button from '../../chess/modules/components/button';
 import Input from '../../chess/modules/components/inputs';
-import Signal from '../../signal';
+import Signal from '../../utilities/signal';
 import { apiRequest } from '../../utilities/utils';
 
 const PASSWORDVALIDATION = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;

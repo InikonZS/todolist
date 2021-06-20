@@ -1,4 +1,4 @@
-import Signal from "../signal";
+import Signal from "../utilities/signal";
 import { IDashboardRecord } from "./IdashboardRecord";
 
 const apiUrl = 'http://localhost:4040/todoListService/';

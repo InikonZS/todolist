@@ -9,5 +9,16 @@ export default interface ICrossData {
   player: string;
   field: Array<string>;
   winner: string;
-  sign: string
+  sign: string;
+};
+
+export interface IChannelDTO {
+  name: string;
+}
+
+export interface IuserChatMessage {
+  avatar: string;
+  userName: string;
+  time: string;
+  message: string;
 }

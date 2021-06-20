@@ -1,10 +1,5 @@
-* {
-  box-sizing: border-box;
-}
-
 .cross_wrapper{
   background-color: transparent;
-  color: #fff;
 }
 
 .cross_cells{

@@ -28,6 +28,7 @@ class Timer extends Component {
       window.clearInterval(this.counter);
       this.counter = 0;
       this.element.textContent = '00:00';
+      this.startTime += 11000;
     }
   }
 

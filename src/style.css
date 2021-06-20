@@ -1,0 +1,10 @@
+.page_main{
+  height: calc(100% - 50px);
+}
+
+.page_wrapper{
+  width: 100%;
+  height: 100vh;  
+  color: #ccc;
+  font-family: helvetica, arial, sans-serif;
+}
