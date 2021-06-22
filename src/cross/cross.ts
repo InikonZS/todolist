@@ -1,6 +1,7 @@
 import { Component } from '../utilities/Component';
 import { ICellCoords } from '../utilities/interfaces';
 import Cell from './cell';
+import CrossButton from './cross-button';
 import './cross.css';
 import HistoryBlock from './history';
 
@@ -82,9 +83,16 @@ class Cross extends Component {
   private players: number = 0;
   private isRotated: boolean = false;
   private crossCells: Component;
+  private btnStart: CrossButton;
+  public onStartClick: () => void = () => {};
+  private btnDraw: CrossButton;
+  public onDrawClick: () => void = () => {};
+  private btnLoss: CrossButton;
+  public onLossClick: () => void = () => {};
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', [ 'cross_wrapper' ]);
+    const crossControls =  new Component(this.element, 'div', [ 'cross_controls' ]);
     const crossHead = new Component(this.element, 'div', [ 'cross_head' ]);
     this.playerOne = new Component(crossHead.element, 'div', [ 'cross_player' ], 'Player1');
     this.timer = new Timer(crossHead.element);
@@ -104,6 +112,19 @@ class Cross extends Component {
         };
         this.cells.push(cell);
       }
+    }
+
+    this.btnStart = new CrossButton(crossControls.element, 'Start');
+    this.btnStart.onClick = () => {
+      this.onStartClick();
+    }
+    this.btnDraw = new CrossButton(crossControls.element, 'Draw');
+    this.btnDraw.onClick = () => {
+      this.onDrawClick();
+    }
+    this.btnLoss = new CrossButton(crossControls.element, 'Loss');
+    this.btnLoss.onClick = () => {
+      this.onLossClick();
     }
   }
 

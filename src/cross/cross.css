@@ -1,8 +1,8 @@
-.cross_wrapper{
+.cross_wrapper {
   background-color: transparent;
 }
 
-.cross_cells{
+.cross_cells {
   background-color: #555;
   transition: .5s all ease;
 }
@@ -11,7 +11,7 @@
   transform: rotate(180deg);
 }
 
-.cross_row{
+.cross_row {
   display: flex;
 }
 
@@ -35,38 +35,62 @@
 
 .clicked {
   pointer-events: none;
-  cursor:default;
+  cursor: default;
   background-color: #333;
 }
 
-.cross_head{
+.cross_head {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.cross_player{
-  padding:5px;
+
+.cross_player {
+  padding: 5px;
 
 }
-.cross_timer{
-  padding:5px;
+
+.cross_timer {
+  padding: 5px;
   color: #fff;
   font-size: 22px;
 }
-.cross_body{
+
+.cross_body {
   display: flex;
 }
-.cross_history{
+
+.cross_history {
   /* height: 100%; */
   height: 270px;
-  padding:5px;
-  padding-right:20px;
+  padding: 5px;
+  padding-right: 20px;
   overflow-y: scroll;
 }
-.cross_history_item{
+
+.cross_history_item {
   margin-bottom: 5px;
 }
-.cross_history_header{
+
+.cross_history_header {
   font-weight: bold;
   margin-bottom: 5px;
+}
+
+.cross_controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cross_button {
+  background-color: #555;
+  color: #fff;
+  font-size: 18px;
+  padding: 5px 5px;
+  margin: 0 10px 5px;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  transition: .2s all ease;
 }

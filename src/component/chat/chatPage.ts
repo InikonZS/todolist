@@ -43,9 +43,6 @@ class ChatModel {
       }
 
       if (data.type === 'crossMove') {
-        console.log('cross move');
-        console.log(data);
-
         this.onCrossMove.emit({
           message: data.senderNick + ' -> ' + data.messageText,
           coords: JSON.parse(data.messageText),
@@ -247,6 +244,15 @@ export class Chat extends Component {
     chatInputBlock.onEnter = (message) => {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
+    }
+    this.cross.onStartClick = () => {
+      console.log('Start click');
+    }
+    this.cross.onDrawClick = () => {
+      console.log('Draw click');
+    }
+    this.cross.onLossClick = () => {
+      console.log('Loss click');
     }
   }
 
