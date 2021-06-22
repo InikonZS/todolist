@@ -26,8 +26,10 @@ class ChatUsersWrapper extends Component {
   }
 
   setSpectators(userList: Array<string>): void {
-    // this.spectators.forEach((user) => user.destroy());
-    // this.spectators = [];
+    this.spectators.forEach((user) => user.destroy());
+    this.spectators = [];
+    console.log(userList);
+    
 
     this.spectators = userList.map((user) => {
       const chatUser = new ChatUser(this.spectatorsBlock.element, '', user);

@@ -14,7 +14,7 @@ class Timer extends Component {
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', [ 'cross_timer' ]);
-    this.element.textContent = '00:00';
+    this.element.textContent = '00:10';
   }
   start() {
     this.counter = window.setInterval(() => {
@@ -80,6 +80,8 @@ class Cross extends Component {
   private playerOne: Component;
   private playerTwo: Component;
   private players: number = 0;
+  private isRotated: boolean = false;
+  private crossCells: Component;
 
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', [ 'cross_wrapper' ]);
@@ -90,9 +92,9 @@ class Cross extends Component {
     const crossBody = new Component(this.element, 'div', [ 'cross_body' ]);
     this.history = new HistoryBlock(crossBody.element);
 
-    const crossCells = new Component(crossBody.element, 'div', [ 'cross_cells' ]);
+    this.crossCells = new Component(crossBody.element, 'div', [ 'cross_cells' ]);
     for (let i = 0; i < size; i++) {
-      const row = new Component(crossCells.element, 'div', [ 'cross_row' ]);
+      const row = new Component(this.crossCells.element, 'div', [ 'cross_row' ]);
       for (let j = 0; j < size; j++) {
         const cell = new Cell(row.element, i, j);
         cell.onCellClick = (coords: ICellCoords) => {
@@ -112,6 +114,12 @@ class Cross extends Component {
         cell.clickedCell(field[y][x]);
       }
     });
+    if (!this.isRotated) {
+      this.crossCells.element.classList.add('rotate');
+    } else {
+      this.crossCells.element.classList.remove('rotate');
+    }
+    this.isRotated = !this.isRotated;
   }
 
   clearData() {
