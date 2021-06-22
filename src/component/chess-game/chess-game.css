@@ -1,0 +1,150 @@
+.chess_wrapper {
+  background-color: transparent;
+}
+
+.chess_board {
+  width: 480px;
+  height: 480px;
+  background-color: #555;
+  position: relative;  
+}
+
+.chess_board_view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.chess_board_cell {
+  width: calc(100% / 8);
+  height: calc(100% / 8);
+  /* border: 1px solid #000; */
+}
+
+.cell-light {
+  background-color: #eee;
+}
+
+.cell-dark {
+  background-color: #666;
+}
+
+.chess_field{
+  width:100%;
+  height:100%;
+  /* background-color:rgba(0, 0, 255, 0.274); */
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  /* pointer-events: none; */
+}
+
+.chess_cells.rotate {
+  transform: rotate(180deg);
+}
+
+.chess_row {
+  display: flex;
+}
+
+.chess_cell {
+  width: calc(100% / 8);
+  height: calc(100% / 8);
+  /* border: 1px solid #000; */
+  /* width: 80px;
+  height: 80px; */
+  /* background-color: #888; */
+  /* margin: 5px; */
+  cursor: pointer;
+  font-size: 50px;
+  color: #e4e4e4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .2s all ease;
+}
+
+.chess_cell_hover {
+  background-color: #6586b888;
+}
+
+.drag-item{
+  width:60px;
+  height:60px;
+  position:absolute;
+  /* background-color:#f00; */
+  cursor:grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+.clicked {
+  pointer-events: none;
+  cursor: default;
+  background-color: #333;
+}
+
+.chess_head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chess_player {
+  padding: 5px;
+
+}
+
+.chess_timer {
+  padding: 5px;
+  color: #fff;
+  font-size: 22px;
+}
+
+.chess_body {
+  display: flex;
+}
+
+.chess_history {
+  /* height: 100%; */
+  height: 270px;
+  padding: 5px;
+  padding-right: 20px;
+  overflow-y: scroll;
+}
+
+.chess_history_item {
+  margin-bottom: 5px;
+}
+
+.chess_history_header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.chess_controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chess_button {
+  background-color: #555;
+  color: #fff;
+  font-size: 18px;
+  padding: 5px 5px;
+  margin: 0 10px 5px;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  transition: .2s all ease;
+}

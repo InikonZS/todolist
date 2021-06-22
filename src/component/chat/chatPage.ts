@@ -1,15 +1,17 @@
 import { IAuthData } from '../../authPage';
-import { Component } from '../../utilities/Component';
+import { Component } from 'utilities/Component';
 import { popupService } from '../Popupservice';
 import Cross from '../../cross/cross';
-import Signal from '../../utilities/signal';
-import ICrossData, { ICellCoords, IChannelDTO, IuserChatMessage } from '../../utilities/interfaces';
+import Signal from 'utilities/signal';
+import ICrossData, { ICellCoords, IChannelDTO, IChessData, IuserChatMessage } from 'utilities/interfaces';
 import './chatPage.css';
 import ChatChannel from './chat-chanel';
 import ChatChannelsWrapper from './chat-channels-wrapper';
 import ChatUsersWrapper from './chat-users-wrapper';
 import ChatInputWrapper from './chat-input-wrapper';
 import ChatMessagesBlock from './chat-messages';
+import Chess from '../chess-game/chess-game'
+import Vector from 'utilities/vector';
 
 
 
@@ -22,6 +24,7 @@ class ChatModel {
   onPlayerList: Signal<{ player: string; time: number }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
+  onChessMove: Signal<IChessData> = new Signal();
   constructor() {
     this.socket = new WebSocket('ws:/localhost:4080');
     this.socket.onopen = () => {
@@ -44,6 +47,17 @@ class ChatModel {
 
       if (data.type === 'crossMove') {
         this.onCrossMove.emit({
+          message: data.senderNick + ' -> ' + data.messageText,
+          coords: JSON.parse(data.messageText),
+          player: data.senderNick,
+          field: data.field,
+          winner: data.winner,
+          sign: data.sign
+        });
+      }
+
+      if (data.type === 'chessMove') {
+        this.onChessMove.emit({
           message: data.senderNick + ' -> ' + data.messageText,
           coords: JSON.parse(data.messageText),
           player: data.senderNick,
@@ -143,6 +157,32 @@ class ChatModel {
     );
   }
 
+  chessMove(message: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'chessMove',
+        params: {
+          messageText: message,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+
+  chessFigureGrab(message: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'chessFigureGrab',
+        params: {
+          messageText: message,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+
   setCurrentUser(user: IAuthData) {
     this.currentUser = user;
   }
@@ -155,7 +195,8 @@ export class Chat extends Component {
   userListContainer: Component;
   channelListContainer: Component;
   channels: Component[];
-  cross: Cross;
+  gameInstance: Cross;
+  chessGame: Chess;
   private channelBlock: ChatChannelsWrapper;
   private chatMain: Component;
   private chatUsers: ChatUsersWrapper;
@@ -171,26 +212,27 @@ export class Chat extends Component {
 
     this.messageContainer = new Component(this.element);
     // this.chatInput = new Component(this.element, 'input');
-    this.cross = new Cross(chatAction.element);
+    this.gameInstance = new Cross(chatAction.element);
+    this.chessGame = new Chess(chatAction.element);
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
       this.model.joinPlayer();
     };
     this.model.onPlayerList.add(({ player, time }) => {
-      this.cross.setPlayer(player, time);
+      this.gameInstance.setPlayer(player, time);
       this.chatUsers.setPlayer('', player);
     });
 
-    this.cross.onCellClick = (coords: ICellCoords) => {
+    this.gameInstance.onCellClick = (coords: ICellCoords) => {
       this.model.crossMove(JSON.stringify(coords));
     };
     this.model.onCrossMove.add(({ message, coords, player, field, winner, sign }) => {
-      this.cross.updateGameField(field);
-      this.cross.setHistoryMove(sign, coords, '0:02');
+      this.gameInstance.updateGameField(field);
+      this.gameInstance.setHistoryMove(sign, coords, '0:02');
       if (winner) {
         console.log(`Winner: ${winner}`);
-        this.cross.clearData();
+        this.gameInstance.clearData();
         this.chatUsers.deletePlayer();
       }
     });
@@ -245,15 +287,27 @@ export class Chat extends Component {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
     }
-    this.cross.onStartClick = () => {
+    this.gameInstance.onStartClick = () => {
       console.log('Start click');
     }
-    this.cross.onDrawClick = () => {
+    this.gameInstance.onDrawClick = () => {
       console.log('Draw click');
     }
-    this.cross.onLossClick = () => {
+    this.gameInstance.onLossClick = () => {
       console.log('Loss click');
     }
+    this.chessGame.onFigureDrop = (posStart:Vector, posDrop:Vector) => {
+      this.model.chessMove(JSON.stringify([posStart, posDrop]));
+    }
+
+    this.chessGame.onFigureGrab = (pos:Vector) => {
+      this.model.chessFigureGrab(JSON.stringify(pos));
+    }
+
+    this.model.onChessMove.add(({ message, coords, player, field, winner, sign }) => {
+      console.log(coords);
+      this.chessGame.setHistoryMove(coords);
+    });
   }
 
   setCurrentUser(user: IAuthData) {

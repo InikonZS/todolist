@@ -12,6 +12,16 @@ export default interface ICrossData {
   sign: string;
 };
 
+export interface IChessData {
+  message: string;
+  coords: Array<ICellCoords>;
+  player: string;
+  field: Array<string>;
+  winner: string;
+  sign: string;
+};
+
+
 export interface IChannelDTO {
   name: string;
 }
