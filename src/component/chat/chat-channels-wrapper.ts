@@ -1,5 +1,5 @@
-import { Component } from "../../utilities/Component";
-import { IChannelDTO } from "../../utilities/interfaces";
+import { Component } from "utilities/Component";
+import { IChannelBtn, IChannelDTO, IChannelWrapper } from "utilities/interfaces";
 import ButtonDefault from "./button";
 import ChatChannel from "./chat-chanel";
 
@@ -8,27 +8,34 @@ class ChatChannelsWrapper extends Component {
   private chatChannels: Component;
   public onChannelClick: (name: string) => void = () => {};
   public onAddBtnClick: () => void = () => {};
+  private configView: IChannelWrapper;
+  private channelAddBtn: ButtonDefault;
 
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chat_channels' ]);
-    const chatChannelControl = new Component(this.element, 'div', ['chat_channels_controls']);
-    const channelAddBtn = new ButtonDefault(chatChannelControl.element);
-    channelAddBtn.onClick = () => {
+  constructor(parentNode: HTMLElement, configView: IChannelWrapper, configLang: IChannelBtn) {
+    super(parentNode, 'div', [ configView.wrapper ]);
+    this.configView = configView;
+    const chatChannelControl = new Component(this.element, 'div', [configView.constrols]);
+    this.channelAddBtn = new ButtonDefault(chatChannelControl.element, configView.btn, configLang.btn);
+    this.channelAddBtn.onClick = () => {
       this.onAddBtnClick();
     }
-    this.chatChannels = new Component(this.element, 'div', ['chat_channels_list']);
+    this.chatChannels = new Component(this.element, 'div', [configView.channels]);
 
   }
 
   addChannels(channelList: IChannelDTO[]): void  {
     this.channels = channelList.map((channelData: IChannelDTO) => {
-      const channel = new ChatChannel(this.chatChannels.element);
+      const channel = new ChatChannel(this.chatChannels.element, this.configView.channel);
       channel.element.textContent = channelData.name;
       channel.onClick = () => {
         this.onChannelClick(channelData.name);
       }
       return channel;
     });
+  }
+
+  setLangView(configLang: IChannelBtn):void {
+   this.channelAddBtn.setLangView(configLang.btn);
   }
 }
 

@@ -1,3 +1,4 @@
+import { IChatUser, IChatUserWrapper, IUsersLang } from 'utilities/interfaces';
 import { Component } from '../../utilities/Component';
 import ChatUser from './chat-user';
 
@@ -6,22 +7,28 @@ class ChatUsersWrapper extends Component {
   private spectatorsBlock: Component;
   private spectators: Array<ChatUser> = [];
   private players: Array<ChatUser> = [];
+  private userConfig: IChatUser;
+  private spectatorHeader: Component;
+  private playerHeader: any;
 
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chat_users' ]);
-    this.playersBlock = new Component(this.element, 'div', [ 'chat_category' ]);
-    const playerHeader = new Component(this.playersBlock.element, 'div', [ 'chat_category_name' ]);
-    playerHeader.element.textContent = 'Players:';
-
-    this.spectatorsBlock = new Component(this.element, 'div', [ 'chat_category' ]);
-    const spectatorHeader = new Component(this.spectatorsBlock.element, 'div', [
-      'chat_category_name'
+  constructor(parentNode: HTMLElement, configView: IChatUserWrapper, configLang: IUsersLang) {
+    super(parentNode, 'div', [ configView.wrapper ]);
+    this.userConfig = configView.user;
+    this.playersBlock = new Component(this.element, 'div', [ configView.category ]);
+    this.playerHeader = new Component(this.playersBlock.element, 'div', [
+      configView.categoryName
     ]);
-    spectatorHeader.element.textContent = 'Spectators:';
+    this.playerHeader.element.textContent = configLang.players;
+
+    this.spectatorsBlock = new Component(this.element, 'div', [ configView.category ]);
+    this.spectatorHeader = new Component(this.spectatorsBlock.element, 'div', [
+      configView.categoryName
+    ]);
+    this.spectatorHeader.element.textContent = configLang.spectators;
   }
 
   setPlayer(avatar: string, playerName: string): void {
-    const chatPlayer = new ChatUser(this.playersBlock.element, avatar, playerName);
+    const chatPlayer = new ChatUser(this.playersBlock.element, avatar, playerName, this.userConfig);
     this.players.push(chatPlayer);
   }
 
@@ -29,10 +36,9 @@ class ChatUsersWrapper extends Component {
     this.spectators.forEach((user) => user.destroy());
     this.spectators = [];
     console.log(userList);
-    
 
     this.spectators = userList.map((user) => {
-      const chatUser = new ChatUser(this.spectatorsBlock.element, '', user);
+      const chatUser = new ChatUser(this.spectatorsBlock.element, '', user, this.userConfig);
       return chatUser;
     });
   }
@@ -40,6 +46,11 @@ class ChatUsersWrapper extends Component {
   deletePlayer(): void {
     this.players.forEach((player) => player.destroy());
     this.players = [];
+  }
+
+  setLangView(configLang: IUsersLang):void {
+    this.playerHeader.element.textContent = configLang.players;
+    this.spectatorHeader.element.textContent = configLang.spectators;
   }
 }
 

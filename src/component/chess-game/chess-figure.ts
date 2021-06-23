@@ -4,8 +4,8 @@ import Vector from "utilities/vector";
 
 class Figure extends Component {
   public onDragStart: (startPos: Vector) => void = () => {};
-  constructor(parentNode: HTMLElement, figure: string) {
-    super(parentNode, 'div', [ 'drag-item' ]);
+  constructor(parentNode: HTMLElement, figure: string, configFigureView: string) {
+    super(parentNode, 'div', [ configFigureView ]);
     this.element.style.backgroundImage = `url(${figure})`;
 
     this.element.onmousedown = (e) => {

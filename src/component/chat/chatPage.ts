@@ -12,8 +12,11 @@ import ChatInputWrapper from './chat-input-wrapper';
 import ChatMessagesBlock from './chat-messages';
 import Chess from '../chess-game/chess-game'
 import Vector from 'utilities/vector';
+import { langConfigEn, langConfigRu } from 'utilities/lang-config';
+import chatConfigView from 'utilities/config-chat';
 
 
+let langConfig = langConfigEn;
 
 class ChatModel {
   currentUser: IAuthData;
@@ -202,40 +205,40 @@ export class Chat extends Component {
   private chatUsers: ChatUsersWrapper;
 
   constructor(parentNode: HTMLElement | null = null) {
-    super(parentNode, 'div', [ 'chat_wrapper' ]);
-    this.channelBlock = new ChatChannelsWrapper(this.element)
-    this.chatMain = new Component(this.element, 'div', ['chat_main']);
-    const chatAction = new Component(this.chatMain.element, 'div', ['chat_action']);
-    const chatMessages = new ChatMessagesBlock(this.chatMain.element);
-    const chatInputBlock = new ChatInputWrapper(this.chatMain.element);
-    this.chatUsers = new ChatUsersWrapper(this.element);
+    super(parentNode, 'div', [ chatConfigView.wrapper ]);
+    this.channelBlock = new ChatChannelsWrapper(this.element, chatConfigView.channelWrapper, langConfig.chat.channels)
+    this.chatMain = new Component(this.element, 'div', [chatConfigView.main]);
+    const chatAction = new Component(this.chatMain.element, 'div', [chatConfigView.action]);
+    const chatMessages = new ChatMessagesBlock(this.chatMain.element, chatConfigView.messageWrapper);
+    const chatInputBlock = new ChatInputWrapper(this.chatMain.element, chatConfigView.inputWrapper, langConfig.chat.messages);
+    this.chatUsers = new ChatUsersWrapper(this.element, chatConfigView.users, langConfig.chat.users);
 
     this.messageContainer = new Component(this.element);
-    // this.chatInput = new Component(this.element, 'input');
-    this.gameInstance = new Cross(chatAction.element);
-    this.chessGame = new Chess(chatAction.element);
+    // this.gameInstance = new Cross(chatAction.element);
+    this.chessGame = new Chess(chatAction.element, langConfig.chess);
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
       this.model.joinPlayer();
     };
     this.model.onPlayerList.add(({ player, time }) => {
-      this.gameInstance.setPlayer(player, time);
+      // this.gameInstance.setPlayer(player, time);
       this.chatUsers.setPlayer('', player);
+      this.chessGame.setPlayer(player);
     });
 
-    this.gameInstance.onCellClick = (coords: ICellCoords) => {
-      this.model.crossMove(JSON.stringify(coords));
-    };
-    this.model.onCrossMove.add(({ message, coords, player, field, winner, sign }) => {
-      this.gameInstance.updateGameField(field);
-      this.gameInstance.setHistoryMove(sign, coords, '0:02');
-      if (winner) {
-        console.log(`Winner: ${winner}`);
-        this.gameInstance.clearData();
-        this.chatUsers.deletePlayer();
-      }
-    });
+    // this.gameInstance.onCellClick = (coords: ICellCoords) => {
+    //   this.model.crossMove(JSON.stringify(coords));
+    // };
+    // this.model.onCrossMove.add(({ message, coords, player, field, winner, sign }) => {
+    //   this.gameInstance.updateGameField(field);
+    //   this.gameInstance.setHistoryMove(sign, coords, '0:02');
+    //   if (winner) {
+    //     console.log(`Winner: ${winner}`);
+    //     this.gameInstance.clearData();
+    //     this.chatUsers.deletePlayer();
+    //   }
+    // });
 
     this.model.onMessage.add((message) => {
       chatMessages.addMessage(message);
@@ -256,29 +259,7 @@ export class Chat extends Component {
         console.log('Add btn clicked');
         
       }
-
-      // this.channelListContainer.element.textContent = '';
-
-      // this.channels = channelList.map((channelData: IChannelDTO) => {
-      //   const channel = new ChatChannel(this.channelListContainer.element);
-      //   channel.element.textContent = channelData.name;
-      //   channel.onClick = () => {
-      //     this.model.joinChannel(channelData.name);
-      //   };
-      //   return channel;
-      // });
     });
-    /*setTimeout(()=>{
-        this.model.joinUser();
-      }, 1000)*/
-
-    // this.chatInput.element.onkeyup = (e) => {
-    //   if (e.key == 'Enter') {
-    //     this.model.sendMessage((this.chatInput.element as HTMLInputElement).value);
-    //     (this.chatInput.element as HTMLInputElement).value = '';
-    //   }
-    // };
-
     chatInputBlock.onClick = (message) => {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
@@ -287,15 +268,26 @@ export class Chat extends Component {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
     }
-    this.gameInstance.onStartClick = () => {
+    // this.gameInstance.onStartClick = () => {
+    //   console.log('Start click');
+    // }
+    // this.gameInstance.onDrawClick = () => {
+    //   console.log('Draw click');
+    // }
+    // this.gameInstance.onLossClick = () => {
+    //   console.log('Loss click');
+    // }
+
+    this.chessGame.onStartClick = () => {
       console.log('Start click');
     }
-    this.gameInstance.onDrawClick = () => {
-      console.log('Draw click');
+    this.chessGame.onDrawClick = () => {
+      this.chessGame.createModalDraw();
     }
-    this.gameInstance.onLossClick = () => {
-      console.log('Loss click');
+    this.chessGame.onLossClick = () => {
+      this.chessGame.createModalLoss();
     }
+
     this.chessGame.onFigureDrop = (posStart:Vector, posDrop:Vector) => {
       this.model.chessMove(JSON.stringify([posStart, posDrop]));
     }
@@ -308,6 +300,14 @@ export class Chat extends Component {
       console.log(coords);
       this.chessGame.setHistoryMove(coords);
     });
+    this.chessGame.onModalDrawClick = () => {
+      this.chessGame.destroyModalDraw();
+    }
+
+    this.chessGame.onModalLossClick = () => {
+      this.chessGame.destroyModalLoss();
+    }
+    
   }
 
   setCurrentUser(user: IAuthData) {

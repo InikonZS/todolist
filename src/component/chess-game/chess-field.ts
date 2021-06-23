@@ -2,6 +2,7 @@ import Vector from 'utilities/vector';
 import { Component } from 'utilities/Component';
 import Figure from './chess-figure';
 import configField from 'utilities/config-chess';
+import { IBoardCellView, IGameField } from 'utilities/interfaces';
 
 class ChessField extends Component {
   private dragableItems: Component;
@@ -14,21 +15,21 @@ class ChessField extends Component {
   private startCellPos: Vector;
   public onFigureGrab: (pos: Vector) => void = () => {};
 
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chess_board' ]);
-    const boardView = new Component(this.element, 'div', [ 'chess_board_view' ]);
+  constructor(parentNode: HTMLElement, configFigure: string, configBoardView:IBoardCellView, configFieldView: IGameField) {
+    super(parentNode, 'div', [ configFieldView.board ]);
+    const boardView = new Component(this.element, 'div', [ configBoardView.boardView ]);
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (i % 2 === 0) {
           let cell = new Component(boardView.element, 'div', [
-            'chess_board_cell',
-            j % 2 === 0 ? 'cell-light' : 'cell-dark'
+            configBoardView.cell,
+            j % 2 === 0 ? configBoardView.light : configBoardView.dark
           ]);
         } else if (i % 2 !== 0) {
           let cell = new Component(boardView.element, 'div', [
-            'chess_board_cell',
-            j % 2 === 0 ? 'cell-dark' : 'cell-light'
+            configBoardView.cell,
+            j % 2 === 0 ? configBoardView.dark : configBoardView.light
           ]);
         }
       }
@@ -36,13 +37,13 @@ class ChessField extends Component {
     this.dragableItems = new Component(this.element, 'div');
     this.dragableField = new Component(this.element, 'div', [ 'chess_field' ]);
     for (let i = 0; i < 64; i++) {
-      let cell = new Component(this.dragableField.element, 'div', [ 'chess_cell' ]);
-      this.addItem(new Figure(null, configField[i]), i, cell.element.getBoundingClientRect());
+      let cell = new Component(this.dragableField.element, 'div', [ configFieldView.cell ]);
+      this.addItem(new Figure(null, configField[i], configFigure), i, cell.element.getBoundingClientRect());
       cell.element.onmouseenter = () => {
-        cell.element.classList.add('chess_cell_hover');
+        cell.element.classList.add(configFieldView.hover);
       };
       cell.element.onmouseleave = () => {
-        cell.element.classList.remove('chess_cell_hover');
+        cell.element.classList.remove(configFieldView.hover);
       };
       cell.element.onmouseup = () => {
         this.onCellDrop && this.onCellDrop(this.testItem, new Vector(i % 8, Math.floor(i / 8)));

@@ -1,11 +1,14 @@
 import { Component } from 'utilities/Component';
-import { ICellCoords } from 'utilities/interfaces';
+import { ICellCoords, IChessLang, IChessView, ILangView, ILangViewModal, ILangViewPlayer } from 'utilities/interfaces';
 import ChessCell from './chess-cell';
 import ChessButton from './chess-button';
 import './chess-game.css';
 import ChessHistoryBlock from './chess-history';
 import ChessField from './chess-field';
 import Vector from 'utilities/vector';
+import { chessConfigView } from 'utilities/config-chess';
+import ModalDraw from './modal-draw';
+import ModalLoss from './modal-loss';
 
 let size = 8;
 class Timer extends Component {
@@ -93,45 +96,41 @@ class Cross extends Component {
   public onLossClick: () => void = () => {};
   public onFigureDrop: (posStart:Vector, posDrop:Vector) => void = () => {};
   public onFigureGrab: (pos: Vector) => void = () => {};
+  private chessView: IChessView;
+  private langConfig: ILangViewPlayer;
+  private modalDraw: ModalDraw;
+  private langConfigModals: ILangViewModal;
+  public onModalDrawClick: () => void = () => {};
+  private modalLoss: ModalLoss;
+  public onModalLossClick: () => void = () => {};
 
-
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chess_wrapper' ]);
-    const chessControls =  new Component(this.element, 'div', [ 'chess_controls' ]);
-    const chessHead = new Component(this.element, 'div', [ 'chess_head' ]);
-    this.playerOne = new Component(chessHead.element, 'div', [ 'chess_player' ], 'Player1');
+  constructor(parentNode: HTMLElement, langConfig:IChessLang) {
+    super(parentNode, 'div', [ chessConfigView.chessView.wrapper ]);
+    this.langConfig = langConfig.players;
+    this.langConfigModals = langConfig.modals;
+    this.chessView = chessConfigView.chessView;
+    const chessControls =  new Component(this.element, 'div', [ this.chessView.controls ]);
+    const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
+    this.playerOne = new Component(chessHead.element, 'div', [ this.chessView.player ], this.langConfig.player1);
     this.timer = new Timer(chessHead.element);
-    this.playerTwo = new Component(chessHead.element, 'div', [ 'chess_player' ], 'Player2');
-    const chessBody = new Component(this.element, 'div', [ 'chess_body' ]);
-    this.history = new ChessHistoryBlock(chessBody.element);
+    this.playerTwo = new Component(chessHead.element, 'div', [ this.chessView.player ], this.langConfig.player2);
+    const chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
+    this.history = new ChessHistoryBlock(chessBody.element, chessConfigView.history, langConfig.history);
 
-    this.chessBoard = new ChessField(chessBody.element);
+    this.chessBoard = new ChessField(chessBody.element, chessConfigView.figure, chessConfigView.boardView, chessConfigView.gameField);
 
-    // for (let i = 0; i < size; i++) {
-      // const row = new Component(this.crossCells.element, 'div', [ 'cross_row' ]);
-      // for (let j = 0; j < size; j++) {
-      //   const cell = new ChessCell(row.element, i, j);
-      //   cell.onCellClick = (coords: ICellCoords) => {
-      //     if (this.timer.getIsPlaying()) {
-      //       this.onCellClick(coords);
-      //     }
-      //   };
-      //   this.cells.push(cell);
-      // }
-      // for (let i = 0; i < 64; i++) {
-      //   const cell = new ChessCell(chessBody.element, i, j);
-        
-      // }
-
-    this.btnStart = new ChessButton(chessControls.element, 'Start');
+    this.btnStart = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.start);
+    this.btnStart.buttonDisable();
     this.btnStart.onClick = () => {
       this.onStartClick();
+
     }
-    this.btnDraw = new ChessButton(chessControls.element, 'Draw');
+    this.btnDraw = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.draw);
     this.btnDraw.onClick = () => {
       this.onDrawClick();
+      
     }
-    this.btnLoss = new ChessButton(chessControls.element, 'Loss');
+    this.btnLoss = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.loss);
     this.btnLoss.onClick = () => {
       this.onLossClick();
     }
@@ -163,13 +162,12 @@ class Cross extends Component {
   clearData() {
     this.cells.forEach((cell) => cell.clearCell());
     this.players = 0;
-    this.playerOne.element.textContent = 'Player1';
-    this.playerTwo.element.textContent = 'Player2';
+    this.playerOne.element.textContent = this.langConfig.player1;
+    this.playerTwo.element.textContent = this.langConfig.player2;
     this.timer.clear();
   }
 
-  setPlayer(player: string, time: number): void {
-    console.log(time);
+  setPlayer(player: string): void {
 
     if (!this.players) {
       this.playerOne.element.textContent = player;
@@ -177,12 +175,42 @@ class Cross extends Component {
     } else if (this.players === 1) {
       this.playerTwo.element.textContent = player;
       this.players++;
-      this.timer.setTimer(time);
+      this.btnStart.buttonEnable();
     }
   }
 
   setHistoryMove(coords: Array<ICellCoords>): void {
     this.history.setHistoryMove(coords, '');
+  }
+
+  setLangView(configLang: IChessLang):void {
+    this.history.setLangView(configLang.history);
+    this.langConfig = configLang.players;
+    this.btnStart.setLangView(configLang.controls.start);
+    this.btnDraw.setLangView(configLang.controls.draw);
+    this.btnLoss.setLangView(configLang.controls.loss);
+  }
+
+  createModalDraw():void {
+    this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals);
+    this.modalDraw.onModalDrawClick = () => {
+      this.onModalDrawClick();
+    }
+  }
+
+  destroyModalDraw():void {
+    this.modalDraw.destroy();
+  }
+
+  createModalLoss():void {
+    this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
+    this.modalLoss.onModalLossClick = () => {
+      this.onModalLossClick();
+    }
+  }
+
+  destroyModalLoss():void {
+    this.modalLoss.destroy();
   }
 }
 

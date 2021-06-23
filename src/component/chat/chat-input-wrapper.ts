@@ -1,14 +1,16 @@
+import { IInputWrapper, IMessageBtn } from 'utilities/interfaces';
 import { Component } from '../../utilities/Component';
 
 class ChatInputWrapper extends Component {
   public onClick: (message: string) => void = () => {};
   public onEnter: (message: string) => void = () => {};
   private chatInput: Component;
+  private inputBtn: Component;
 
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chat_input' ]);
-    this.chatInput = new Component(this.element, 'input', ['chat_input_field']);
-    const inputBtn = new Component(this.element, 'button', ['chat_send_button'], 'Send');
+  constructor(parentNode: HTMLElement, configView: IInputWrapper, configLang: IMessageBtn) {
+    super(parentNode, 'div', [ configView.wrapper ]);
+    this.chatInput = new Component(this.element, 'input', [configView.field]);
+    this.inputBtn = new Component(this.element, 'button', [configView.button], configLang.btn);
 
     this.chatInput.element.onkeyup = (e) => {
       if (e.key == 'Enter') {
@@ -16,7 +18,7 @@ class ChatInputWrapper extends Component {
       }
     }
 
-    inputBtn.element.onclick = () => {
+    this.inputBtn.element.onclick = () => {
       this.onClick((this.chatInput.element as HTMLInputElement).value);
     }
 
@@ -24,6 +26,10 @@ class ChatInputWrapper extends Component {
 
   clearInput(): void {
     (this.chatInput.element as HTMLInputElement).value = '';
+  }
+
+  setLangView(configLang: string):void {
+    this.inputBtn.element.textContent = configLang;
   }
 }
 

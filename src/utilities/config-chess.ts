@@ -23,23 +23,113 @@ export const configFigures = {
   B: whiteBishop,
   Q: whiteQueen,
   K: whiteKing,
-  P: whitePawn,
-}
-
+  P: whitePawn
+};
 
 const configField = [
-  configFigures.r, configFigures.n, configFigures.b,configFigures.q, configFigures.k, configFigures.b, configFigures.n, configFigures.r,
-  configFigures.p, configFigures.p,configFigures.p, configFigures.p,configFigures.p, configFigures.p,configFigures.p, configFigures.p,
-  '', '', '', '','', '', '', '',
-  '', '', '', '','', '', '', '',
-  '', '', '', '','', '', '', '',
-  '', '', '', '','', '', '', '',
-  configFigures.P, configFigures.P,configFigures.P, configFigures.P,configFigures.P, configFigures.P,configFigures.P, configFigures.P,
-  configFigures.R, configFigures.N, configFigures.B,configFigures.Q, configFigures.K, configFigures.B, configFigures.N, configFigures.R,
+  configFigures.r,
+  configFigures.n,
+  configFigures.b,
+  configFigures.q,
+  configFigures.k,
+  configFigures.b,
+  configFigures.n,
+  configFigures.r,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  configFigures.p,
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.P,
+  configFigures.R,
+  configFigures.N,
+  configFigures.B,
+  configFigures.Q,
+  configFigures.K,
+  configFigures.B,
+  configFigures.N,
+  configFigures.R
 ];
 
-export const boardCoordsX = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-export const boardCoordsY = ['8', '7', '6', '5', '4', '3', '2', '1'];
+export const boardCoordsX = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' ];
+export const boardCoordsY = [ '8', '7', '6', '5', '4', '3', '2', '1' ];
 
+export const chessConfigView = {
+  history: {
+    node: 'chess_history',
+    title: 'chess_history_header',
+    wrapper: 'chess_history_items',
+    item: 'chess_history_item'
+  },
+  figure: 'drag-item',
+  boardView: {
+    boardView: 'chess_board_view',
+    cell: 'chess_board_cell',
+    light: 'cell-light',
+    dark: 'cell-dark'
+  },
+  gameField: {
+    board: 'chess_board',
+    field: 'chess_field',
+    cell: 'chess_cell',
+    hover: 'chess_cell_hover'
+  },
+  chessView: {
+    wrapper: 'chess_wrapper',
+    controls: 'chess_controls',
+    head: 'chess_head',
+    player: 'chess_player',
+    body: 'chess_body'
+  },
+  btn: 'chess_button',
+  modal: {
+    wrapper: 'modal_wrapper',
+    message: 'modal_message',
+    text: 'modal_text',
+    btn: 'chess_button',
+  }
+};
 
 export default configField;
