@@ -8,5 +8,4 @@ export interface ICell {
   readonly color: ChessColor;
 
   toString(): string;
-  copy(): ICell;
 }
