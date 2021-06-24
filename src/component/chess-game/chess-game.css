@@ -43,7 +43,7 @@
   /* pointer-events: none; */
 }
 
-.chess_cells.rotate {
+.chess_board.rotate {
   transform: rotate(180deg);
 }
 

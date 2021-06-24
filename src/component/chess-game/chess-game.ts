@@ -137,6 +137,12 @@ class Cross extends Component {
 
     this.chessBoard.onFigureDrop = (posStart:Vector, posDrop:Vector) => {
       this.onFigureDrop(posStart, posDrop)
+      if (!this.isRotated) {
+        this.chessBoard.element.classList.add('rotate');
+      } else {
+        this.chessBoard.element.classList.remove('rotate');
+      }
+      this.isRotated = !this.isRotated;
     }
 
     this.chessBoard.onFigureGrab = (pos:Vector) => {
