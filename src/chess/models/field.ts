@@ -40,7 +40,7 @@ export class Field implements IField {
     return new Position(this.position);
   }
   getFigure(coord: ICellCoord): IFigure | undefined {
-    return this.position.get(coord);
+    return this.position.get(coord.toString());
   }
 
   getAllowedMoves(coord: ICellCoord): Moves {
@@ -53,7 +53,7 @@ export class Field implements IField {
     }
   }
   isFreeCell(coord: ICellCoord): boolean {
-    return !this.position.has(coord);
+    return !this.position.has(coord.toString());
   }
   private calculateCost(): number {
     let result = 0;
@@ -71,10 +71,10 @@ export class Field implements IField {
     const resultPosition = new Position(this.position);
     const targetCell = move.getResultPosition();
     if (!this.isFreeCell(targetCell)) {
-      resultPosition.delete(targetCell);
+      resultPosition.delete(targetCell.toString());
     }
-    resultPosition.set(targetCell, move.figure);
-    resultPosition.delete(move.startPosition);
+    resultPosition.set(targetCell.toString(), move.figure);
+    resultPosition.delete(move.startPosition.toString());
     return new Field(resultPosition, this.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
   }
 

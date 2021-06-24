@@ -1,11 +1,11 @@
-import { CellCoord } from './cell-coord';
-import { ChessColor } from './chess-color';
-import { COMMON } from './common';
-import { Figure } from './figure';
-import { FigureType } from './figure-type';
-import { IField } from './ifield';
-import { Move } from './move';
-import { Moves } from './moves';
+import { CellCoord } from '../cell-coord';
+import { ChessColor } from '../chess-color';
+import { COMMON } from '../common';
+import { Figure } from '../figure';
+import { FigureType } from '../figure-type';
+import { IField } from '../ifield';
+import { Move } from '../move';
+import { Moves } from '../moves';
 
 export class Knight extends Figure {
   constructor(color: ChessColor) {
