@@ -6,6 +6,7 @@ import { Figures } from './figures';
 import { ICellCoord } from './icell-coord';
 import { IField } from './ifield';
 import { IFigure } from './ifigure';
+import { Move } from './move';
 import { Moves } from './moves';
 import { Position } from './position';
 
@@ -35,6 +36,9 @@ export class Field implements IField {
   getFigures(): Figures {
     return new Figures(this.position.values());
   }
+  getPosition(): Position {
+    return new Position(this.position);
+  }
   getFigure(coord: ICellCoord): IFigure | undefined {
     return this.position.get(coord);
   }
@@ -49,7 +53,7 @@ export class Field implements IField {
     }
   }
   isFreeCell(coord: ICellCoord): boolean {
-    return this.position.has(coord);
+    return !this.position.has(coord);
   }
   private calculateCost(): number {
     let result = 0;
@@ -63,8 +67,20 @@ export class Field implements IField {
     }
     return result;
   }
+  makeMove(move: Move): IField {
+    const resultPosition = new Position(this.position);
+    const targetCell = move.getResultPosition();
+    if (!this.isFreeCell(targetCell)) {
+      resultPosition.delete(targetCell);
+    }
+    resultPosition.set(targetCell, move.figure);
+    resultPosition.delete(move.startPosition);
+    return new Field(resultPosition, this.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
+  }
 
   // TODO: Implement next functions
   // getRecommendMoves(): Moves;
   // toString(): string;
+  // makeMove(move: Move): IField;
+  // isMate(): boolean
 }

@@ -1,4 +1,5 @@
 import { FigureType } from './figure-type';
+import { Vector } from './vector';
 
 export enum LOCALES {
   RU,
@@ -18,7 +19,7 @@ export class COMMON {
         [FigureType.queen, 'Q'],
         [FigureType.rook, 'R'],
         [FigureType.bishop, 'B'],
-        [FigureType.knighnt, 'N'],
+        [FigureType.knight, 'N'],
         [FigureType.pawn, ''],
       ]),
     ],
@@ -29,7 +30,7 @@ export class COMMON {
         [FigureType.queen, 'Ф'],
         [FigureType.rook, 'Л'],
         [FigureType.bishop, 'С'],
-        [FigureType.knighnt, 'К'],
+        [FigureType.knight, 'К'],
         [FigureType.pawn, ''],
       ]),
     ],
@@ -39,9 +40,14 @@ export class COMMON {
     [FigureType.queen, 90],
     [FigureType.rook, 50],
     [FigureType.bishop, 30],
-    [FigureType.knighnt, 30],
+    [FigureType.knight, 30],
     [FigureType.pawn, 10],
   ]);
+  static DIAGONAL_MOVES = [new Vector(-1, -1), new Vector(-1, 1), new Vector(1, -1), new Vector(1, 1)];
+  static HV_MOVES = [new Vector(-1, 0), new Vector(1, 0), new Vector(0, -1), new Vector(0, 1)];
+  static UP_MOVES = [new Vector(0, -1)];
+  static DOWN_MOVES = [new Vector(0, 1)];
+  static KNIGHT_MOVES = [new Vector(-2, -1), new Vector(-1, -2), new Vector(1, -2), new Vector(2, -1), new Vector(2, 1), new Vector(1, 2), new Vector(-1, 2), new Vector(-2, 1)];
 
   constructor() {}
 }

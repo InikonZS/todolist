@@ -1,3 +1,4 @@
+import { CellCoords } from './cell-coords';
 import { ICellCoord } from './icell-coord';
 import { IFigure } from './ifigure';
 import { IMove } from './imove';
@@ -11,6 +12,9 @@ export class Move implements IMove {
     this.startPosition = startPosition;
     this.figure = figure;
     this.vector = vector;
+  }
+  getResultPosition(): ICellCoord {
+    return this.vector.resultPosition(this.startPosition);
   }
   toString(): string {
     // TODO: добавить проверку на взятие фигуры

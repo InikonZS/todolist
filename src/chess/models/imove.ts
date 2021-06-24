@@ -7,5 +7,6 @@ export interface IMove {
   readonly figure: IFigure;
   readonly vector: IVector;
 
+  getResultPosition(): ICellCoord;
   toString(): string;
 }

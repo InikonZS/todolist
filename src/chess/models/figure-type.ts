@@ -1,6 +1,6 @@
 export enum FigureType {
   pawn,
-  knighnt,
+  knight,
   bishop,
   rook,
   queen,
