@@ -20,7 +20,7 @@ export abstract class Figure implements IFigure {
     return this.coords;
   }
   move(vector: IVector): boolean {
-    // TODO: добавить проверку на корректность хода, или переложить эту проверку на доску.
+    // TODO: добавить проверку на корректность хода, или переложить эту проверку на доску или класс Move.
     this.coords = vector.resultPosition(this.coords);
     return true;
   }
