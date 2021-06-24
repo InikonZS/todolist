@@ -1,22 +1,21 @@
-import { Cells } from './cells';
+import { CellCoords } from './cell-coords';
 import { ChessColor } from './chess-color';
 import { Figures } from './figures';
-import { ICell } from './icell';
+import { ICellCoord } from './icell-coord';
 import { IFigure } from './ifigure';
 import { Moves } from './moves';
 
 export interface IField {
-  readonly figures: Figures;
   readonly playerColor: ChessColor;
 
-  constructor(figures: Figures, playerColor: ChessColor): void;
   copy(): IField;
-  getCost(): number;
-  getRecommendMoves(): Moves;
-  getAllCells(): Cells;
-  getFigure(cell: ICell): IFigure;
-  getAllowedMoves(figure: IFigure): Moves;
-  isFreeCell(cell: ICell): boolean;
-  isCorrectCell(cell: ICell): boolean;
-  toString(): string;
+  getAllCellCoords(): CellCoords;
+  getFigure(coord: ICellCoord): IFigure | undefined;
+  getFigures(): Figures;
+  getAllowedMoves(coord: ICellCoord): Moves;
+  isFreeCell(coord: ICellCoord): boolean;
+
+  // TODO: Implement next functions
+  // getRecommendMoves(): Moves;
+  // toString(): string;
 }

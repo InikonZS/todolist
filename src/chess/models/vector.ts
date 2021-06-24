@@ -1,6 +1,4 @@
-import { Cell } from './cell';
 import { CellCoord } from './cell-coord';
-import { ICell } from './icell';
 import { IVector } from './ivector';
 
 export class Vector implements IVector {
