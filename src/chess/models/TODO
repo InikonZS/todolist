@@ -1,4 +1,3 @@
-переделать Field.makeMove на Move.makeMove
 убрать фигуру из модели данных Move
 Figure.toString() - переделать на маленькие-большие буквы в зависимости от цвета
 Position.addFigure(coord, figure)

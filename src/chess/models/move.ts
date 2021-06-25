@@ -8,26 +8,26 @@ import { IVector } from './ivector';
 
 export class Move implements IMove {
   readonly startPosition: ICellCoord;
-  readonly figure: IFigure;
   readonly vector: IVector;
-  constructor(startPosition: ICellCoord, figure: IFigure, vector: IVector) {
+  constructor(startPosition: ICellCoord, vector: IVector) {
     this.startPosition = startPosition;
-    this.figure = figure;
     this.vector = vector;
   }
   getResultPosition(): ICellCoord {
     return this.vector.resultPosition(this.startPosition);
   }
-  toString(): string {
+  getNotation(field: IField): string {
     // TODO: добавить проверку на взятие фигуры
     // TODO: добавить рокировку
-    return `${this.figure.toString()}${this.startPosition.toString}—${this.vector.resultPosition(this.startPosition)}`;
+    if (this.isValid(field)) {
+      return `${field.getFigure(this.startPosition)?.toString()}${this.startPosition.toString}—${this.vector.resultPosition(this.startPosition)}`;
+    } else return 'Illegal Move';
   }
   isValid(field: IField): boolean {
     let result = false;
     if (!field.isFreeCell(this.startPosition)) {
       const fieldFigure = field.getFigure(this.startPosition);
-      if (this.figure.color === fieldFigure?.color && this.figure.type === fieldFigure.type) {
+      if (field.playerColor === fieldFigure?.color) {
         const fieldMoves = field.getAllowedMoves(this.startPosition);
         const legalDestinations = new Set<String>();
         for (let fieldMove of fieldMoves) {
@@ -41,11 +41,16 @@ export class Move implements IMove {
   makeMove(field: IField): IField {
     const resultPosition = field.getPosition();
     const targetCell = this.getResultPosition();
+    const figure = field.getFigure(this.startPosition);
     if (!field.isFreeCell(targetCell)) {
       resultPosition.delete(targetCell.toString());
     }
-    resultPosition.set(targetCell.toString(), this.figure);
-    resultPosition.delete(this.startPosition.toString());
-    return new Field(resultPosition, field.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
+    if (figure) {
+      resultPosition.set(targetCell.toString(), figure);
+      resultPosition.delete(this.startPosition.toString());
+      return new Field(resultPosition, field.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
+    } else {
+      throw new Error('Error in Move.makeMove: empty start position');
+    }
   }
 }

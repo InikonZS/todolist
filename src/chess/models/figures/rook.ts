@@ -18,7 +18,7 @@ export class Rook extends Figure {
       let resultPosition = vector.resultPosition(position);
       let currentVector = vector.copy();
       while (resultPosition.isCorrect() && (field.isFreeCell(resultPosition) || field.getFigure(resultPosition)?.color !== this.color)) {
-        result.add(new Move(position, this, currentVector));
+        result.add(new Move(position, currentVector));
         if (!field.isFreeCell(resultPosition)) {
           currentVector = new Vector(COMMON.BOARD_SIZE, COMMON.BOARD_SIZE); //exit from While
         } else {
