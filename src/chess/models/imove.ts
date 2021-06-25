@@ -11,4 +11,5 @@ export interface IMove {
   getResultPosition(): ICellCoord;
   toString(): string;
   isValid(field: IField): boolean;
+  makeMove(field: IField): IField;
 }

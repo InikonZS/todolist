@@ -3,7 +3,6 @@ import { ChessColor } from './chess-color';
 import { Figures } from './figures';
 import { ICellCoord } from './icell-coord';
 import { IFigure } from './ifigure';
-import { Move } from './move';
 import { Moves } from './moves';
 import { Position } from './position';
 
@@ -17,7 +16,6 @@ export interface IField {
   getPosition(): Position;
   getAllowedMoves(coord: ICellCoord): Moves;
   isFreeCell(coord: ICellCoord): boolean;
-  makeMove(move: Move): IField;
 
   // TODO: Implement next functions
   // getRecommendMoves(): Moves;

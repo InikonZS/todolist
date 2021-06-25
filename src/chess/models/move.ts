@@ -1,4 +1,5 @@
-import { CellCoords } from './cell-coords';
+import { ChessColor } from './chess-color';
+import { Field } from './field';
 import { ICellCoord } from './icell-coord';
 import { IField } from './ifield';
 import { IFigure } from './ifigure';
@@ -36,5 +37,15 @@ export class Move implements IMove {
       }
     }
     return result;
+  }
+  makeMove(field: IField): IField {
+    const resultPosition = field.getPosition();
+    const targetCell = this.getResultPosition();
+    if (!field.isFreeCell(targetCell)) {
+      resultPosition.delete(targetCell.toString());
+    }
+    resultPosition.set(targetCell.toString(), this.figure);
+    resultPosition.delete(this.startPosition.toString());
+    return new Field(resultPosition, field.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
   }
 }

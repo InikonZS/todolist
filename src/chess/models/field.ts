@@ -6,7 +6,6 @@ import { Figures } from './figures';
 import { ICellCoord } from './icell-coord';
 import { IField } from './ifield';
 import { IFigure } from './ifigure';
-import { Move } from './move';
 import { Moves } from './moves';
 import { Position } from './position';
 
@@ -67,20 +66,9 @@ export class Field implements IField {
     }
     return result;
   }
-  makeMove(move: Move): IField {
-    const resultPosition = new Position(this.position);
-    const targetCell = move.getResultPosition();
-    if (!this.isFreeCell(targetCell)) {
-      resultPosition.delete(targetCell.toString());
-    }
-    resultPosition.set(targetCell.toString(), move.figure);
-    resultPosition.delete(move.startPosition.toString());
-    return new Field(resultPosition, this.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
-  }
 
   // TODO: Implement next functions
   // getRecommendMoves(): Moves;
   // toString(): string;
-  // makeMove(move: Move): IField;
   // isMate(): boolean
 }
