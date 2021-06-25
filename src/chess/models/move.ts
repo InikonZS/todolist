@@ -1,5 +1,6 @@
 import { CellCoords } from './cell-coords';
 import { ICellCoord } from './icell-coord';
+import { IField } from './ifield';
 import { IFigure } from './ifigure';
 import { IMove } from './imove';
 import { IVector } from './ivector';
@@ -20,5 +21,20 @@ export class Move implements IMove {
     // TODO: добавить проверку на взятие фигуры
     // TODO: добавить рокировку
     return `${this.figure.toString()}${this.startPosition.toString}—${this.vector.resultPosition(this.startPosition)}`;
+  }
+  isValid(field: IField): boolean {
+    let result = false;
+    if (!field.isFreeCell(this.startPosition)) {
+      const fieldFigure = field.getFigure(this.startPosition);
+      if (this.figure.color === fieldFigure?.color && this.figure.type === fieldFigure.type) {
+        const fieldMoves = field.getAllowedMoves(this.startPosition);
+        const legalDestinations = new Set<String>();
+        for (let fieldMove of fieldMoves) {
+          legalDestinations.add(fieldMove.getResultPosition.toString());
+        }
+        result = legalDestinations.has(this.getResultPosition().toString());
+      }
+    }
+    return result;
   }
 }

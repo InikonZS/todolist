@@ -1,4 +1,5 @@
 import { ICellCoord } from './icell-coord';
+import { IField } from './ifield';
 import { IFigure } from './ifigure';
 import { IVector } from './ivector';
 
@@ -9,4 +10,5 @@ export interface IMove {
 
   getResultPosition(): ICellCoord;
   toString(): string;
+  isValid(field: IField): boolean;
 }
