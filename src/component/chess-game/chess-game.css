@@ -116,9 +116,10 @@
 
 .chess_history {
   /* height: 100%; */
-  height: 270px;
+  height: 480px;
   padding: 5px;
   padding-right: 20px;
+  margin-right: 10px;
   overflow-y: scroll;
 }
 

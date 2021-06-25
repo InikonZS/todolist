@@ -3,33 +3,41 @@ import { Component } from 'utilities/Component';
 import { popupService } from '../Popupservice';
 import Cross from '../../cross/cross';
 import Signal from 'utilities/signal';
-import ICrossData, { ICellCoords, IChannelDTO, IChessData, IuserChatMessage } from 'utilities/interfaces';
+import ICrossData, {
+  ICellCoords,
+  IChannelDTO,
+  IChessData,
+  IuserChatMessage
+} from 'utilities/interfaces';
 import './chatPage.css';
 import ChatChannel from './chat-chanel';
 import ChatChannelsWrapper from './chat-channels-wrapper';
 import ChatUsersWrapper from './chat-users-wrapper';
 import ChatInputWrapper from './chat-input-wrapper';
 import ChatMessagesBlock from './chat-messages';
-import Chess from '../chess-game/chess-game'
+import Chess from '../chess-game/chess-game';
 import Vector from 'utilities/vector';
 import { langConfigEn, langConfigRu } from 'utilities/lang-config';
 import chatConfigView from 'utilities/config-chat';
-
+import ChessModel from '../chess-game/chess-model';
 
 let langConfig = langConfigEn;
 
 class ChatModel {
   currentUser: IAuthData;
-  socket: WebSocket;
+  public socket: WebSocket;
   userList: Array<string> = [];
   onMessage: Signal<IuserChatMessage> = new Signal();
   onCrossMove: Signal<ICrossData> = new Signal();
   onPlayerList: Signal<{ player: string; time: number }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
-  onChessMove: Signal<IChessData> = new Signal();
+  // onChessMove: Signal<IChessData> = new Signal();
+  chessModel: ChessModel;
+
   constructor() {
     this.socket = new WebSocket('ws:/localhost:4080');
+    this.chessModel = new ChessModel(this.socket);
     this.socket.onopen = () => {
       this.joinUser();
     };
@@ -42,7 +50,8 @@ class ChatModel {
           avatar: '',
           userName: data.senderNick,
           time: new Date().toLocaleString('ru'),
-          message: data.messageText});
+          message: data.messageText
+        });
       }
       if (data.type === 'player') {
         this.onPlayerList.emit({ player: data.senderNick, time: data.time });
@@ -59,16 +68,17 @@ class ChatModel {
         });
       }
 
-      if (data.type === 'chessMove') {
-        this.onChessMove.emit({
-          message: data.senderNick + ' -> ' + data.messageText,
-          coords: JSON.parse(data.messageText),
-          player: data.senderNick,
-          field: data.field,
-          winner: data.winner,
-          sign: data.sign
-        });
-      }
+      // if (data.type === 'chessMove') {
+      //   this.onChessMove.emit({
+      //     message: data.senderNick + ' -> ' + data.messageText,
+      //     coords: JSON.parse(data.messageText),
+      //     player: data.senderNick,
+      //     field: data.field,
+      //     winner: data.winner,
+      //     sign: data.sign
+      //   });
+      // }
+
       /*if (data.type = 'userLeave'){
         this.onMessage.emit(data.senderNick);
       }
@@ -81,6 +91,11 @@ class ChatModel {
 
       if (data.type === 'channelList') {
         this.onChannelList.emit(data.channelList);
+      }
+      if (data.type === 'chess-events') {
+        
+        
+        this.chessModel.processMessage(data);
       }
     };
   }
@@ -160,36 +175,12 @@ class ChatModel {
     );
   }
 
-  chessMove(message: string) {
-    this.socket.send(
-      JSON.stringify({
-        service: 'chat',
-        endpoint: 'chessMove',
-        params: {
-          messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
-    );
-  }
-
-  chessFigureGrab(message: string) {
-    this.socket.send(
-      JSON.stringify({
-        service: 'chat',
-        endpoint: 'chessFigureGrab',
-        params: {
-          messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
-    );
-  }
-
   setCurrentUser(user: IAuthData) {
     this.currentUser = user;
   }
 }
+
+
 
 export class Chat extends Component {
   messageContainer: Component;
@@ -206,16 +197,31 @@ export class Chat extends Component {
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', [ chatConfigView.wrapper ]);
-    this.channelBlock = new ChatChannelsWrapper(this.element, chatConfigView.channelWrapper, langConfig.chat.channels)
-    this.chatMain = new Component(this.element, 'div', [chatConfigView.main]);
-    const chatAction = new Component(this.chatMain.element, 'div', [chatConfigView.action]);
-    const chatMessages = new ChatMessagesBlock(this.chatMain.element, chatConfigView.messageWrapper);
-    const chatInputBlock = new ChatInputWrapper(this.chatMain.element, chatConfigView.inputWrapper, langConfig.chat.messages);
-    this.chatUsers = new ChatUsersWrapper(this.element, chatConfigView.users, langConfig.chat.users);
+    this.channelBlock = new ChatChannelsWrapper(
+      this.element,
+      chatConfigView.channelWrapper,
+      langConfig.chat.channels
+    );
+    this.chatMain = new Component(this.element, 'div', [ chatConfigView.main ]);
+    const chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
+    const chatMessages = new ChatMessagesBlock(
+      this.chatMain.element,
+      chatConfigView.messageWrapper
+    );
+    const chatInputBlock = new ChatInputWrapper(
+      this.chatMain.element,
+      chatConfigView.inputWrapper,
+      langConfig.chat.messages
+    );
+    this.chatUsers = new ChatUsersWrapper(
+      this.element,
+      chatConfigView.users,
+      langConfig.chat.users
+    );
 
     this.messageContainer = new Component(this.element);
     // this.gameInstance = new Cross(chatAction.element);
-    this.chessGame = new Chess(chatAction.element, langConfig.chess);
+    this.chessGame = new Chess(chatAction.element, langConfig.chess, this.model.chessModel);
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
@@ -246,7 +252,7 @@ export class Chat extends Component {
     });
 
     this.model.onUserList.add((userList) => {
-      this.chatUsers.setSpectators(userList)
+      this.chatUsers.setSpectators(userList);
     });
 
     this.model.onChannelList.add((channelList) => {
@@ -254,20 +260,19 @@ export class Chat extends Component {
       this.channelBlock.onChannelClick = (channelName) => {
         console.log(channelName);
         this.model.joinChannel(channelName);
-      }
+      };
       this.channelBlock.onAddBtnClick = () => {
         console.log('Add btn clicked');
-        
-      }
+      };
     });
     chatInputBlock.onClick = (message) => {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
-    }
+    };
     chatInputBlock.onEnter = (message) => {
       this.model.sendMessage(message);
       chatInputBlock.clearInput();
-    }
+    };
     // this.gameInstance.onStartClick = () => {
     //   console.log('Start click');
     // }
@@ -277,37 +282,6 @@ export class Chat extends Component {
     // this.gameInstance.onLossClick = () => {
     //   console.log('Loss click');
     // }
-
-    this.chessGame.onStartClick = () => {
-      console.log('Start click');
-    }
-    this.chessGame.onDrawClick = () => {
-      this.chessGame.createModalDraw();
-    }
-    this.chessGame.onLossClick = () => {
-      this.chessGame.createModalLoss();
-    }
-
-    this.chessGame.onFigureDrop = (posStart:Vector, posDrop:Vector) => {
-      this.model.chessMove(JSON.stringify([posStart, posDrop]));
-    }
-
-    this.chessGame.onFigureGrab = (pos:Vector) => {
-      this.model.chessFigureGrab(JSON.stringify(pos));
-    }
-
-    this.model.onChessMove.add(({ message, coords, player, field, winner, sign }) => {
-      console.log(coords);
-      this.chessGame.setHistoryMove(coords);
-    });
-    this.chessGame.onModalDrawClick = () => {
-      this.chessGame.destroyModalDraw();
-    }
-
-    this.chessGame.onModalLossClick = () => {
-      this.chessGame.destroyModalLoss();
-    }
-    
   }
 
   setCurrentUser(user: IAuthData) {

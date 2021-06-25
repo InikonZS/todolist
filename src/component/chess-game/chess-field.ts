@@ -7,14 +7,15 @@ import { IBoardCellView, IGameField } from 'utilities/interfaces';
 class ChessField extends Component {
   private dragableItems: Component;
   private dragableField: Component;
-  private figure: Component;
+  private figure: Figure;
   private items: Array<Figure> = [];
   onCellDrop: (item: Component, coords: Vector) => void = () => {};
   private startChildPos: Vector;
   public onFigureDrop: (posStart: Vector, posDrop: Vector) => void = () => {};
   private startCellPos: Vector;
   public onFigureGrab: (pos: Vector) => void = () => {};
-  private currentFigPos: Vector;
+  private cellBox: DOMRect;
+  private isDragable: boolean = false;
 
   constructor(
     parentNode: HTMLElement,
@@ -27,16 +28,15 @@ class ChessField extends Component {
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
+        let color = '';
         if (i % 2 === 0) {
-          let cell = new Component(boardView.element, 'div', [
-            configBoardView.cell,
-            j % 2 === 0 ? configBoardView.light : configBoardView.dark
-          ]);
+          color = j % 2 === 0 ? configBoardView.light : configBoardView.dark;
+          let cell = new Component(boardView.element, 'div', [ configBoardView.cell ]);
+          cell.element.classList.add(color);
         } else if (i % 2 !== 0) {
-          let cell = new Component(boardView.element, 'div', [
-            configBoardView.cell,
-            j % 2 === 0 ? configBoardView.dark : configBoardView.light
-          ]);
+          color = j % 2 === 0 ? configBoardView.dark : configBoardView.light;
+          let cell = new Component(boardView.element, 'div', [ configBoardView.cell ]);
+          cell.element.classList.add(color);
         }
       }
     }
@@ -44,6 +44,7 @@ class ChessField extends Component {
     this.dragableField = new Component(this.element, 'div', [ configFieldView.field ]);
     for (let i = 0; i < 64; i++) {
       let cell = new Component(this.dragableField.element, 'div', [ configFieldView.cell ]);
+      this.cellBox = cell.element.getBoundingClientRect();
       this.addItem(
         new Figure(null, configField[i], configFigure, new Vector(i % 8, Math.floor(i / 8))),
         i,
@@ -58,39 +59,18 @@ class ChessField extends Component {
       cell.element.onmouseup = () => {
         this.onCellDrop && this.onCellDrop(this.figure, new Vector(i % 8, Math.floor(i / 8)));
         const cellPos = new Vector(i % 8, Math.floor(i / 8));
-        const cellBox = cell.element.getBoundingClientRect();
-        this.figure.element.style.left = cellPos.x * cellBox.width + 'px';
-        this.figure.element.style.top = cellPos.y * cellBox.height + 'px';
-        // this.onFigureDrop(this.startCellPos, cellPos);
-        this.onFigureDrop(this.currentFigPos, cellPos);
+        this.onFigureDrop(this.figure.getFigureState(), cellPos);
+        this.isDragable = false;
+        console.log(this.isDragable);
       };
     }
     this.dragableField.element.style.display = 'none';
     this.figure = null;
     this.element.onmousedown = (e) => {
-      e.preventDefault();
-      const fieldBox = this.dragableField.element.getBoundingClientRect();
-      const ratio = Math.floor(fieldBox.width / 8);
-      if (window.getComputedStyle(this.element).transform !== 'none' && e.buttons == 1) {
-        const matrix = window
-          .getComputedStyle(this.element)
-          .transform.slice(7, -1)
-          .split(', ')
-          .map((item) => Number(item));
-        let x = Math.floor((e.clientX - this.element.offsetLeft) / ratio);
-        let y = Math.floor((e.clientY - this.element.offsetTop) / ratio);
-
-        x = matrix[0] * x + matrix[1] * y;
-        y = matrix[2] * x + matrix[3] * y;
-        this.startCellPos = new Vector(Math.floor(x), Math.floor(y));
-      } else if (e.buttons == 1) {
-        this.startCellPos = new Vector(
-          Math.floor((e.clientX - this.element.offsetLeft) / ratio),
-          Math.floor((e.clientY - this.element.offsetTop) / ratio)
-        );
+      if (this.isDragable) {
+        this.onFigureDropOnCell(e);
+        this.onFigureGrab(this.figure.getFigureState());
       }
-      // this.onFigureGrab(this.startCellPos);
-      this.onFigureGrab(this.currentFigPos);
     };
 
     this.element.onmouseenter = (e: MouseEvent) => {
@@ -102,42 +82,16 @@ class ChessField extends Component {
     this.dragableField.element.onmousemove = (e: MouseEvent) => {
       if (window.getComputedStyle(this.element).transform !== 'none' && e.buttons == 1) {
         if (this.figure) {
-          const trasformOrigin = window
-            .getComputedStyle(this.element)
-            .transformOrigin.split(' ')
-            .map((item) => Number(parseFloat(item)));
-          const origin = new Vector(trasformOrigin[0], trasformOrigin[1]);
-          let x = Math.floor(e.clientX - this.element.offsetLeft);
-          let y = Math.floor(e.clientY - this.element.offsetTop);
-          const mousePos = new Vector(x, y).sub(origin);
-
-          const matrix = window
-            .getComputedStyle(this.element)
-            .transform.slice(7, -1)
-            .split(', ')
-            .map((item) => Number(item));
-
-          x = matrix[0] * mousePos.x + matrix[1] * mousePos.y;
-          y = matrix[2] * mousePos.x + matrix[3] * mousePos.y;
-          let movePos = new Vector(x, y).sub(this.startChildPos).add(origin);
-          this.figure.element.style.left = movePos.x + 'px';
-          this.figure.element.style.top = movePos.y + 'px';
+          this.onFigureMoveWithTransform(e);
         }
       } else if (e.buttons == 1) {
-        if (this.figure) {
-          let movePos = new Vector(
-            e.clientX - this.element.offsetLeft,
-            e.clientY - this.element.offsetTop
-          ).sub(this.startChildPos);
-          this.figure.element.style.left = movePos.x + 'px';
-          this.figure.element.style.top = movePos.y + 'px';
-        }
+        this.onFigureMoveWithoutTransform(e);
       }
     };
 
     this.dragableField.element.onmouseup = (e) => {
       this.dragableField.element.style.display = 'none';
-      this.figure = null;
+      // this.figure = null;
     };
   }
 
@@ -146,15 +100,88 @@ class ChessField extends Component {
     let figure = instance;
 
     this.dragableItems.element.appendChild(figure.element);
-    figure.element.style.left = figPos.x * parentNode.width + 'px';
-    figure.element.style.top = figPos.y * parentNode.height + 'px';
-    figure.onDragStart = (startPos: Vector, figPos: Vector) => {
-      this.dragableField.element.style.display = '';
-      this.startChildPos = startPos;
-      this.currentFigPos = figPos;
-      this.figure = figure;
+    figure.setFigurePosition(figPos, parentNode);
+    figure.onDragStart = (startPos: Vector) => {
+      if (this.isDragable) {
+        this.dragableField.element.style.display = '';
+        this.startChildPos = startPos;
+        this.figure = figure;
+      }
     };
     this.items.push(figure);
+  }
+
+  onFigureMoveWithTransform(e: MouseEvent) {
+    const trasformOrigin = window
+      .getComputedStyle(this.element)
+      .transformOrigin.split(' ')
+      .map((item) => Number(parseFloat(item)));
+    const origin = new Vector(trasformOrigin[0], trasformOrigin[1]);
+    let x = Math.floor(e.clientX - this.element.offsetLeft);
+    let y = Math.floor(e.clientY - this.element.offsetTop);
+    const mousePos = new Vector(x, y).sub(origin);
+
+    const matrix = window
+      .getComputedStyle(this.element)
+      .transform.slice(7, -1)
+      .split(', ')
+      .map((item) => Number(item));
+
+    x = matrix[0] * mousePos.x + matrix[1] * mousePos.y;
+    y = matrix[2] * mousePos.x + matrix[3] * mousePos.y;
+    let movePos = new Vector(x, y).sub(this.startChildPos).add(origin);
+    // this.figure.setFigurePosition(movePos, this.cellBox);
+    this.figure.element.style.left = movePos.x + 'px';
+    this.figure.element.style.top = movePos.y + 'px';
+  }
+
+  onFigureMoveWithoutTransform(e: MouseEvent) {
+    if (this.figure) {
+      let movePos = new Vector(
+        e.clientX - this.element.offsetLeft,
+        e.clientY - this.element.offsetTop
+      ).sub(this.startChildPos);
+      this.figure.element.style.left = movePos.x + 'px';
+      this.figure.element.style.top = movePos.y + 'px';
+    }
+  }
+
+  onFigureDropOnCell(e: MouseEvent) {
+    e.preventDefault();
+    const fieldBox = this.dragableField.element.getBoundingClientRect();
+    const ratio = Math.floor(fieldBox.width / 8);
+    if (window.getComputedStyle(this.element).transform !== 'none' && e.buttons == 1) {
+      const matrix = window
+        .getComputedStyle(this.element)
+        .transform.slice(7, -1)
+        .split(', ')
+        .map((item) => Number(item));
+      let x = Math.floor((e.clientX - this.element.offsetLeft) / ratio);
+      let y = Math.floor((e.clientY - this.element.offsetTop) / ratio);
+
+      x = matrix[0] * x + matrix[1] * y;
+      y = matrix[2] * x + matrix[3] * y;
+      this.startCellPos = new Vector(Math.floor(x), Math.floor(y));
+    } else if (e.buttons == 1) {
+      this.startCellPos = new Vector(
+        Math.floor((e.clientX - this.element.offsetLeft) / ratio),
+        Math.floor((e.clientY - this.element.offsetTop) / ratio)
+      );
+    }
+  }
+
+  setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
+    const figItem = this.items.find(
+      (figure) =>
+        figure.getFigureState().x === oldFigPos.x && figure.getFigureState().y === oldFigPos.y
+    );
+    figItem.setFigureState(newFigPos, this.cellBox);
+    this.isDragable = true;
+    console.log(this.isDragable);
+  }
+
+  setDragable(status: boolean): void {
+    this.isDragable = status;
   }
 }
 

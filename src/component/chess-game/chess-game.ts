@@ -1,5 +1,12 @@
 import { Component } from 'utilities/Component';
-import { ICellCoords, IChessLang, IChessView, ILangView, ILangViewModal, ILangViewPlayer } from 'utilities/interfaces';
+import {
+  ICellCoords,
+  IChessLang,
+  IChessView,
+  ILangView,
+  ILangViewModal,
+  ILangViewPlayer
+} from 'utilities/interfaces';
 import ChessCell from './chess-cell';
 import ChessButton from './chess-button';
 import './chess-game.css';
@@ -9,6 +16,7 @@ import Vector from 'utilities/vector';
 import { chessConfigView } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
 import ModalLoss from './modal-loss';
+import ChessModel from './chess-model';
 
 let size = 8;
 class Timer extends Component {
@@ -94,7 +102,7 @@ class Cross extends Component {
   public onDrawClick: () => void = () => {};
   private btnLoss: ChessButton;
   public onLossClick: () => void = () => {};
-  public onFigureDrop: (posStart:Vector, posDrop:Vector) => void = () => {};
+  public onFigureDrop: (posStart: Vector, posDrop: Vector) => void = () => {};
   public onFigureGrab: (pos: Vector) => void = () => {};
   private chessView: IChessView;
   private langConfig: ILangViewPlayer;
@@ -103,60 +111,111 @@ class Cross extends Component {
   public onModalDrawClick: () => void = () => {};
   private modalLoss: ModalLoss;
   public onModalLossClick: () => void = () => {};
+  private model: ChessModel;
+  private host: string = '';
 
-  constructor(parentNode: HTMLElement, langConfig:IChessLang) {
+  constructor(parentNode: HTMLElement, langConfig: IChessLang, chessModel: ChessModel) {
     super(parentNode, 'div', [ chessConfigView.chessView.wrapper ]);
+    this.model = chessModel;
     this.langConfig = langConfig.players;
     this.langConfigModals = langConfig.modals;
     this.chessView = chessConfigView.chessView;
-    const chessControls =  new Component(this.element, 'div', [ this.chessView.controls ]);
+    const chessControls = new Component(this.element, 'div', [ this.chessView.controls ]);
     const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
-    this.playerOne = new Component(chessHead.element, 'div', [ this.chessView.player ], this.langConfig.player1);
+    this.playerOne = new Component(
+      chessHead.element,
+      'div',
+      [ this.chessView.player ],
+      this.langConfig.player1
+    );
     this.timer = new Timer(chessHead.element);
-    this.playerTwo = new Component(chessHead.element, 'div', [ this.chessView.player ], this.langConfig.player2);
+    this.playerTwo = new Component(
+      chessHead.element,
+      'div',
+      [ this.chessView.player ],
+      this.langConfig.player2
+    );
     const chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
-    this.history = new ChessHistoryBlock(chessBody.element, chessConfigView.history, langConfig.history);
+    this.history = new ChessHistoryBlock(
+      chessBody.element,
+      chessConfigView.history,
+      langConfig.history
+    );
 
-    this.chessBoard = new ChessField(chessBody.element, chessConfigView.figure, chessConfigView.boardView, chessConfigView.gameField);
+    this.chessBoard = new ChessField(
+      chessBody.element,
+      chessConfigView.figure,
+      chessConfigView.boardView,
+      chessConfigView.gameField
+    );
 
-    this.btnStart = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.start);
+    this.btnStart = new ChessButton(
+      chessControls.element,
+      chessConfigView.btn,
+      langConfig.controls.start
+    );
     this.btnStart.buttonDisable();
     this.btnStart.onClick = () => {
-      this.onStartClick();
-
-    }
-    this.btnDraw = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.draw);
+      this.model.chessStartGame(this.host);
+      // this.setFieldDragable();
+      this.btnStart.buttonDisable();
+      console.log('Start click');
+      // this.onStartClick();
+    };
+    this.btnDraw = new ChessButton(
+      chessControls.element,
+      chessConfigView.btn,
+      langConfig.controls.draw
+    );
     this.btnDraw.onClick = () => {
-      this.onDrawClick();
-      
-    }
-    this.btnLoss = new ChessButton(chessControls.element, chessConfigView.btn, langConfig.controls.loss);
+      this.createModalDraw();
+      // this.onDrawClick();
+    };
+    this.btnLoss = new ChessButton(
+      chessControls.element,
+      chessConfigView.btn,
+      langConfig.controls.loss
+    );
     this.btnLoss.onClick = () => {
-      this.onLossClick();
-    }
+      this.createModalLoss();
+      // this.onLossClick();
+    };
 
-    this.chessBoard.onFigureDrop = (posStart:Vector, posDrop:Vector) => {
-      this.onFigureDrop(posStart, posDrop)
-      if (!this.isRotated) {
-        this.chessBoard.element.classList.add('rotate');
-      } else {
-        this.chessBoard.element.classList.remove('rotate');
-      }
-      this.isRotated = !this.isRotated;
-    }
+    this.chessBoard.onFigureDrop = (posStart: Vector, posDrop: Vector) => {
+      // this.onFigureDrop(posStart, posDrop)
+      this.model.chessMove(JSON.stringify([ posStart, posDrop ]));
+      // console.log(posStart);
+    };
 
-    this.chessBoard.onFigureGrab = (pos:Vector) => {
-      this.onFigureGrab(pos)
-    }
+    this.chessBoard.onFigureGrab = (pos: Vector) => {
+      this.model.chessFigureGrab(JSON.stringify(pos));
+      // this.onFigureGrab(pos)
+    };
+
+    this.model.onChessMove.add(({ message, coords, player, field, winner, sign }) => {
+      console.log(coords);
+      console.log(player);
+
+      this.setHistoryMove(coords);
+      const oldFigPos = new Vector(coords[0].x, coords[0].y);
+      const newFigPos = new Vector(coords[1].x, coords[1].y);
+
+      this.setFigurePosition(oldFigPos, newFigPos);
+
+      this.updateGameField();
+    });
+
+    this.model.onStartGame.add((data) => this.setFieldDragable(data))
   }
 
-  updateGameField(field: Array<string>): void {
-    this.cells.forEach((cell) => {
-      const { x, y } = cell.getCellCoord();
-      if (field[y][x]) {
-        cell.clickedCell(field[y][x]);
-      }
-    });
+  // updateGameField(field: Array<string>): void {
+  updateGameField(): void {
+    // this.cells.forEach((cell) => {
+    //   const { x, y } = cell.getCellCoord();
+    //   if (field[y][x]) {
+    //     cell.clickedCell(field[y][x]);
+    //   }
+    // });
     if (!this.isRotated) {
       this.chessBoard.element.classList.add('rotate');
     } else {
@@ -174,9 +233,9 @@ class Cross extends Component {
   }
 
   setPlayer(player: string): void {
-
     if (!this.players) {
       this.playerOne.element.textContent = player;
+      this.host = player;
       this.players++;
     } else if (this.players === 1) {
       this.playerTwo.element.textContent = player;
@@ -189,7 +248,7 @@ class Cross extends Component {
     this.history.setHistoryMove(coords, '');
   }
 
-  setLangView(configLang: IChessLang):void {
+  setLangView(configLang: IChessLang): void {
     this.history.setLangView(configLang.history);
     this.langConfig = configLang.players;
     this.btnStart.setLangView(configLang.controls.start);
@@ -197,26 +256,40 @@ class Cross extends Component {
     this.btnLoss.setLangView(configLang.controls.loss);
   }
 
-  createModalDraw():void {
+  createModalDraw(): void {
     this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals);
     this.modalDraw.onModalDrawClick = () => {
       this.onModalDrawClick();
-    }
+    };
   }
 
-  destroyModalDraw():void {
-    this.modalDraw.destroy();
+  destroyModalDraw(): void {
+    this.destroyModalDraw();
+    // this.modalDraw.destroy();
   }
 
-  createModalLoss():void {
+  createModalLoss(): void {
     this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
     this.modalLoss.onModalLossClick = () => {
-      this.onModalLossClick();
-    }
+      this.destroyModalLoss();
+      // this.onModalLossClick();
+    };
   }
 
-  destroyModalLoss():void {
+  destroyModalLoss(): void {
     this.modalLoss.destroy();
+  }
+
+  // setFigurePosition(figPos: Vector): void {
+  //   this.chessBoard.setFigurePosition(figPos);
+  // }
+
+  setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
+    this.chessBoard.setFigurePosition(oldFigPos, newFigPos);
+  }
+
+  setFieldDragable(status: boolean): void {
+    this.chessBoard.setDragable(status);
   }
 }
 
