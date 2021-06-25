@@ -17,7 +17,7 @@ export abstract class Figure implements IFigure {
   toString(): string {
     let shortName = COMMON.FIGURE_SHORT_NAMES.get(COMMON.DEFAULT_LOCALE)?.get(this.type);
     if (shortName !== undefined) {
-      return shortName;
+      return this.color === ChessColor.white ? shortName.toUpperCase() : shortName.toLowerCase();
     } else {
       throw new Error('Error in Figure.toString(): cannot find figure name');
     }

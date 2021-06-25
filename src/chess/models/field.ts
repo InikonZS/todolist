@@ -6,22 +6,22 @@ import { Figures } from './figures';
 import { ICellCoord } from './icell-coord';
 import { IField } from './ifield';
 import { IFigure } from './ifigure';
+import { IPosition } from './iPosition';
 import { Moves } from './moves';
-import { Position } from './position';
 
 export class Field implements IField {
-  private position: Position;
+  private position: IPosition;
   readonly playerColor: ChessColor;
   readonly cost: number;
 
-  constructor(position: Position, playerColor: ChessColor) {
+  constructor(position: IPosition, playerColor: ChessColor) {
     this.position = position;
     this.playerColor = playerColor;
     this.cost = this.calculateCost();
   }
 
   copy(): IField {
-    return new Field(new Position(this.position), this.playerColor);
+    return new Field(this.position.copy(), this.playerColor);
   }
   getAllCellCoords(): CellCoords {
     const result = new CellCoords();
@@ -33,13 +33,13 @@ export class Field implements IField {
     return result;
   }
   getFigures(): Figures {
-    return new Figures(this.position.values());
+    return this.position.getAllFigures();
   }
-  getPosition(): Position {
-    return new Position(this.position);
+  getPosition(): IPosition {
+    return this.position.copy();
   }
   getFigure(coord: ICellCoord): IFigure | undefined {
-    return this.position.get(coord.toString());
+    return this.position.getFigure(coord);
   }
 
   getAllowedMoves(coord: ICellCoord): Moves {
@@ -52,11 +52,11 @@ export class Field implements IField {
     }
   }
   isFreeCell(coord: ICellCoord): boolean {
-    return !this.position.has(coord.toString());
+    return !this.position.hasFigure(coord);
   }
   private calculateCost(): number {
     let result = 0;
-    for (let figure of this.position.values()) {
+    for (let figure of this.position.getAllFigures()) {
       const figureCost = COMMON.FIGURE_COST.get(figure.type);
       if (figureCost !== undefined) {
         result += figureCost * (figure.color == ChessColor.white ? 1 : -1);

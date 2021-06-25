@@ -20,7 +20,7 @@ export class COMMON {
         [FigureType.rook, 'R'],
         [FigureType.bishop, 'B'],
         [FigureType.knight, 'N'],
-        [FigureType.pawn, ''],
+        [FigureType.pawn, 'P'],
       ]),
     ],
     [
@@ -31,7 +31,7 @@ export class COMMON {
         [FigureType.rook, 'Л'],
         [FigureType.bishop, 'С'],
         [FigureType.knight, 'К'],
-        [FigureType.pawn, ''],
+        [FigureType.pawn, 'П'],
       ]),
     ],
   ]);

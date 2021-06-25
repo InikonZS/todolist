@@ -3,8 +3,8 @@ import { ChessColor } from './chess-color';
 import { Figures } from './figures';
 import { ICellCoord } from './icell-coord';
 import { IFigure } from './ifigure';
+import { IPosition } from './iPosition';
 import { Moves } from './moves';
-import { Position } from './position';
 
 export interface IField {
   readonly playerColor: ChessColor;
@@ -13,7 +13,7 @@ export interface IField {
   getAllCellCoords(): CellCoords;
   getFigure(coord: ICellCoord): IFigure | undefined;
   getFigures(): Figures;
-  getPosition(): Position;
+  getPosition(): IPosition;
   getAllowedMoves(coord: ICellCoord): Moves;
   isFreeCell(coord: ICellCoord): boolean;
 

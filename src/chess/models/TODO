@@ -1,15 +1,10 @@
-убрать фигуру из модели данных Move
-Figure.toString() - переделать на маленькие-большие буквы в зависимости от цвета
-Position.addFigure(coord, figure)
-Position.deleteFigure(coord)
-Position.addFigureStringCoord(scoord: string, figure: Figure)
-Position.deleteFigureStringCoord(scoord: string)
 ChessCoord.fromString(scoord: string): ChessCoord
 Field.toFEN(): string
 Field.fromFEN(fen: string): Field
 Queen
 Pawn
 King
+константа - стандартная стартовая позиция
 Field обновить модель  с учетом рокировок, первый ли ход.
 Field, Move Рокировки
 Wrapper, увязка с приложением

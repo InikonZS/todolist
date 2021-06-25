@@ -2,8 +2,8 @@ import { ChessColor } from './chess-color';
 import { Field } from './field';
 import { ICellCoord } from './icell-coord';
 import { IField } from './ifield';
-import { IFigure } from './ifigure';
 import { IMove } from './imove';
+import { IPosition } from './iPosition';
 import { IVector } from './ivector';
 
 export class Move implements IMove {
@@ -39,15 +39,15 @@ export class Move implements IMove {
     return result;
   }
   makeMove(field: IField): IField {
-    const resultPosition = field.getPosition();
+    const resultPosition: IPosition = field.getPosition();
     const targetCell = this.getResultPosition();
     const figure = field.getFigure(this.startPosition);
     if (!field.isFreeCell(targetCell)) {
-      resultPosition.delete(targetCell.toString());
+      resultPosition.deleteFigure(targetCell);
     }
     if (figure) {
-      resultPosition.set(targetCell.toString(), figure);
-      resultPosition.delete(this.startPosition.toString());
+      resultPosition.addFigure(targetCell, figure);
+      resultPosition.deleteFigure(this.startPosition);
       return new Field(resultPosition, field.playerColor == ChessColor.white ? ChessColor.black : ChessColor.white);
     } else {
       throw new Error('Error in Move.makeMove: empty start position');
