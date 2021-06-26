@@ -1,0 +1,8 @@
+Field.toFEN(): string
+Field.fromFEN(fen: string): Field
+константа - стандартная стартовая позиция
+Wrapper, увязка с приложением
+Pawn
+King
+Field, Move Рокировки
+TS -> JS/Node
