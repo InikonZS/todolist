@@ -1,10 +1,8 @@
 import './styles.scss';
 import './header.scss';
-import Signal from './signal';
 import { PopupService, popupService } from './component/Popupservice';
 import { Component } from './component/Component';
 import {Chat} from './chatPage';
-import { Header } from './component/Header';
 import { Main } from './component/Main';
 import { Auth } from './authPage';
 import {Route, Router} from './router';
@@ -35,7 +33,7 @@ class App extends Component {
     this.chat = new Chat(this.pageContainer.element);
     this.main = new Main(this.pageContainer.element);
     this.chess = new ChessPage(this.pageContainer.element);
-    
+
     this.addPage('чат', 'chat', this.chat);
     this.addPage('авторизация', 'auth', this.auth);
     this.addPage('тудушки', 'todos', this.main);

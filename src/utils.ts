@@ -20,5 +20,5 @@ export function apiRequest(apiUrl:string, service:string, params:any) {
   if (sessionId){
     params.sessionId = sessionId;
   }
-  return fetch(`${apiUrl}${service}?${paramsFromObject(params)}`).then(response => {return response.json()}); 
+  return fetch(`${apiUrl}${service}?${paramsFromObject(params)}`).then(response => {return response.json()});
 }
