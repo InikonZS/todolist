@@ -1,7 +1,9 @@
+
+import { ICellCoords } from './../todolist/src/cross/cross';
 import { IAuthData } from './authPage';
 import { Component } from './component/Component';
 import { popupService } from './component/Popupservice';
-import Cross, { ICellCoords } from './cross/cross';
+import Cross  from './cross/cross';
 import Signal from './signal';
 
 interface IChannelDTO {
@@ -13,6 +15,7 @@ class ChatModel {
   socket: WebSocket;
   userList: Array<string> = [];
   onMessage: Signal<{ message: string; coords: ICellCoords; player: string }> = new Signal();
+  onRename : Signal<{message: string, user : string}> = new Signal();
   onPlayerList: Signal<string> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
@@ -30,6 +33,12 @@ class ChatModel {
           message: data.senderNick + ' -> ' + data.messageText,
           coords: JSON.parse(data.messageText),
           player: data.senderNick
+        });
+      }
+      if (data.type === 'renameUser') {
+        this.onRename.emit({
+          message: data.senderNick + ' chaneged name for ' + data.messageText,
+          user: data.messageText
         });
       }
       if (data.type === 'player') {
@@ -65,6 +74,19 @@ class ChatModel {
       })
     );
   }
+  renameUser(newName: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'renameUser',
+        params: {
+          messageText: newName,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+
 
   joinUser() {
     this.socket.send(
@@ -147,7 +169,7 @@ export class Chat extends Component {
         this.cross.setPlayers(player);
         console.log(player);
         console.log(players);
-      } 
+      }
       if (this.cross.getPlayers().length === 2){
         this.cross.startTimerCountDown();
       }
@@ -164,6 +186,13 @@ export class Chat extends Component {
       }
       let msg = new Component(this.messageContainer.element, 'div', [], message);
     });
+    // document.onclick = () =>{
+    //   //this.model.renameUser('Killer228')
+    //   //TODO Взять из инпута имя и сделать кнопку
+    // }
+    this.model.onRename.add(({message,user})=>{
+      console.log(message);
+    })
 
     this.model.onUserList.add((userList) => {
       this.userListContainer.element.textContent = userList.join(', ');

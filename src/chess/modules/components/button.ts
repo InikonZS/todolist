@@ -8,9 +8,14 @@ class Button extends Control {
     super(parentNode, 'button', 'button', caption);
     this.node.classList.add(caption)
     this.node.onclick = () => {
-      console.log(`${caption}`)
       this.onClick && this.onClick();
     }
+  }
+  disable(){
+    this.node.disabled = true;
+  }
+  enable(){
+    this.node.disabled = false;
   }
 }
 

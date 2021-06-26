@@ -3,7 +3,7 @@ import { popupService } from "./component/Popupservice";
 import Signal from "./signal";
 import { digestMessage, apiRequest } from './utils';
 import { RegForm } from './component/regForm/regForm';
-import { AuthForm } from "./component/authForm.ts/authForm";
+import { AuthForm } from "./component/authForm/authForm";
 
 
 const apiUrl = 'http://localhost:4040/authService/';
@@ -38,7 +38,11 @@ class AuthModel {
       console.log(res);
     });
   }
-
+   validateUser(login:string,password:string){
+    fetch(`${apiUrl}register?login=${login}&password=${password}`).then(res => res.text()).then((data) => {
+      console.log(data);
+    });
+  }
   registerUser(userData: IAuthData) {
     /*fetch(`${apiUrl}register?login=${login}&password=${password}`).then(res => res.text()).then((data) => {
       console.log(data);
