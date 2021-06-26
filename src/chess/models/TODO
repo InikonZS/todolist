@@ -1,11 +1,11 @@
-ChessCoord.fromString(scoord: string): ChessCoord
+static CellCoord.fromString(sCoord: string): CellCoord
+Queen
+Field обновить модель  с учетом рокировок, первый ли ход.
 Field.toFEN(): string
 Field.fromFEN(fen: string): Field
-Queen
+константа - стандартная стартовая позиция
+Wrapper, увязка с приложением
 Pawn
 King
-константа - стандартная стартовая позиция
-Field обновить модель  с учетом рокировок, первый ли ход.
 Field, Move Рокировки
-Wrapper, увязка с приложением
 TS -> JS/Node

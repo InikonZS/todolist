@@ -22,4 +22,13 @@ export class CellCoord implements ICellCoord {
   getColor(): ChessColor {
     return (this.x + this.y) % 2 == 0 ? ChessColor.white : ChessColor.black;
   }
+  static fromString(sCoord: string): CellCoord {
+    if (sCoord.length !== 2) {
+      throw new Error('Error in CellCoord.fromString(sCoord): incorrect cell coordinate');
+    } else {
+      let xCoord = sCoord.charCodeAt(0) - 'a'.charCodeAt(0);
+      let yCoord = COMMON.BOARD_SIZE - 1 - (sCoord.charCodeAt(1) - '1'.charCodeAt(0));
+      return new CellCoord(xCoord, yCoord);
+    }
+  }
 }
