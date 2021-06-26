@@ -18,7 +18,7 @@ export class Field implements IField {
   readonly isLongBlackCastling: boolean;
   readonly pawnTresspassing: CellCoord | null;
   readonly fiftyRuleCount: number;
-  readonly isFirstMove: boolean;
+  readonly moveNumber: number;
   readonly cost: number;
 
   constructor(
@@ -30,7 +30,7 @@ export class Field implements IField {
     isLongBlackCastling: boolean = true,
     pawnTresspassing: CellCoord | null = null,
     fiftyRuleCount: number = 0,
-    isFirstMove: boolean = false
+    moveNumber: number = 1
   ) {
     this.position = position;
     this.playerColor = playerColor;
@@ -40,7 +40,7 @@ export class Field implements IField {
     this.isLongBlackCastling = isLongBlackCastling;
     this.pawnTresspassing = pawnTresspassing;
     this.fiftyRuleCount = fiftyRuleCount;
-    this.isFirstMove = isFirstMove;
+    this.moveNumber = moveNumber;
 
     this.cost = this.calculateCost();
   }
@@ -90,6 +90,42 @@ export class Field implements IField {
       }
     }
     return result;
+  }
+  toFEN(): string {
+    let result = new Array<string>();
+    for (let y = 0; y < COMMON.BOARD_SIZE; y++) {
+      let freeCount = 0;
+      for (let x = 0; x < COMMON.BOARD_SIZE; x++) {
+        let coord = new CellCoord(x, y);
+        if (this.isFreeCell(coord)) {
+          freeCount++;
+        } else {
+          if (freeCount > 0) {
+            result.push(String(freeCount));
+            freeCount = 0;
+          }
+          const figure = this.getFigure(coord);
+          result.push(figure ? figure.toString() : '');
+        }
+      }
+      if (freeCount > 0) {
+        result.push(String(freeCount));
+        freeCount = 0;
+      }
+      result.push(y == COMMON.BOARD_SIZE - 1 ? ' ' : '/');
+    }
+    result.push(this.playerColor == ChessColor.white ? 'w ' : 'b ');
+    result.push(this.isShortWhiteCastling ? 'K' : '');
+    result.push(this.isLongWhiteCastling ? 'Q' : '');
+    result.push(this.isShortBlackCastling ? 'k' : '');
+    result.push(this.isLongBlackCastling ? 'q' : '');
+    result.push(' ');
+    result.push(this.pawnTresspassing === null ? '-' : this.pawnTresspassing.toString());
+    result.push(' ');
+    result.push(String(this.fiftyRuleCount));
+    result.push(' ');
+    result.push(String(this.moveNumber));
+    return result.join('');
   }
 
   // TODO: Implement next functions

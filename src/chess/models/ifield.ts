@@ -15,7 +15,7 @@ export interface IField {
   readonly isLongBlackCastling: boolean;
   readonly pawnTresspassing: CellCoord | null;
   readonly fiftyRuleCount: number;
-  readonly isFirstMove: boolean;
+  readonly moveNumber: number;
 
   copy(): IField;
   getAllCellCoords(): CellCoords;
@@ -24,6 +24,7 @@ export interface IField {
   getPosition(): IPosition;
   getAllowedMoves(coord: ICellCoord): Moves;
   isFreeCell(coord: ICellCoord): boolean;
+  toFEN(): string;
 
   // TODO: Implement next functions
   // getRecommendMoves(): Moves;
