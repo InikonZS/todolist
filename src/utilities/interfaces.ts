@@ -16,7 +16,8 @@ export interface IChessData {
   message: string;
   coords: Array<ICellCoords>;
   player: string;
-  field: Array<string>;
+  // field: Array<string>;
+  field: string;
   winner: string;
   sign: string;
 }

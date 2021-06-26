@@ -32,7 +32,7 @@ class ChatModel {
   onPlayerList: Signal<{ player: string; time: number }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
-  onRemoveChess: Signal<boolean> = new Signal();
+  onRemoveChess: Signal<{status: boolean, fen:string}> = new Signal();
   // onChessMove: Signal<IChessData> = new Signal();
   chessModel: ChessModel;
 
@@ -95,7 +95,10 @@ class ChatModel {
       }
       if (data.type === 'chess-events') {
         if (data.method === 'removeGame') {
-          this.onRemoveChess.emit(data.remove);
+          this.onRemoveChess.emit({
+            status: data.remove, 
+            fen: data.field
+          });
         }
 
         this.chessModel.processMessage(data);
@@ -284,10 +287,10 @@ export class Chat extends Component {
     // this.gameInstance.onLossClick = () => {
     //   console.log('Loss click');
     // }
-    this.model.onRemoveChess.add((status) => {
+    this.model.onRemoveChess.add(({status, fen}) => {
       if (status) {
         this.chatUsers.deletePlayer();
-        this.chessGame.clearData();
+        this.chessGame.clearData(fen);
         this.chessGame = null;
         this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
       }

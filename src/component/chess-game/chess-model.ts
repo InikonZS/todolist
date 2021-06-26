@@ -4,7 +4,7 @@ import Signal from 'utilities/signal';
 class ChessModel {
   onChessMove: Signal<IChessData> = new Signal();
   socket: WebSocket;
-  onStartGame: Signal<boolean> = new Signal();
+  onStartGame: Signal<string> = new Signal();
   onStopGame: Signal<boolean> = new Signal();
   onRemoveGame: Signal<boolean> = new Signal();
   onChessFigureGrab: Signal<Array<ICellCoords>> = new Signal();
@@ -24,7 +24,9 @@ class ChessModel {
       });
     }
     if (data.method === 'startGame') {
-      this.onStartGame.emit(data.start);
+      console.log(data.field);
+      
+      this.onStartGame.emit(data.field);
     }
 
     if (data.method === 'chessFigureGrab') {

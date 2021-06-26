@@ -14,7 +14,7 @@ import './chess-game.css';
 import ChessHistoryBlock from './chess-history';
 import ChessField from './chess-field';
 import Vector from 'utilities/vector';
-import { chessConfigView } from 'utilities/config-chess';
+import configFigures, { chessConfigView, fen } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
 import ModalLoss from './modal-loss';
 import ChessModel from './chess-model';
@@ -147,7 +147,9 @@ class ChessGame extends Component {
       chessBody.element,
       chessConfigView.figure,
       chessConfigView.boardView,
-      chessConfigView.gameField
+      chessConfigView.gameField,
+      configFigures
+      // this.fromFen(fen)
     );
 
     this.btnStart = new ChessButton(
@@ -194,7 +196,7 @@ class ChessGame extends Component {
 
     this.model.onChessMove.add((data) => this.onFigureMove(data));
 
-    this.model.onStartGame.add((data) => this.setFieldDragable(data));
+    this.model.onStartGame.add((data) => this.createChessField(data));
     this.model.onStopGame.add((data) => this.createModalDraw(data));
     this.model.onChessFigureGrab.add((data) => this.showAllowedMoves(data));
   }
@@ -215,14 +217,14 @@ class ChessGame extends Component {
     this.isRotated = !this.isRotated;
   }
 
-  clearData() {
+  clearData(fen: string) {
     // this.cells.forEach((cell) => cell.clearCell());
     // if (status) {
     //   this.createModalDraw();
-      this.players = 0;
-      this.playerOne.element.textContent = this.langConfig.player1;
-      this.playerTwo.element.textContent = this.langConfig.player2;
-      this.chessBoard.clearData();
+    this.players = 0;
+    this.playerOne.element.textContent = this.langConfig.player1;
+    this.playerTwo.element.textContent = this.langConfig.player2;
+    this.chessBoard.clearData(this.fromFen(fen));
     // }
 
     this.destroy();
@@ -286,10 +288,6 @@ class ChessGame extends Component {
     this.chessBoard.setFigurePosition(oldFigPos, newFigPos);
   }
 
-  setFieldDragable(status: boolean): void {
-    this.chessBoard.setDragable(status);
-  }
-
   showAllowedMoves(coords: Array<ICellCoords>): void {
     this.chessBoard.showAllowedMoves(coords);
   }
@@ -299,14 +297,52 @@ class ChessGame extends Component {
   }
 
   onFigureMove(data: IChessData): void {
+    console.log(data.field);
+
     this.setHistoryMove(data.coords);
     const oldFigPos = new Vector(data.coords[0].x, data.coords[0].y);
     const newFigPos = new Vector(data.coords[1].x, data.coords[1].y);
 
     this.setFigurePosition(oldFigPos, newFigPos);
+    this.chessBoard.clearData(this.fromFen(data.field));
 
     this.updateGameField();
     this.removeAllowedMoves();
+  }
+
+  createChessField(fen: string) {
+    this.chessBoard.createFieldCells(this.fromFen(fen));
+    this.chessBoard.setDragable(true);
+  }
+
+  fromFen(fen: string): Array<string> {
+    let fromFen: Array<string> = [];
+    fen.split('/').join('').split('').forEach((el) => {
+      if (!isNaN(+el)) {
+        for (let i = 0; i < +el; i++) {
+          fromFen.push('-');
+        }
+      } else fromFen.push(el);
+    });
+
+    // console.log(fromFen.join('').split('').map((item) => (item === '-' ? '' : item)));
+
+    // const fromFen = fen
+    //   .split('/')
+    //   .map((el) => {
+    //     let str = '';
+    //     if (!isNaN(+el)) {
+    //       for (let i = 0; i < +el; i++) {
+    //         str += '-';
+    //       }
+    //     }
+    //     return str ? str : el;
+    //   })
+    //   .join('')
+    //   .split('')
+    //   .map((item) => (item === '-' ? '' : item));
+
+    return fromFen.join('').split('').map((item) => (item === '-' ? '' : item));
   }
 }
 
