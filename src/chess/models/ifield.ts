@@ -1,3 +1,4 @@
+import { CellCoord } from './cell-coord';
 import { CellCoords } from './cell-coords';
 import { ChessColor } from './chess-color';
 import { Figures } from './figures';
@@ -8,6 +9,13 @@ import { Moves } from './moves';
 
 export interface IField {
   readonly playerColor: ChessColor;
+  readonly isShortWhiteCastling: boolean;
+  readonly isLongWhiteCastling: boolean;
+  readonly isShortBlackCastling: boolean;
+  readonly isLongBlackCastling: boolean;
+  readonly pawnTresspassing: CellCoord | null;
+  readonly fiftyRuleCount: number;
+  readonly isFirstMove: boolean;
 
   copy(): IField;
   getAllCellCoords(): CellCoords;

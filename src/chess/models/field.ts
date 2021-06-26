@@ -12,11 +12,36 @@ import { Moves } from './moves';
 export class Field implements IField {
   private position: IPosition;
   readonly playerColor: ChessColor;
+  readonly isShortWhiteCastling: boolean;
+  readonly isLongWhiteCastling: boolean;
+  readonly isShortBlackCastling: boolean;
+  readonly isLongBlackCastling: boolean;
+  readonly pawnTresspassing: CellCoord | null;
+  readonly fiftyRuleCount: number;
+  readonly isFirstMove: boolean;
   readonly cost: number;
 
-  constructor(position: IPosition, playerColor: ChessColor) {
+  constructor(
+    position: IPosition,
+    playerColor: ChessColor,
+    isShortWhiteCastling: boolean = true,
+    isLongWhiteCastling: boolean = true,
+    isShortBlackCastling: boolean = true,
+    isLongBlackCastling: boolean = true,
+    pawnTresspassing: CellCoord | null = null,
+    fiftyRuleCount: number = 0,
+    isFirstMove: boolean = false
+  ) {
     this.position = position;
     this.playerColor = playerColor;
+    this.isShortWhiteCastling = isShortWhiteCastling;
+    this.isLongWhiteCastling = isLongWhiteCastling;
+    this.isShortBlackCastling = isShortBlackCastling;
+    this.isLongBlackCastling = isLongBlackCastling;
+    this.pawnTresspassing = pawnTresspassing;
+    this.fiftyRuleCount = fiftyRuleCount;
+    this.isFirstMove = isFirstMove;
+
     this.cost = this.calculateCost();
   }
 

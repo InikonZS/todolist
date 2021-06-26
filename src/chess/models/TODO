@@ -1,4 +1,3 @@
-Queen
 Field обновить модель  с учетом рокировок, первый ли ход.
 Field.toFEN(): string
 Field.fromFEN(fen: string): Field

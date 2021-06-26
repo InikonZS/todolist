@@ -19,6 +19,10 @@ export class Move implements IMove {
   getNotation(field: IField): string {
     // TODO: добавить проверку на взятие фигуры
     // TODO: добавить рокировку
+    // TODO: добавить взятие пешки на проходе
+    // TODO: добавить правило 50 ходов
+    // TODO: добавить шах/мат
+
     if (this.isValid(field)) {
       return `${field.getFigure(this.startPosition)?.toString()}${this.startPosition.toString}—${this.vector.resultPosition(this.startPosition)}`;
     } else return 'Illegal Move';
