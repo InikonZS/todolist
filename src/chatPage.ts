@@ -1,7 +1,9 @@
+
+import { ICellCoords } from './../todolist/src/cross/cross';
 import { IAuthData } from './authPage';
 import { Component } from './component/Component';
 import { popupService } from './component/Popupservice';
-import Cross, { ICellCoords } from './cross/cross';
+import Cross  from './cross/cross';
 import Signal from './signal';
 
 interface IChannelDTO {
@@ -184,10 +186,10 @@ export class Chat extends Component {
       }
       let msg = new Component(this.messageContainer.element, 'div', [], message);
     });
-    document.onclick = () =>{
-      //this.model.renameUser('Killer228')
-      //TODO Взять из инпута имя и сделать кнопку
-    }
+    // document.onclick = () =>{
+    //   //this.model.renameUser('Killer228')
+    //   //TODO Взять из инпута имя и сделать кнопку
+    // }
     this.model.onRename.add(({message,user})=>{
       console.log(message);
     })
