@@ -1,4 +1,3 @@
-static CellCoord.fromString(sCoord: string): CellCoord
 Queen
 Field обновить модель  с учетом рокировок, первый ли ход.
 Field.toFEN(): string
