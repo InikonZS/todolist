@@ -1,3 +1,4 @@
+import { IChessData } from 'utilities/interfaces';
 import { Component } from 'utilities/Component';
 import {
   ICellCoords,
@@ -86,7 +87,7 @@ class Timer extends Component {
   }
 }
 
-class Cross extends Component {
+class ChessGame extends Component {
   private cells: Array<ChessCell> = [];
   public onCellClick: (coords: ICellCoords) => void = () => {};
   timer: Timer;
@@ -168,7 +169,8 @@ class Cross extends Component {
       langConfig.controls.draw
     );
     this.btnDraw.onClick = () => {
-      this.createModalDraw();
+      // this.createModalDraw();
+      this.model.chessStopGame('draw');
       // this.onDrawClick();
     };
     this.btnLoss = new ChessButton(
@@ -177,35 +179,24 @@ class Cross extends Component {
       langConfig.controls.loss
     );
     this.btnLoss.onClick = () => {
-      this.createModalLoss();
+      // this.createModalLoss();
+      this.model.chessStopGame('loss');
       // this.onLossClick();
     };
 
     this.chessBoard.onFigureDrop = (posStart: Vector, posDrop: Vector) => {
-      // this.onFigureDrop(posStart, posDrop)
       this.model.chessMove(JSON.stringify([ posStart, posDrop ]));
-      // console.log(posStart);
     };
 
     this.chessBoard.onFigureGrab = (pos: Vector) => {
       this.model.chessFigureGrab(JSON.stringify(pos));
-      // this.onFigureGrab(pos)
     };
 
-    this.model.onChessMove.add(({ message, coords, player, field, winner, sign }) => {
-      console.log(coords);
-      console.log(player);
+    this.model.onChessMove.add((data) => this.onFigureMove(data));
 
-      this.setHistoryMove(coords);
-      const oldFigPos = new Vector(coords[0].x, coords[0].y);
-      const newFigPos = new Vector(coords[1].x, coords[1].y);
-
-      this.setFigurePosition(oldFigPos, newFigPos);
-
-      this.updateGameField();
-    });
-
-    this.model.onStartGame.add((data) => this.setFieldDragable(data))
+    this.model.onStartGame.add((data) => this.setFieldDragable(data));
+    this.model.onStopGame.add((data) => this.createModalDraw(data));
+    this.model.onChessFigureGrab.add((data) => this.showAllowedMoves(data));
   }
 
   // updateGameField(field: Array<string>): void {
@@ -225,11 +216,18 @@ class Cross extends Component {
   }
 
   clearData() {
-    this.cells.forEach((cell) => cell.clearCell());
-    this.players = 0;
-    this.playerOne.element.textContent = this.langConfig.player1;
-    this.playerTwo.element.textContent = this.langConfig.player2;
-    this.timer.clear();
+    // this.cells.forEach((cell) => cell.clearCell());
+    // if (status) {
+    //   this.createModalDraw();
+      this.players = 0;
+      this.playerOne.element.textContent = this.langConfig.player1;
+      this.playerTwo.element.textContent = this.langConfig.player2;
+      this.chessBoard.clearData();
+    // }
+
+    this.destroy();
+
+    // this.timer.clear();
   }
 
   setPlayer(player: string): void {
@@ -256,33 +254,33 @@ class Cross extends Component {
     this.btnLoss.setLangView(configLang.controls.loss);
   }
 
-  createModalDraw(): void {
-    this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals);
-    this.modalDraw.onModalDrawClick = () => {
-      this.onModalDrawClick();
-    };
+  createModalDraw(status: boolean): void {
+    if (status) {
+      this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals);
+      this.modalDraw.onModalDrawClick = () => {
+        this.model.chessRemoveGame('remove');
+      };
+    }
   }
 
   destroyModalDraw(): void {
-    this.destroyModalDraw();
-    // this.modalDraw.destroy();
+    console.log('draw destroy');
+
+    this.modalDraw.destroy();
   }
 
   createModalLoss(): void {
     this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
     this.modalLoss.onModalLossClick = () => {
+      console.log('destroy click');
+
       this.destroyModalLoss();
-      // this.onModalLossClick();
     };
   }
 
   destroyModalLoss(): void {
     this.modalLoss.destroy();
   }
-
-  // setFigurePosition(figPos: Vector): void {
-  //   this.chessBoard.setFigurePosition(figPos);
-  // }
 
   setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
     this.chessBoard.setFigurePosition(oldFigPos, newFigPos);
@@ -291,6 +289,25 @@ class Cross extends Component {
   setFieldDragable(status: boolean): void {
     this.chessBoard.setDragable(status);
   }
+
+  showAllowedMoves(coords: Array<ICellCoords>): void {
+    this.chessBoard.showAllowedMoves(coords);
+  }
+
+  removeAllowedMoves(): void {
+    this.chessBoard.removeAlloweMoves();
+  }
+
+  onFigureMove(data: IChessData): void {
+    this.setHistoryMove(data.coords);
+    const oldFigPos = new Vector(data.coords[0].x, data.coords[0].y);
+    const newFigPos = new Vector(data.coords[1].x, data.coords[1].y);
+
+    this.setFigurePosition(oldFigPos, newFigPos);
+
+    this.updateGameField();
+    this.removeAllowedMoves();
+  }
 }
 
-export default Cross;
+export default ChessGame;

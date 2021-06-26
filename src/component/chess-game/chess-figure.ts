@@ -4,7 +4,8 @@ import Vector from 'utilities/vector';
 class Figure extends Component {
   public onDragStart: (startPos: Vector) => void = () => {};
   private figurePos: Vector;
-  figPic: string;
+  private figPic: string;
+  private isDragable: boolean = false;
 
   constructor(
     parentNode: HTMLElement,
@@ -39,6 +40,11 @@ class Figure extends Component {
     this.element.style.left = figPos.x * cellBox.width + 'px';
     this.element.style.top = figPos.y * cellBox.height + 'px';
   }
+
+  setFigureDragable(status: boolean): void {
+    this.isDragable = status;
+  }
+
 
 }
 

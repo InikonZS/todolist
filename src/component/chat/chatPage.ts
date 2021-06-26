@@ -15,7 +15,7 @@ import ChatChannelsWrapper from './chat-channels-wrapper';
 import ChatUsersWrapper from './chat-users-wrapper';
 import ChatInputWrapper from './chat-input-wrapper';
 import ChatMessagesBlock from './chat-messages';
-import Chess from '../chess-game/chess-game';
+import ChessGame from '../chess-game/chess-game';
 import Vector from 'utilities/vector';
 import { langConfigEn, langConfigRu } from 'utilities/lang-config';
 import chatConfigView from 'utilities/config-chat';
@@ -32,6 +32,7 @@ class ChatModel {
   onPlayerList: Signal<{ player: string; time: number }> = new Signal();
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
+  onRemoveChess: Signal<boolean> = new Signal();
   // onChessMove: Signal<IChessData> = new Signal();
   chessModel: ChessModel;
 
@@ -93,8 +94,10 @@ class ChatModel {
         this.onChannelList.emit(data.channelList);
       }
       if (data.type === 'chess-events') {
-        
-        
+        if (data.method === 'removeGame') {
+          this.onRemoveChess.emit(data.remove);
+        }
+
         this.chessModel.processMessage(data);
       }
     };
@@ -180,8 +183,6 @@ class ChatModel {
   }
 }
 
-
-
 export class Chat extends Component {
   messageContainer: Component;
   chatInput: Component;
@@ -190,10 +191,11 @@ export class Chat extends Component {
   channelListContainer: Component;
   channels: Component[];
   gameInstance: Cross;
-  chessGame: Chess;
+  chessGame: ChessGame;
   private channelBlock: ChatChannelsWrapper;
   private chatMain: Component;
   private chatUsers: ChatUsersWrapper;
+  private chatAction: Component;
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', [ chatConfigView.wrapper ]);
@@ -203,7 +205,7 @@ export class Chat extends Component {
       langConfig.chat.channels
     );
     this.chatMain = new Component(this.element, 'div', [ chatConfigView.main ]);
-    const chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
+    this.chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
     const chatMessages = new ChatMessagesBlock(
       this.chatMain.element,
       chatConfigView.messageWrapper
@@ -221,7 +223,7 @@ export class Chat extends Component {
 
     this.messageContainer = new Component(this.element);
     // this.gameInstance = new Cross(chatAction.element);
-    this.chessGame = new Chess(chatAction.element, langConfig.chess, this.model.chessModel);
+    this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
@@ -282,6 +284,14 @@ export class Chat extends Component {
     // this.gameInstance.onLossClick = () => {
     //   console.log('Loss click');
     // }
+    this.model.onRemoveChess.add((status) => {
+      if (status) {
+        this.chatUsers.deletePlayer();
+        this.chessGame.clearData();
+        this.chessGame = null;
+        this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
+      }
+    });
   }
 
   setCurrentUser(user: IAuthData) {

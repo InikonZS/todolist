@@ -1,18 +1,16 @@
 import { Component } from "utilities/Component";
 import { ICellCoords } from "utilities/interfaces";
+import Vector from "utilities/vector";
 
 class ChessCell extends Component {
   public onCellClick: (coords: ICellCoords) => void = () => {};
-  coords: { x: number; y: number };
+  coords: Vector;
 
-  constructor(parentNode: HTMLElement, y: number, x: number) {
-    super(parentNode, 'div', [ 'chess_cell' ]);
-    this.coords = {
-      x: x,
-      y: y
-    };
+  constructor(parentNode: HTMLElement, coords: Vector, configCell: Array<string>) {
+    super(parentNode, 'div', configCell);
+    this.coords = coords;
     this.element.onclick = () => {
-      this.onCellClick({ x, y });
+      this.onCellClick(this.coords);
     };
   }
 
@@ -29,6 +27,15 @@ class ChessCell extends Component {
     this.element.classList.remove('clicked');
     this.element.textContent = '';
   }
+
+  setAllowedMove() {
+    this.element.classList.add('valid_move');
+  }
+
+  removeAllowedMove() {
+    this.element.classList.remove('valid_move');
+  }
+
 }
 
 export default ChessCell;

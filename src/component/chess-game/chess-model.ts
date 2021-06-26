@@ -1,10 +1,13 @@
-import { IChessData } from "utilities/interfaces";
-import Signal from "utilities/signal";
+import { IChessData, ICellCoords } from 'utilities/interfaces';
+import Signal from 'utilities/signal';
 
 class ChessModel {
   onChessMove: Signal<IChessData> = new Signal();
-  socket: WebSocket
+  socket: WebSocket;
   onStartGame: Signal<boolean> = new Signal();
+  onStopGame: Signal<boolean> = new Signal();
+  onRemoveGame: Signal<boolean> = new Signal();
+  onChessFigureGrab: Signal<Array<ICellCoords>> = new Signal();
   constructor(socket: WebSocket) {
     this.socket = socket;
   }
@@ -22,6 +25,17 @@ class ChessModel {
     }
     if (data.method === 'startGame') {
       this.onStartGame.emit(data.start);
+    }
+
+    if (data.method === 'chessFigureGrab') {
+      this.onChessFigureGrab.emit(data.moves);
+    }
+    if (data.method === 'stopGame') {
+      this.onStopGame.emit(data.stop);
+    }
+
+    if (data.method === 'removeGame') {
+      this.onRemoveGame.emit(data.remove);
     }
   }
 
@@ -56,6 +70,30 @@ class ChessModel {
       JSON.stringify({
         service: 'chat',
         endpoint: 'chessStartGame',
+        params: {
+          messageText: message,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+  chessStopGame(message: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'chessStopGame',
+        params: {
+          messageText: message,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+  chessRemoveGame(message: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'chessRemoveGame',
         params: {
           messageText: message,
           sessionId: localStorage.getItem('todoListApplicationSessionId')
