@@ -5,7 +5,7 @@ class ChessModel {
   onChessMove: Signal<IChessData> = new Signal();
   socket: WebSocket;
   onStartGame: Signal<IChessStart> = new Signal();
-  onStopGame: Signal<boolean> = new Signal();
+  onStopGame: Signal<string> = new Signal();
   onRemoveGame: Signal<boolean> = new Signal();
   onChessFigureGrab: Signal<Array<ICellCoords>> = new Signal();
   constructor(socket: WebSocket) {

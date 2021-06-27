@@ -69,17 +69,6 @@ class ChatModel {
         });
       }
 
-      // if (data.type === 'chessMove') {
-      //   this.onChessMove.emit({
-      //     message: data.senderNick + ' -> ' + data.messageText,
-      //     coords: JSON.parse(data.messageText),
-      //     player: data.senderNick,
-      //     field: data.field,
-      //     winner: data.winner,
-      //     sign: data.sign
-      //   });
-      // }
-
       /*if (data.type = 'userLeave'){
         this.onMessage.emit(data.senderNick);
       }

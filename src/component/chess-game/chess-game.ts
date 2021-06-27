@@ -21,74 +21,6 @@ import ModalLoss from './modal-loss';
 import ChessModel from './chess-model';
 import Timer from 'utilities/timer';
 
-let size = 8;
-// class Timer extends Component {
-//   private counter: number = 0;
-//   private count: number = 10;
-//   private time: number;
-//   private startTime: number = 0;
-//   private isPlaying: boolean = false;
-
-//   constructor(parentNode: HTMLElement) {
-//     super(parentNode, 'div', [ 'cross_timer' ]);
-//     this.element.textContent = '00:10';
-//   }
-//   start() {
-//     this.counter = window.setInterval(() => {
-//       this.time = Math.floor((Date.now() - this.startTime) / 1000);
-//       this.element.textContent = this.getTimeString();
-//     }, 1000);
-//   }
-
-//   clear() {
-//     if (this.counter) {
-//       window.clearInterval(this.counter);
-//       this.counter = 0;
-//       this.element.textContent = '00:00';
-//       this.startTime += 11000;
-//     }
-//   }
-
-//   countDown() {
-//     this.counter = window.setInterval(() => {
-//       if (this.count - this.time === 0) {
-//         this.clear();
-//         this.start();
-//         this.isPlaying = true;
-//       } else {
-//         this.time = Math.floor((Date.now() - this.startTime) / 1000);
-//         this.element.textContent = this.getCountDownString();
-//       }
-//     }, 1000);
-//   }
-
-//   setTimer(startTime: number) {
-//     this.startTime = startTime;
-//     this.time = startTime;
-//     this.countDown();
-//   }
-
-//   getCountDownString(): string {
-//     const seconds = Math.floor((this.count - this.time) % 60);
-
-//     const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
-//     return `00:${secOutput}`;
-//   }
-
-//   getTimeString(): string {
-//     const minutes = Math.floor(this.time / 60);
-//     const seconds = Math.floor(this.time % 60);
-
-//     const minOutput = minutes < 10 ? `0${minutes}` : `${minutes}`;
-//     const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
-//     return `${minOutput}:${secOutput}`;
-//   }
-
-//   getIsPlaying(): boolean {
-//     return this.isPlaying;
-//   }
-// }
-
 class ChessGame extends Component {
   private cells: Array<ChessCell> = [];
   public onCellClick: (coords: ICellCoords) => void = () => {};
@@ -173,9 +105,7 @@ class ChessGame extends Component {
       langConfig.controls.draw
     );
     this.btnDraw.onClick = () => {
-      // this.createModalDraw();
       this.model.chessStopGame('draw');
-      // this.onDrawClick();
     };
     this.btnLoss = new ChessButton(
       chessControls.element,
@@ -183,9 +113,7 @@ class ChessGame extends Component {
       langConfig.controls.loss
     );
     this.btnLoss.onClick = () => {
-      // this.createModalLoss();
       this.model.chessStopGame('loss');
-      // this.onLossClick();
     };
 
     this.chessBoard.onFigureDrop = (posStart: Vector, posDrop: Vector) => {
@@ -247,12 +175,12 @@ class ChessGame extends Component {
     this.btnLoss.setLangView(configLang.controls.loss);
   }
 
-  createModalDraw(status: boolean): void {
-    if (status) {
-      this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals);
+  createModalDraw(status: string): void {
+    // if (status) {
+      this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals, status);
       this.modalDraw.onModalDrawClick = () => {
         this.model.chessRemoveGame('remove');
-      };
+      // };
     }
   }
 
@@ -262,18 +190,18 @@ class ChessGame extends Component {
     this.modalDraw.destroy();
   }
 
-  createModalLoss(): void {
-    this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
-    this.modalLoss.onModalLossClick = () => {
-      console.log('destroy click');
+  // createModalLoss(): void {
+  //   this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
+  //   this.modalLoss.onModalLossClick = () => {
+  //     console.log('destroy click');
 
-      this.destroyModalLoss();
-    };
-  }
+  //     this.destroyModalLoss();
+  //   };
+  // }
 
-  destroyModalLoss(): void {
-    this.modalLoss.destroy();
-  }
+  // destroyModalLoss(): void {
+  //   this.modalLoss.destroy();
+  // }
 
   setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
     this.chessBoard.setFigurePosition(oldFigPos, newFigPos);
@@ -306,7 +234,7 @@ class ChessGame extends Component {
   createChessField(data: IChessStart) {
     this.chessBoard.createFieldCells(this.fromFen(data.field));
     this.chessBoard.setDragable(true);
-    this.timer.setTimer(data.time)
+    this.timer.setTimer(data.time);
   }
 
   fromFen(fen: string): Array<string> {
