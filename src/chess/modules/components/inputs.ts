@@ -3,37 +3,35 @@ import Signal from './signal';
 
 class Input extends Control {
   public node: HTMLInputElement;
-  public onClick: () => void;
-  public onValidate: (param: string) => string | null;
+  public onValidate: (param: string) => Promise<string | null>;
   public onInput: Signal<string | void> = new Signal();
   public onChange: Signal<string | void> = new Signal();
   error: Control;
   field: Control;
   caption: Control;
   name: string;
-  constructor(parentNode: HTMLElement, caption: string, onValidate: (param: string) => string | null, placeHolder: string = '', type: string, id = 'input') {
+  private timer: NodeJS.Timeout;
+  state: string;
+  constructor(parentNode: HTMLElement, caption: string, onValidate: (param: string) => Promise<string | null>, placeHolder: string = '', type: string, id = 'input') {
     super(parentNode, 'div', 'authform_input');
-    this.node.type = type;
-    this.node.placeholder = `${placeHolder}`;
     this.name = caption;
     this.caption = new Control(this.node, 'div', 'caption');
     this.caption.node.innerHTML = caption;
     this.field = new Control(this.node, 'input', 'field_input', `${id}`);
+    (this.field.node as HTMLInputElement).type = type;
+    (this.field.node as HTMLInputElement).placeholder = `${placeHolder}`;
+    (this.field.node as HTMLInputElement).autocomplete = "off";
     this.error = new Control(this.node, 'div', 'input_error');
     this.onValidate = onValidate;
+    this.state = 'no';
     this.field.node.classList.add('invalid')
-    this.field.node.addEventListener('input', (e) => {
-      if (this.onValidate) {
-        this.setError(this.onValidate(this.getValue()));
-      }
-      if (this.onChange) {
-        this.onChange.emit(`${this.field.node.classList[1] === 'valid' && (this.field.node as HTMLInputElement).value !== ''}`)
-        this.setError(this.onValidate(this.getValue()));
-      }
-    });
-    this.node.oninput = () => {
-      console.log(`${this.node.value}`)
-      this.onClick && this.onClick();
+    this.field.node.oninput = async () => {
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(async () => {
+        if (this.onValidate) {
+          this.setError(await this.onValidate(this.getValue()));
+        }
+      }, 2000);
     }
   }
   getValue() {
@@ -42,15 +40,20 @@ class Input extends Control {
   }
   setError(err: string | null) {
     if (err === null) {
+      this.state = 'ок';
       this.error.node.innerHTML = 'ok';
       this.field.node.classList.remove('invalid');
       this.field.node.classList.add('valid');
     } else {
+      this.state = 'no';
       this.error.node.textContent = err;
       this.field.node.classList.add('invalid')
       this.field.node.classList.remove('valid');
     }
 
+  }
+  getStatus (){
+    return this.error.node.textContent
   }
   //     clearInput(){
   //         (this.field.element as HTMLInputElement).value = '';
