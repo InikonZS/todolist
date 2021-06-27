@@ -20,6 +20,10 @@ import Vector from 'utilities/vector';
 import { langConfigEn, langConfigRu } from 'utilities/lang-config';
 import chatConfigView from 'utilities/config-chat';
 import ChessModel from '../chess-game/chess-model';
+import { popupService1 } from '../popupService/popupService1';
+import { GameSelect } from './game-select';
+import { GenericPopup } from './genericPopup';
+import { ChessGameSettings } from './chess-game-settings';
 
 let langConfig = langConfigEn;
 
@@ -85,7 +89,7 @@ class ChatModel {
       if (data.type === 'chess-events') {
         if (data.method === 'removeGame') {
           this.onRemoveChess.emit({
-            status: data.remove, 
+            status: data.remove,
             fen: data.field
           });
         }
@@ -219,7 +223,16 @@ export class Chat extends Component {
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
-      this.model.joinPlayer();
+      popupService1.showPopup<string>(GameSelect).then((result) => {
+        console.log(result)
+        if (result === 'chess') {
+          popupService1.showPopup<{mode: string}>(ChessGameSettings).then((result) => {
+            console.log(result);
+            this.model.joinPlayer();
+          });
+        }
+      });
+
     };
     this.model.onPlayerList.add(({ player, time }) => {
       // this.gameInstance.setPlayer(player, time);
