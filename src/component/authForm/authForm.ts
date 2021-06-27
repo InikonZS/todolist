@@ -6,6 +6,7 @@ import { AuthModel } from '../AuthModel';
 
 
 
+
 export class AuthForm extends Control {
   field: HTMLDivElement;
   nameInput: Input;
