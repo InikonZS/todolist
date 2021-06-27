@@ -19,7 +19,8 @@ export interface IChessData {
   // field: Array<string>;
   field: string;
   winner: string;
-  sign: string;
+  rotate: boolean;
+  figure: string;
 }
 
 export interface IChannelDTO {
@@ -38,6 +39,8 @@ export interface IHistoryView {
   title: string;
   wrapper: string;
   item: string;
+  figure: string;
+  text: string;
 }
 
 export interface IBoardCellView {
@@ -158,4 +161,9 @@ export interface IChatUserWrapper {
   category: string;
   categoryName: string;
   user: IChatUser;
+}
+
+export interface IChessStart {
+  field: string;
+  time: number;
 }

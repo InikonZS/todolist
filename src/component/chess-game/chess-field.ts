@@ -67,7 +67,7 @@ class ChessField extends Component {
     // this.dragableField.element.style.display = 'none';
     this.figure = null;
     this.element.onmousedown = (e) => {
-      if (this.isDragable) {
+      if (this.isDragable && this.figure) {
         this.onFigureDropOnCell(e);
         this.onFigureGrab(this.figure.getFigureState());
       }
@@ -86,9 +86,11 @@ class ChessField extends Component {
       this.cellBox = cell.element.getBoundingClientRect();
       const cellCoord = new Vector(i % 8, Math.floor(i / 8));
       if(fen[i]) {
+        const fig = fen[i];
+        const rotate = fen[i] === fen[i].toUpperCase() ? false : true;
         this.addItem(
           // new Figure(null, configField[i], this.configFigure, cellCoord),
-          new Figure(null, this.configFigures.get(fen[i]), this.configFigure, cellCoord),
+          new Figure(null, this.configFigures.get(fen[i]), this.configFigure, cellCoord, rotate),
           i,
           cell.element.getBoundingClientRect()
         );    

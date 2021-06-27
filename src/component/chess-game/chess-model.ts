@@ -1,10 +1,10 @@
-import { IChessData, ICellCoords } from 'utilities/interfaces';
+import { IChessData, ICellCoords, IChessStart } from 'utilities/interfaces';
 import Signal from 'utilities/signal';
 
 class ChessModel {
   onChessMove: Signal<IChessData> = new Signal();
   socket: WebSocket;
-  onStartGame: Signal<string> = new Signal();
+  onStartGame: Signal<IChessStart> = new Signal();
   onStopGame: Signal<boolean> = new Signal();
   onRemoveGame: Signal<boolean> = new Signal();
   onChessFigureGrab: Signal<Array<ICellCoords>> = new Signal();
@@ -20,13 +20,14 @@ class ChessModel {
         player: data.senderNick,
         field: data.field,
         winner: data.winner,
-        sign: data.sign
+        rotate: data.rotate,
+        figure: data.figure
       });
     }
     if (data.method === 'startGame') {
       console.log(data.field);
       
-      this.onStartGame.emit(data.field);
+      this.onStartGame.emit({field: data.field, time: data.time});
     }
 
     if (data.method === 'chessFigureGrab') {

@@ -1,5 +1,5 @@
 import { Component } from 'utilities/Component';
-import { boardCoordsX, boardCoordsY } from 'utilities/config-chess';
+import configFigures, { boardCoordsX, boardCoordsY } from 'utilities/config-chess';
 import { ICellCoords, IHistoryView } from 'utilities/interfaces';
 
 class ChessHistoryBlock extends Component {
@@ -15,12 +15,20 @@ class ChessHistoryBlock extends Component {
     this.historyWrapper = new Component(this.element, 'div', [ config.wrapper ]);
   }
 
-  setHistoryMove(coords: Array<ICellCoords>, time: string): void {
+  setHistoryMove(coords: Array<ICellCoords>, time: string, figName: string): void {
+    console.log(figName);
+
     const historyItem = new Component(this.historyWrapper.element, 'div', [ this.config.item ]);
-    historyItem.element.textContent = `${boardCoordsX[coords[0].x]}${boardCoordsY[coords[0].y]}-${boardCoordsX[coords[1].x]}${boardCoordsY[coords[1].y]} ${time}`;
+    const historyFigure = new Component(historyItem.element, 'div', [ this.config.figure ]);
+    historyFigure.element.style.backgroundImage = `url(${configFigures.get(figName)})`;
+    const historyText = new Component(historyItem.element, 'div', [ this.config.text ]);
+
+    historyText.element.textContent = `${boardCoordsX[coords[0].x]}${boardCoordsY[
+      coords[0].y
+    ]}-${boardCoordsX[coords[1].x]}${boardCoordsY[coords[1].y]} ${time}`;
   }
 
-  setLangView(configLang: string):void {
+  setLangView(configLang: string): void {
     this.historyHeader.element.textContent = configLang;
   }
 }

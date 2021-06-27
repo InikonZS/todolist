@@ -125,7 +125,22 @@
 
 .chess_history_item {
   margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
+
+.chess_history_figure {
+ width: 30px;
+ height: 30px;
+ background-size: contain;
+ background-repeat: no-repeat;
+ background-position: center center;
+}
+
+/* .chess_history_moves {
+
+} */
 
 .chess_history_header {
   font-weight: bold;
@@ -183,4 +198,8 @@
 .valid_move {
   /* background-color: #6af1883b; */
   box-shadow: inset 0 0 40px #6af187d2;
+}
+
+.figure-rotate {
+  transform: rotate(180deg);
 }

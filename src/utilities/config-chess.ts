@@ -26,24 +26,21 @@ import whitePawn from '../assets/whitePawn.svg';
 //   P: whitePawn
 // };
 
-export const configFigures = new Map<string, string>(
-  [
-    ['r', blackRook],
-    ['n', blackKnight],
-    ['b', blackBishop],
-    ['b', blackBishop],
-    ['q', blackQueen],
-    ['k', blackKing],
-    ['p', blackPawn],
-    ['R', whiteRook],
-    ['N', whiteKnight],
-    ['B', whiteBishop],
-    ['Q', whiteQueen],
-    ['K', whiteKing],
-    ['P', whitePawn]
-  ]
-);
-
+export const configFigures = new Map<string, string>([
+  [ 'r', blackRook ],
+  [ 'n', blackKnight ],
+  [ 'b', blackBishop ],
+  [ 'b', blackBishop ],
+  [ 'q', blackQueen ],
+  [ 'k', blackKing ],
+  [ 'p', blackPawn ],
+  [ 'R', whiteRook ],
+  [ 'N', whiteKnight ],
+  [ 'B', whiteBishop ],
+  [ 'Q', whiteQueen ],
+  [ 'K', whiteKing ],
+  [ 'P', whitePawn ]
+]);
 
 export const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
 
@@ -122,7 +119,9 @@ export const chessConfigView = {
     node: 'chess_history',
     title: 'chess_history_header',
     wrapper: 'chess_history_items',
-    item: 'chess_history_item'
+    item: 'chess_history_item',
+    figure: 'chess_history_figure',
+    text: 'chess_history_moves'
   },
   figure: 'drag-item',
   boardView: {
@@ -149,7 +148,7 @@ export const chessConfigView = {
     wrapper: 'modal_wrapper',
     message: 'modal_message',
     text: 'modal_text',
-    btn: 'chess_button',
+    btn: 'chess_button'
   }
 };
 

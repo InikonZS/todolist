@@ -1,3 +1,4 @@
+import { IChessStart } from './../../utilities/interfaces';
 import { IChessData } from 'utilities/interfaces';
 import { Component } from 'utilities/Component';
 import {
@@ -18,74 +19,75 @@ import configFigures, { chessConfigView, fen } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
 import ModalLoss from './modal-loss';
 import ChessModel from './chess-model';
+import Timer from 'utilities/timer';
 
 let size = 8;
-class Timer extends Component {
-  private counter: number = 0;
-  private count: number = 10;
-  private time: number;
-  private startTime: number = 0;
-  private isPlaying: boolean = false;
+// class Timer extends Component {
+//   private counter: number = 0;
+//   private count: number = 10;
+//   private time: number;
+//   private startTime: number = 0;
+//   private isPlaying: boolean = false;
 
-  constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'cross_timer' ]);
-    this.element.textContent = '00:10';
-  }
-  start() {
-    this.counter = window.setInterval(() => {
-      this.time = Math.floor((Date.now() - this.startTime) / 1000);
-      this.element.textContent = this.getTimeString();
-    }, 1000);
-  }
+//   constructor(parentNode: HTMLElement) {
+//     super(parentNode, 'div', [ 'cross_timer' ]);
+//     this.element.textContent = '00:10';
+//   }
+//   start() {
+//     this.counter = window.setInterval(() => {
+//       this.time = Math.floor((Date.now() - this.startTime) / 1000);
+//       this.element.textContent = this.getTimeString();
+//     }, 1000);
+//   }
 
-  clear() {
-    if (this.counter) {
-      window.clearInterval(this.counter);
-      this.counter = 0;
-      this.element.textContent = '00:00';
-      this.startTime += 11000;
-    }
-  }
+//   clear() {
+//     if (this.counter) {
+//       window.clearInterval(this.counter);
+//       this.counter = 0;
+//       this.element.textContent = '00:00';
+//       this.startTime += 11000;
+//     }
+//   }
 
-  countDown() {
-    this.counter = window.setInterval(() => {
-      if (this.count - this.time === 0) {
-        this.clear();
-        this.start();
-        this.isPlaying = true;
-      } else {
-        this.time = Math.floor((Date.now() - this.startTime) / 1000);
-        this.element.textContent = this.getCountDownString();
-      }
-    }, 1000);
-  }
+//   countDown() {
+//     this.counter = window.setInterval(() => {
+//       if (this.count - this.time === 0) {
+//         this.clear();
+//         this.start();
+//         this.isPlaying = true;
+//       } else {
+//         this.time = Math.floor((Date.now() - this.startTime) / 1000);
+//         this.element.textContent = this.getCountDownString();
+//       }
+//     }, 1000);
+//   }
 
-  setTimer(startTime: number) {
-    this.startTime = startTime;
-    this.time = startTime;
-    this.countDown();
-  }
+//   setTimer(startTime: number) {
+//     this.startTime = startTime;
+//     this.time = startTime;
+//     this.countDown();
+//   }
 
-  getCountDownString(): string {
-    const seconds = Math.floor((this.count - this.time) % 60);
+//   getCountDownString(): string {
+//     const seconds = Math.floor((this.count - this.time) % 60);
 
-    const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
-    return `00:${secOutput}`;
-  }
+//     const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
+//     return `00:${secOutput}`;
+//   }
 
-  getTimeString(): string {
-    const minutes = Math.floor(this.time / 60);
-    const seconds = Math.floor(this.time % 60);
+//   getTimeString(): string {
+//     const minutes = Math.floor(this.time / 60);
+//     const seconds = Math.floor(this.time % 60);
 
-    const minOutput = minutes < 10 ? `0${minutes}` : `${minutes}`;
-    const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
-    return `${minOutput}:${secOutput}`;
-  }
+//     const minOutput = minutes < 10 ? `0${minutes}` : `${minutes}`;
+//     const secOutput = seconds < 10 ? `0${seconds}` : `${seconds}`;
+//     return `${minOutput}:${secOutput}`;
+//   }
 
-  getIsPlaying(): boolean {
-    return this.isPlaying;
-  }
-}
+//   getIsPlaying(): boolean {
+//     return this.isPlaying;
+//   }
+// }
 
 class ChessGame extends Component {
   private cells: Array<ChessCell> = [];
@@ -201,35 +203,24 @@ class ChessGame extends Component {
     this.model.onChessFigureGrab.add((data) => this.showAllowedMoves(data));
   }
 
-  // updateGameField(field: Array<string>): void {
-  updateGameField(): void {
-    // this.cells.forEach((cell) => {
-    //   const { x, y } = cell.getCellCoord();
-    //   if (field[y][x]) {
-    //     cell.clickedCell(field[y][x]);
-    //   }
-    // });
-    if (!this.isRotated) {
-      this.chessBoard.element.classList.add('rotate');
-    } else {
-      this.chessBoard.element.classList.remove('rotate');
+  updateGameField(rotate: boolean): void {
+    if (rotate) {
+      if (!this.isRotated) {
+        this.chessBoard.element.classList.add('rotate');
+      } else {
+        this.chessBoard.element.classList.remove('rotate');
+      }
+      this.isRotated = !this.isRotated;
     }
-    this.isRotated = !this.isRotated;
   }
 
   clearData(fen: string) {
-    // this.cells.forEach((cell) => cell.clearCell());
-    // if (status) {
-    //   this.createModalDraw();
     this.players = 0;
     this.playerOne.element.textContent = this.langConfig.player1;
     this.playerTwo.element.textContent = this.langConfig.player2;
     this.chessBoard.clearData(this.fromFen(fen));
-    // }
-
+    this.timer.clear();
     this.destroy();
-
-    // this.timer.clear();
   }
 
   setPlayer(player: string): void {
@@ -244,8 +235,8 @@ class ChessGame extends Component {
     }
   }
 
-  setHistoryMove(coords: Array<ICellCoords>): void {
-    this.history.setHistoryMove(coords, '');
+  setHistoryMove(coords: Array<ICellCoords>, figName: string): void {
+    this.history.setHistoryMove(coords, this.timer.getTimeString(), figName);
   }
 
   setLangView(configLang: IChessLang): void {
@@ -299,20 +290,23 @@ class ChessGame extends Component {
   onFigureMove(data: IChessData): void {
     console.log(data.field);
 
-    this.setHistoryMove(data.coords);
+    const newField = this.fromFen(data.field);
+
+    this.setHistoryMove(data.coords, data.figure);
     const oldFigPos = new Vector(data.coords[0].x, data.coords[0].y);
     const newFigPos = new Vector(data.coords[1].x, data.coords[1].y);
 
     this.setFigurePosition(oldFigPos, newFigPos);
-    this.chessBoard.clearData(this.fromFen(data.field));
+    this.chessBoard.clearData(newField);
 
-    this.updateGameField();
+    this.updateGameField(data.rotate);
     this.removeAllowedMoves();
   }
 
-  createChessField(fen: string) {
-    this.chessBoard.createFieldCells(this.fromFen(fen));
+  createChessField(data: IChessStart) {
+    this.chessBoard.createFieldCells(this.fromFen(data.field));
     this.chessBoard.setDragable(true);
+    this.timer.setTimer(data.time)
   }
 
   fromFen(fen: string): Array<string> {
@@ -324,24 +318,6 @@ class ChessGame extends Component {
         }
       } else fromFen.push(el);
     });
-
-    // console.log(fromFen.join('').split('').map((item) => (item === '-' ? '' : item)));
-
-    // const fromFen = fen
-    //   .split('/')
-    //   .map((el) => {
-    //     let str = '';
-    //     if (!isNaN(+el)) {
-    //       for (let i = 0; i < +el; i++) {
-    //         str += '-';
-    //       }
-    //     }
-    //     return str ? str : el;
-    //   })
-    //   .join('')
-    //   .split('')
-    //   .map((item) => (item === '-' ? '' : item));
-
     return fromFen.join('').split('').map((item) => (item === '-' ? '' : item));
   }
 }

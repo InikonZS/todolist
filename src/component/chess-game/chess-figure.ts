@@ -11,12 +11,16 @@ class Figure extends Component {
     parentNode: HTMLElement,
     figure: string,
     configFigureView: string,
-    _figurePos: Vector
+    _figurePos: Vector,
+    rotate: boolean
   ) {
     super(parentNode, 'div', [ configFigureView ]);
     this.figurePos = _figurePos;
     this.figPic = figure;
     this.element.style.backgroundImage = `url(${figure})`;
+    if(rotate) {
+      this.element.classList.add('figure-rotate')
+    }
 
     this.element.onmousedown = (e) => {
       let startPos = new Vector(e.offsetX, e.offsetY);
