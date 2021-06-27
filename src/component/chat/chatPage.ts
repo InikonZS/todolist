@@ -4,24 +4,27 @@ import { popupService } from '../Popupservice';
 import Cross from '../../cross/cross';
 import Signal from 'utilities/signal';
 import ICrossData, {
-  ICellCoords,
   IChannelDTO,
-  IChessData,
   IuserChatMessage
 } from 'utilities/interfaces';
 import './chatPage.css';
-import ChatChannel from './chat-chanel';
 import ChatChannelsWrapper from './chat-channels-wrapper';
 import ChatUsersWrapper from './chat-users-wrapper';
 import ChatInputWrapper from './chat-input-wrapper';
 import ChatMessagesBlock from './chat-messages';
 import ChessGame from '../chess-game/chess-game';
-import Vector from 'utilities/vector';
 import { langConfigEn, langConfigRu } from 'utilities/lang-config';
 import chatConfigView from 'utilities/config-chat';
 import ChessModel from '../chess-game/chess-model';
 
 let langConfig = langConfigEn;
+const chessMode = 'multy';
+
+export const chessModeConfig = {
+  multy: 'multy',
+  single: 'single',
+  bot: 'bot'
+};
 
 class ChatModel {
   currentUser: IAuthData;
@@ -215,7 +218,7 @@ export class Chat extends Component {
 
     this.messageContainer = new Component(this.element);
     // this.gameInstance = new Cross(chatAction.element);
-    this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
+    this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
@@ -281,7 +284,7 @@ export class Chat extends Component {
         this.chatUsers.deletePlayer();
         this.chessGame.clearData(fen);
         this.chessGame = null;
-        this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
+        this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
       }
     });
   }

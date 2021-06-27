@@ -5,7 +5,6 @@ import {
   ICellCoords,
   IChessLang,
   IChessView,
-  ILangView,
   ILangViewModal,
   ILangViewPlayer
 } from 'utilities/interfaces';
@@ -20,6 +19,7 @@ import ModalDraw from './modal-draw';
 import ModalLoss from './modal-loss';
 import ChessModel from './chess-model';
 import Timer from 'utilities/timer';
+import { chessModeConfig } from '../chat/chatPage';
 
 class ChessGame extends Component {
   private cells: Array<ChessCell> = [];
@@ -28,7 +28,7 @@ class ChessGame extends Component {
   private history: ChessHistoryBlock;
   private playerOne: Component;
   private playerTwo: Component;
-  private players: number = 0;
+  private players: Array<string> = [];
   private isRotated: boolean = false;
   private chessBoard: ChessField;
   private btnStart: ChessButton;
@@ -48,13 +48,20 @@ class ChessGame extends Component {
   public onModalLossClick: () => void = () => {};
   private model: ChessModel;
   private host: string = '';
+  private chessMode: string = '';
 
-  constructor(parentNode: HTMLElement, langConfig: IChessLang, chessModel: ChessModel) {
+  constructor(
+    parentNode: HTMLElement,
+    langConfig: IChessLang,
+    chessModel: ChessModel,
+    chessMode: string
+  ) {
     super(parentNode, 'div', [ chessConfigView.chessView.wrapper ]);
     this.model = chessModel;
     this.langConfig = langConfig.players;
     this.langConfigModals = langConfig.modals;
     this.chessView = chessConfigView.chessView;
+    this.chessMode = chessMode;
     const chessControls = new Component(this.element, 'div', [ this.chessView.controls ]);
     const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
     this.playerOne = new Component(
@@ -82,8 +89,7 @@ class ChessGame extends Component {
       chessConfigView.figure,
       chessConfigView.boardView,
       chessConfigView.gameField,
-      configFigures
-      // this.fromFen(fen)
+      configFigures,
     );
 
     this.btnStart = new ChessButton(
@@ -94,10 +100,7 @@ class ChessGame extends Component {
     this.btnStart.buttonDisable();
     this.btnStart.onClick = () => {
       this.model.chessStartGame(this.host);
-      // this.setFieldDragable();
       this.btnStart.buttonDisable();
-      console.log('Start click');
-      // this.onStartClick();
     };
     this.btnDraw = new ChessButton(
       chessControls.element,
@@ -132,33 +135,41 @@ class ChessGame extends Component {
   }
 
   updateGameField(rotate: boolean): void {
-    if (rotate) {
-      if (!this.isRotated) {
-        this.chessBoard.element.classList.add('rotate');
-      } else {
-        this.chessBoard.element.classList.remove('rotate');
+    if (this.chessMode === chessModeConfig.single) {
+      if (rotate) {
+        if (!this.isRotated) {
+          this.chessBoard.element.classList.add('rotate');
+        } else {
+          this.chessBoard.element.classList.remove('rotate');
+        }
+        this.isRotated = !this.isRotated;
       }
-      this.isRotated = !this.isRotated;
     }
   }
 
   clearData(fen: string) {
-    this.players = 0;
+    this.players = [];
     this.playerOne.element.textContent = this.langConfig.player1;
     this.playerTwo.element.textContent = this.langConfig.player2;
     this.chessBoard.clearData(this.fromFen(fen));
+    this.chessMode = '';
     this.timer.clear();
     this.destroy();
   }
 
   setPlayer(player: string): void {
-    if (!this.players) {
+    if (!this.players.length) {
       this.playerOne.element.textContent = player;
       this.host = player;
-      this.players++;
-    } else if (this.players === 1) {
+      this.players.push(player);
+      if (this.chessMode !== chessModeConfig.multy) {
+        console.log('mode', this.chessMode);
+        
+        this.btnStart.buttonEnable();
+      }
+    } else if (this.players.length === 1) {
       this.playerTwo.element.textContent = player;
-      this.players++;
+      this.players.push(player);
       this.btnStart.buttonEnable();
     }
   }
@@ -176,12 +187,17 @@ class ChessGame extends Component {
   }
 
   createModalDraw(status: string): void {
-    // if (status) {
-      this.modalDraw = new ModalDraw(this.element, chessConfigView.modal, this.langConfigModals, status);
-      this.modalDraw.onModalDrawClick = () => {
-        this.model.chessRemoveGame('remove');
-      // };
-    }
+    this.modalDraw = new ModalDraw(
+      this.element,
+      chessConfigView.modal,
+      this.langConfigModals,
+      status,
+      this.host,
+      this.players
+    );
+    this.modalDraw.onModalDrawClick = () => {
+      this.model.chessRemoveGame('remove');
+    };
   }
 
   destroyModalDraw(): void {
@@ -189,19 +205,6 @@ class ChessGame extends Component {
 
     this.modalDraw.destroy();
   }
-
-  // createModalLoss(): void {
-  //   this.modalLoss = new ModalLoss(this.element, chessConfigView.modal, this.langConfigModals);
-  //   this.modalLoss.onModalLossClick = () => {
-  //     console.log('destroy click');
-
-  //     this.destroyModalLoss();
-  //   };
-  // }
-
-  // destroyModalLoss(): void {
-  //   this.modalLoss.destroy();
-  // }
 
   setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
     this.chessBoard.setFigurePosition(oldFigPos, newFigPos);
@@ -216,7 +219,7 @@ class ChessGame extends Component {
   }
 
   onFigureMove(data: IChessData): void {
-    console.log(data.field);
+    this.host = data.player;
 
     const newField = this.fromFen(data.field);
 
@@ -232,6 +235,7 @@ class ChessGame extends Component {
   }
 
   createChessField(data: IChessStart) {
+    this.chessBoard.setChessMode(this.chessMode);
     this.chessBoard.createFieldCells(this.fromFen(data.field));
     this.chessBoard.setDragable(true);
     this.timer.setTimer(data.time);

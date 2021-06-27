@@ -6,7 +6,8 @@
   width: 480px;
   height: 480px;
   background-color: #555;
-  position: relative;  
+  position: relative;
+  transition: .5s all ease;
 }
 
 .chess_board_view {
