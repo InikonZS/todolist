@@ -1,4 +1,4 @@
-import { IChessStart } from './../../utilities/interfaces';
+import { IChessStart, IChessStop, IModalPopup } from './../../utilities/interfaces';
 import { IChessData } from 'utilities/interfaces';
 import { Component } from 'utilities/Component';
 import {
@@ -16,7 +16,6 @@ import ChessField from './chess-field';
 import Vector from 'utilities/vector';
 import configFigures, { chessConfigView, fen } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
-import ModalLoss from './modal-loss';
 import ChessModel from './chess-model';
 import Timer from 'utilities/timer';
 import { chessModeConfig } from '../chat/chatPage';
@@ -44,11 +43,11 @@ class ChessGame extends Component {
   private modalDraw: ModalDraw;
   private langConfigModals: ILangViewModal;
   public onModalDrawClick: () => void = () => {};
-  private modalLoss: ModalLoss;
   public onModalLossClick: () => void = () => {};
   private model: ChessModel;
   private host: string = '';
   private chessMode: string = '';
+  private chessModalView: IModalPopup;
 
   constructor(
     parentNode: HTMLElement,
@@ -61,6 +60,7 @@ class ChessGame extends Component {
     this.langConfig = langConfig.players;
     this.langConfigModals = langConfig.modals;
     this.chessView = chessConfigView.chessView;
+    this.chessModalView = chessConfigView.modal;
     this.chessMode = chessMode;
     const chessControls = new Component(this.element, 'div', [ this.chessView.controls ]);
     const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
@@ -89,7 +89,7 @@ class ChessGame extends Component {
       chessConfigView.figure,
       chessConfigView.boardView,
       chessConfigView.gameField,
-      configFigures,
+      configFigures
     );
 
     this.btnStart = new ChessButton(
@@ -107,6 +107,7 @@ class ChessGame extends Component {
       chessConfigView.btn,
       langConfig.controls.draw
     );
+    this.btnDraw.buttonDisable();
     this.btnDraw.onClick = () => {
       this.model.chessStopGame('draw');
     };
@@ -115,6 +116,7 @@ class ChessGame extends Component {
       chessConfigView.btn,
       langConfig.controls.loss
     );
+    this.btnLoss.buttonDisable();
     this.btnLoss.onClick = () => {
       this.model.chessStopGame('loss');
     };
@@ -135,7 +137,7 @@ class ChessGame extends Component {
   }
 
   updateGameField(rotate: boolean): void {
-    if (this.chessMode === chessModeConfig.single) {
+    if (this.chessMode === chessModeConfig.oneScreen) {
       if (rotate) {
         if (!this.isRotated) {
           this.chessBoard.element.classList.add('rotate');
@@ -162,9 +164,9 @@ class ChessGame extends Component {
       this.playerOne.element.textContent = player;
       this.host = player;
       this.players.push(player);
-      if (this.chessMode !== chessModeConfig.multy) {
+      if (this.chessMode !== chessModeConfig.network) {
         console.log('mode', this.chessMode);
-        
+
         this.btnStart.buttonEnable();
       }
     } else if (this.players.length === 1) {
@@ -186,13 +188,13 @@ class ChessGame extends Component {
     this.btnLoss.setLangView(configLang.controls.loss);
   }
 
-  createModalDraw(status: string): void {
+  createModalDraw(data: IChessStop): void {
     this.modalDraw = new ModalDraw(
       this.element,
       chessConfigView.modal,
       this.langConfigModals,
-      status,
-      this.host,
+      data.stop,
+      data.player,
       this.players
     );
     this.modalDraw.onModalDrawClick = () => {
@@ -201,8 +203,6 @@ class ChessGame extends Component {
   }
 
   destroyModalDraw(): void {
-    console.log('draw destroy');
-
     this.modalDraw.destroy();
   }
 
@@ -239,6 +239,9 @@ class ChessGame extends Component {
     this.chessBoard.createFieldCells(this.fromFen(data.field));
     this.chessBoard.setDragable(true);
     this.timer.setTimer(data.time);
+    this.btnDraw.buttonEnable();
+    this.btnLoss.buttonEnable();
+    this.btnStart.buttonDisable();
   }
 
   fromFen(fen: string): Array<string> {
@@ -251,6 +254,10 @@ class ChessGame extends Component {
       } else fromFen.push(el);
     });
     return fromFen.join('').split('').map((item) => (item === '-' ? '' : item));
+  }
+
+  getPlayers(): Array<string> {
+    return this.players;
   }
 }
 

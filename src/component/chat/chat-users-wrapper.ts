@@ -52,6 +52,10 @@ class ChatUsersWrapper extends Component {
     this.playerHeader.element.textContent = configLang.players;
     this.spectatorHeader.element.textContent = configLang.spectators;
   }
+
+  getPlayersLength(): number {
+    return this.players.length;
+  }
 }
 
 export default ChatUsersWrapper;

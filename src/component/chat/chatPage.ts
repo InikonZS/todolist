@@ -22,11 +22,11 @@ import { GenericPopup } from './genericPopup';
 import { ChessGameSettings } from './chess-game-settings';
 
 let langConfig = langConfigEn;
-const chessMode = 'multy';
+// const chessMode = 'oneScreen';
 
 export const chessModeConfig = {
-  multy: 'multy',
-  single: 'single',
+  network: 'network',
+  oneScreen: 'oneScreen',
   bot: 'bot'
 };
 
@@ -152,12 +152,13 @@ class ChatModel {
     );
   }
 
-  joinPlayer() {
+  joinPlayer(mode: string) {
     this.socket.send(
       JSON.stringify({
         service: 'chat',
         endpoint: 'joinPlayer',
         params: {
+          mode: mode,
           sessionId: localStorage.getItem('todoListApplicationSessionId')
         }
       })
@@ -195,6 +196,7 @@ export class Chat extends Component {
   private chatMain: Component;
   private chatUsers: ChatUsersWrapper;
   private chatAction: Component;
+  private chessMode: string =  '';
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', [ chatConfigView.wrapper ]);
@@ -222,7 +224,7 @@ export class Chat extends Component {
 
     this.messageContainer = new Component(this.element);
     // this.gameInstance = new Cross(chatAction.element);
-    this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
+    
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
@@ -230,8 +232,10 @@ export class Chat extends Component {
         console.log(result)
         if (result === 'chess') {
           popupService1.showPopup<{mode: string}>(ChessGameSettings).then((result) => {
+            // this.chessMode = result.mode;
             console.log(result);
-            this.model.joinPlayer();
+            this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, result.mode);
+            this.model.joinPlayer(result.mode);
           });
         }
       });
@@ -240,7 +244,7 @@ export class Chat extends Component {
     this.model.onPlayerList.add(({ player, time }) => {
       // this.gameInstance.setPlayer(player, time);
       this.chatUsers.setPlayer('', player);
-      this.chessGame.setPlayer(player);
+      this.chessGame && this.chessGame.setPlayer(player);
     });
 
     // this.gameInstance.onCellClick = (coords: ICellCoords) => {
@@ -295,9 +299,9 @@ export class Chat extends Component {
     this.model.onRemoveChess.add(({status, fen}) => {
       if (status) {
         this.chatUsers.deletePlayer();
-        this.chessGame.clearData(fen);
+        this.chessGame && this.chessGame.clearData(fen);
         this.chessGame = null;
-        this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
+        // this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
       }
     });
   }

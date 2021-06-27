@@ -81,7 +81,7 @@ class ChessField extends Component {
       if (fen[i]) {
         const fig = fen[i];
         let rotate = false;
-        if (this.chessMode === chessModeConfig.single) {
+        if (this.chessMode === chessModeConfig.oneScreen) {
           rotate = fen[i] === fen[i].toUpperCase() ? false : true;
         }
 

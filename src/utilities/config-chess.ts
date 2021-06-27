@@ -143,12 +143,18 @@ export const chessConfigView = {
     player: 'chess_player',
     body: 'chess_body'
   },
-  btn: 'chess_button',
+  btn: {
+    btnEnabled: 'chess_button',
+    btnDisabled: 'disabled',
+  },
   modal: {
     wrapper: 'modal_wrapper',
     message: 'modal_message',
     text: 'modal_text',
-    btn: 'chess_button'
+    btn: {
+      btnEnabled: 'chess_button',
+      btnDisabled: 'disabled',
+    },
   }
 };
 

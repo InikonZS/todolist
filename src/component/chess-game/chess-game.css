@@ -37,11 +37,9 @@
 .chess_field{
   width:100%;
   height:100%;
-  /* background-color:rgba(0, 0, 255, 0.274); */
   position:relative;
   display:flex;
   flex-wrap:wrap;
-  /* pointer-events: none; */
 }
 
 .chess_board.rotate {
@@ -55,11 +53,6 @@
 .chess_cell {
   width: calc(100% / 8);
   height: calc(100% / 8);
-  /* border: 1px solid #000; */
-  /* width: 80px;
-  height: 80px; */
-  /* background-color: #888; */
-  /* margin: 5px; */
   cursor: pointer;
   font-size: 50px;
   color: #e4e4e4;
@@ -77,7 +70,6 @@
   width:60px;
   height:60px;
   position:absolute;
-  /* background-color:#f00; */
   cursor:grab;
   display: flex;
   justify-content: center;
@@ -116,7 +108,6 @@
 }
 
 .chess_history {
-  /* height: 100%; */
   height: 480px;
   padding: 5px;
   padding-right: 20px;
@@ -139,10 +130,6 @@
  background-position: center center;
 }
 
-/* .chess_history_moves {
-
-} */
-
 .chess_history_header {
   font-weight: bold;
   margin-bottom: 5px;
@@ -164,6 +151,11 @@
   width: 100%;
   cursor: pointer;
   transition: .2s all ease;
+}
+
+.chess_button.disabled {
+  background-color: #3a3a3a;
+  color: #a5a5a5;
 }
 
 .modal_wrapper {
@@ -197,7 +189,6 @@
 }
 
 .valid_move {
-  /* background-color: #6af1883b; */
   box-shadow: inset 0 0 40px #6af187d2;
 }
 

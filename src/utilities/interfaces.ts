@@ -65,13 +65,18 @@ export interface IChessView {
   body: string;
 }
 
+export interface IChessBtn {
+  btnEnabled: string;
+  btnDisabled: string;
+}
+
 export interface IChessConfigView {
   history: IHistoryView;
   figure: string;
   boardView: IBoardCellView;
   gameField: IGameField;
   chessView: IChessView;
-  btn: string;
+  btn: IChessBtn;
 }
 
 export interface ILangViewControl {
@@ -84,7 +89,7 @@ export interface IModalPopup {
   wrapper: string;
   message: string;
   text: string;
-  btn: string;
+  btn: IChessBtn;
 }
 
 export interface ILangViewPlayer {
@@ -166,4 +171,9 @@ export interface IChatUserWrapper {
 export interface IChessStart {
   field: string;
   time: number;
+}
+
+export interface IChessStop {
+  stop: string;
+  player: string;
 }

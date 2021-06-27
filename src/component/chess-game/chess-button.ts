@@ -1,10 +1,12 @@
 import { Component } from 'utilities/Component';
-import { ILangViewControl } from 'utilities/interfaces';
+import { IChessBtn, ILangViewControl } from 'utilities/interfaces';
 
 class ChessButton extends Component {
   public onClick: () => void = () => {};
-  constructor(parentNode: HTMLElement, btnConfig: string, btnContent: string) {
-    super(parentNode, 'button', [ btnConfig ], btnContent);
+  private btnConfig: IChessBtn;
+  constructor(parentNode: HTMLElement, btnConfig: IChessBtn, btnContent: string) {
+    super(parentNode, 'button', [ btnConfig.btnEnabled ], btnContent);
+    this.btnConfig = btnConfig;
     this.element.onclick = () => {
       this.onClick();
     };
@@ -15,10 +17,12 @@ class ChessButton extends Component {
 
   buttonDisable(): void {
     this.element.setAttribute('disabled', 'true');
+    this.element.classList.add(this.btnConfig.btnDisabled);
   }
 
   buttonEnable(): void {
     this.element.removeAttribute('disabled');
+    this.element.classList.remove(this.btnConfig.btnDisabled);
   }
 }
 
