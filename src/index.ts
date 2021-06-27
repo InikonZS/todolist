@@ -11,6 +11,7 @@ import {Route, Router} from './router';
 import {Navigation} from './navPanel';
 import { ChessPage } from './chessPage';
 import './style.css';
+import { popupService1 } from './component/popupService/popupService1'
 
 
 
@@ -27,6 +28,7 @@ class App extends Component {
 
   constructor(parentNode: HTMLElement, popupService: PopupService) {
     super(parentNode, 'div', ['page_wrapper']);
+    popupService1.init(this.element);
     //this.header = new Header(this.element);
     this.navigation = new Navigation(this.element);
     this.router = new Router();
@@ -36,7 +38,7 @@ class App extends Component {
     this.chat = new Chat(this.pageContainer.element);
     this.main = new Main(this.pageContainer.element);
     this.chess = new ChessPage(this.pageContainer.element);
-    
+
     this.addPage('chat', 'chat', this.chat);
     this.addPage('авторизация', 'auth', this.auth);
     this.addPage('тудушки', 'todos', this.main);
