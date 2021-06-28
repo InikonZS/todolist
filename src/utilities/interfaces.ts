@@ -79,9 +79,14 @@ export interface IChessBtn {
   btnDisabled: string;
 }
 
+export interface IFigure {
+  wrapper: string;
+  inner: string;
+}
+
 export interface IChessConfigView {
   history: IHistoryView;
-  figure: string;
+  figure: IFigure;
   boardView: IBoardCellView;
   gameField: IGameField;
   chessView: IChessView;

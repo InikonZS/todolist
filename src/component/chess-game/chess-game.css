@@ -66,7 +66,7 @@
   background-color: #6586b888;
 }
 
-.drag-item{
+.drag_item{
   width:60px;
   height:60px;
   position:absolute;
@@ -74,6 +74,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.drag_item_inner {
+  width: 90%;
+  height: 90%;
   background-position: center center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -109,8 +113,10 @@
 
 .chess_history {
   height: 480px;
+  min-width: 100px;
+  max-width: 100px;
   padding: 5px;
-  padding-right: 20px;
+  padding-right: 10px;
   margin-right: 10px;
   overflow-y: scroll;
 }

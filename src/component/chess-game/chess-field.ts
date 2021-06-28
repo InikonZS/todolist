@@ -1,10 +1,10 @@
 import Vector from 'utilities/vector';
 import { Component } from 'utilities/Component';
 import Figure from './chess-figure';
-import configField, { configFigures, fen } from 'utilities/config-chess';
-import { IBoardCellView, IGameField, ICellCoords } from 'utilities/interfaces';
+import configField, { chessModeConfig, configFigures, fen } from 'utilities/config-chess';
+import { IBoardCellView, IGameField, ICellCoords, IFigure } from 'utilities/interfaces';
 import ChessCell from './chess-cell';
-import { chessModeConfig } from '../chat/chatPage';
+
 
 class ChessField extends Component {
   private dragableItems: Component;
@@ -21,13 +21,13 @@ class ChessField extends Component {
   private cells: Array<ChessCell> = [];
   private configBoardView: IBoardCellView;
   private configFieldView: IGameField;
-  private configFigure: string;
+  private configFigure: IFigure;
   private configFigures: Map<string, string>;
   private chessMode: string = '';
 
   constructor(
     parentNode: HTMLElement,
-    configFigure: string,
+    configFigure: IFigure,
     configBoardView: IBoardCellView,
     configFieldView: IGameField,
     configFigures: Map<string, string>

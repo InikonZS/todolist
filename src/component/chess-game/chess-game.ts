@@ -14,11 +14,10 @@ import './chess-game.css';
 import ChessHistoryBlock from './chess-history';
 import ChessField from './chess-field';
 import Vector from 'utilities/vector';
-import configFigures, { chessConfigView, fen } from 'utilities/config-chess';
+import configFigures, { chessConfigView, chessModeConfig, fen } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
 import ChessModel from './chess-model';
 import Timer from 'utilities/timer';
-import { chessModeConfig } from '../chat/chatPage';
 
 class ChessGame extends Component {
   private cells: Array<ChessCell> = [];

@@ -123,7 +123,10 @@ export const chessConfigView = {
     figure: 'chess_history_figure',
     text: 'chess_history_moves'
   },
-  figure: 'drag-item',
+  figure: {
+    wrapper: 'drag_item',
+    inner: 'drag_item_inner'
+  },
   boardView: {
     boardView: 'chess_board_view',
     cell: {
@@ -164,3 +167,9 @@ export const chessConfigView = {
 
 // export default configField;
 export default configFigures;
+
+export const chessModeConfig = {
+  network: 'network',
+  oneScreen: 'oneScreen',
+  bot: 'bot'
+};

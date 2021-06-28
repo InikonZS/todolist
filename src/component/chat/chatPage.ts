@@ -20,15 +20,12 @@ import { popupService1 } from '../popupService/popupService1';
 import { GameSelect } from './game-select';
 import { GenericPopup } from './genericPopup';
 import { ChessGameSettings } from './chess-game-settings';
+import bgImage from '../../assets/logoChess.png';
 
 let langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
 
-export const chessModeConfig = {
-  network: 'network',
-  oneScreen: 'oneScreen',
-  bot: 'bot'
-};
+
 
 class ChatModel {
   currentUser: IAuthData;
@@ -207,6 +204,7 @@ export class Chat extends Component {
     );
     this.chatMain = new Component(this.element, 'div', [ chatConfigView.main ]);
     this.chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
+    this.chatAction.element.style.backgroundImage = `url(${bgImage})`;
     const chatMessages = new ChatMessagesBlock(
       this.chatMain.element,
       chatConfigView.messageWrapper

@@ -1,4 +1,5 @@
 import { Component } from 'utilities/Component';
+import { IFigure } from 'utilities/interfaces';
 import Vector from 'utilities/vector';
 
 class Figure extends Component {
@@ -10,14 +11,15 @@ class Figure extends Component {
   constructor(
     parentNode: HTMLElement,
     figure: string,
-    configFigureView: string,
+    configFigureView: IFigure,
     _figurePos: Vector,
     rotate: boolean
   ) {
-    super(parentNode, 'div', [ configFigureView ]);
+    super(parentNode, 'div', [ configFigureView.wrapper ]);
     this.figurePos = _figurePos;
     this.figPic = figure;
-    this.element.style.backgroundImage = `url(${figure})`;
+    const inner = new Component(this.element, 'div', [configFigureView.inner]);
+    inner.element.style.backgroundImage = `url(${figure})`;
     if(rotate) {
       this.element.classList.add('figure-rotate')
     }
