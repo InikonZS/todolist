@@ -21,10 +21,17 @@ import { GameSelect } from './game-select';
 import { GenericPopup } from './genericPopup';
 import { ChessGameSettings } from './chess-game-settings';
 import bgImage from '../../assets/logoChess.png';
+import { apiRequest } from 'utilities/utils';
 
 let langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
 
+export interface IChannelData{
+  name:string;
+  msgArr:Array<string>;
+}
+
+const apiUrl = 'http://localhost:4040/authService/';
 
 class ChatModel {
   currentUser: IAuthData;
@@ -101,6 +108,11 @@ class ChatModel {
       if (data.type === 'channelList') {
         this.onChannelList.emit(data.channelList);
       }
+
+      if (data.type === 'updateChannelList') {
+        console.log('You must update view of channels');
+      }
+
       if (data.type === 'chess-events') {
         if (data.method === 'removeGame') {
           this.onRemoveChess.emit({
@@ -207,6 +219,19 @@ class ChatModel {
       })
     );
   }
+
+  addChannel(name: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'addChannel',
+        params: {
+          channelName: name,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
   close(){
     this.socket.close();
     this.isConnected = false;
@@ -308,7 +333,8 @@ export class Chat extends Component {
         this.model.joinChannel(channelName);
       };
       this.channelBlock.onAddBtnClick = () => {
-        console.log('Add btn clicked');
+        const nameChannel = prompt('Enter channel name');
+        this.model.addChannel(nameChannel);
       };
     });
     chatInputBlock.onClick = (message) => {
@@ -366,6 +392,12 @@ export class Chat extends Component {
   leave() {
     this.model.leaveUser();
     this.model.close();
+  }
+
+  async addChannel(channelData:IChannelData) {    
+    const request = apiRequest(apiUrl, 'addchannel', channelData).then(res=>{     
+    });
+    return request
   }
 }
 
