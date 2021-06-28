@@ -94,6 +94,11 @@ class ChatModel {
       if (data.type === 'channelList') {
         this.onChannelList.emit(data.channelList);
       }
+
+      if (data.type === 'updateChannelList') {
+        console.log('You must update view of channels');
+      }
+
       if (data.type === 'chess-events') {
         if (data.method === 'removeGame') {
           this.onRemoveChess.emit({
