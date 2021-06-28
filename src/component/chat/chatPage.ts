@@ -299,7 +299,8 @@ export class Chat extends Component {
         this.model.joinChannel(channelName);
       };
       this.channelBlock.onAddBtnClick = () => {
-        console.log('Add btn clicked');
+        const nameChannel = prompt('Enter channel name');
+        this.model.addChannel(nameChannel);
       };
     });
     chatInputBlock.onClick = (message) => {
