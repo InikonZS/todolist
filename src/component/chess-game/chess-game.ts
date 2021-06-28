@@ -165,8 +165,6 @@ class ChessGame extends Component {
       this.host = player;
       this.players.push(player);
       if (this.chessMode !== chessModeConfig.network) {
-        console.log('mode', this.chessMode);
-
         this.btnStart.buttonEnable();
       }
     } else if (this.players.length === 1) {
@@ -176,7 +174,11 @@ class ChessGame extends Component {
     }
   }
 
-  setHistoryMove(coords: Array<ICellCoords>, figName: string): void {
+  // setHistoryMove(coords: Array<ICellCoords>, figName: string): void {
+  //   this.history.setHistoryMove(coords, this.timer.getTimeString(), figName);
+  // }
+
+  setHistoryMove(coords: Array<Array<Vector>>, figName: Array<string>): void {
     this.history.setHistoryMove(coords, this.timer.getTimeString(), figName);
   }
 
@@ -220,10 +222,9 @@ class ChessGame extends Component {
 
   onFigureMove(data: IChessData): void {
     this.host = data.player;
-
     const newField = this.fromFen(data.field);
 
-    this.setHistoryMove(data.coords, data.figure);
+    this.setHistoryMove(data.moves, data.figure);
     const oldFigPos = new Vector(data.coords[0].x, data.coords[0].y);
     const newFigPos = new Vector(data.coords[1].x, data.coords[1].y);
 
@@ -232,6 +233,7 @@ class ChessGame extends Component {
 
     this.updateGameField(data.rotate);
     this.removeAllowedMoves();
+    this.chessBoard.showKingCheck(data.king)
   }
 
   createChessField(data: IChessStart) {

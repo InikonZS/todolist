@@ -1,41 +1,52 @@
 import { Component } from "utilities/Component";
-import { ICellCoords } from "utilities/interfaces";
+import { ICellConfig, ICellCoords } from "utilities/interfaces";
 import Vector from "utilities/vector";
 
 class ChessCell extends Component {
   public onCellClick: (coords: ICellCoords) => void = () => {};
-  coords: Vector;
+  private coords: Vector;
+  private configCell: ICellConfig;
 
-  constructor(parentNode: HTMLElement, coords: Vector, configCell: Array<string>) {
-    super(parentNode, 'div', configCell);
+  constructor(parentNode: HTMLElement, coords: Vector, configCell: ICellConfig, cellColor: string) {
+    super(parentNode, 'div', [configCell.cell]);
+    this.element.classList.add(cellColor);
+    this.configCell = configCell;
     this.coords = coords;
+    
     this.element.onclick = () => {
       this.onCellClick(this.coords);
     };
   }
 
-  getCellCoord(): ICellCoords {
+  getCellCoord(): Vector {
     return this.coords;
   }
 
-  clickedCell(sign: string) {
+  clickedCell(sign: string): void {
     this.element.classList.add('clicked');
     this.element.textContent = sign;
   }
 
-  clearCell() {
+  clearCell(): void {
     this.element.classList.remove('clicked');
     this.element.textContent = '';
   }
 
-  setAllowedMove() {
-    this.element.classList.add('valid_move');
+  setAllowedMove(): void {
+    this.element.classList.add(this.configCell.validMove);
   }
 
-  removeAllowedMove() {
-    this.element.classList.remove('valid_move');
+  removeAllowedMove(): void {
+    this.element.classList.remove(this.configCell.validMove);
   }
 
+  setKingCell(): void {
+    this.element.classList.add(this.configCell.kingCell);
+  }
+
+  removeKingCell(): void {
+    this.element.classList.remove(this.configCell.kingCell);
+  }
 }
 
 export default ChessCell;

@@ -1,3 +1,5 @@
+import Vector from "src/chess/modules/components/vector";
+
 export interface ICellCoords {
   x: number;
   y: number;
@@ -20,7 +22,9 @@ export interface IChessData {
   field: string;
   winner: string;
   rotate: boolean;
-  figure: string;
+  figure: Array<string>;
+  moves: Array<Array<Vector>>
+  king: Vector
 }
 
 export interface IChannelDTO {
@@ -43,11 +47,16 @@ export interface IHistoryView {
   text: string;
 }
 
-export interface IBoardCellView {
-  boardView: string;
+export interface ICellConfig {
   cell: string;
+  validMove: string;
+  kingCell: string;
   light: string;
   dark: string;
+}
+export interface IBoardCellView {
+  boardView: string;
+  cell: ICellConfig;
 }
 
 export interface IGameField {

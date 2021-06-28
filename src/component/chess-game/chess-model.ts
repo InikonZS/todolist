@@ -21,12 +21,12 @@ class ChessModel {
         field: data.field,
         winner: data.winner,
         rotate: data.rotate,
-        figure: data.figure
+        figure: data.figure,
+        moves: data.moves,
+        king: data.king
       });
     }
     if (data.method === 'startGame') {
-      console.log(data.field);
-
       this.onStartGame.emit({ field: data.field, time: data.time });
     }
 

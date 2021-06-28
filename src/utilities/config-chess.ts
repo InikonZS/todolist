@@ -126,9 +126,13 @@ export const chessConfigView = {
   figure: 'drag-item',
   boardView: {
     boardView: 'chess_board_view',
-    cell: 'chess_board_cell',
-    light: 'cell-light',
-    dark: 'cell-dark'
+    cell: {
+      cell: 'chess_board_cell',
+      validMove: 'valid_move',
+      kingCell: 'king_check',
+      light: 'cell-light',
+      dark: 'cell-dark'
+    }
   },
   gameField: {
     board: 'chess_board',
@@ -145,7 +149,7 @@ export const chessConfigView = {
   },
   btn: {
     btnEnabled: 'chess_button',
-    btnDisabled: 'disabled',
+    btnDisabled: 'disabled'
   },
   modal: {
     wrapper: 'modal_wrapper',
@@ -153,8 +157,8 @@ export const chessConfigView = {
     text: 'modal_text',
     btn: {
       btnEnabled: 'chess_button',
-      btnDisabled: 'disabled',
-    },
+      btnDisabled: 'disabled'
+    }
   }
 };
 

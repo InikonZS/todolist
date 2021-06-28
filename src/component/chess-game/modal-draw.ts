@@ -14,7 +14,6 @@ class ModalDraw extends Component {
   constructor(parentNode: HTMLElement, config: IModalPopup, configLang: ILangViewModal, status: string, host: string, players: Array<string>) {
     super(parentNode, 'div', [ config.wrapper ]);
     this.modalMessage = new Component(this.element, 'div', [ config.message ]);
-    console.log(status);
     const messageDraw = `Claim a draw. Nobody won, nobody lost`;
     const player = players.find(player => player !== host)
     const messageLoss = `Claim a loss. ${host} lost${player ? ', ' + player + ' won' : ''}`;

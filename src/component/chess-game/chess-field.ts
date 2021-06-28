@@ -44,18 +44,18 @@ class ChessField extends Component {
       for (let j = 0; j < 8; j++) {
         let color = '';
         if (i % 2 === 0) {
-          color = j % 2 === 0 ? configBoardView.light : configBoardView.dark;
-          let cell = new ChessCell(boardView.element, new Vector(j, i), [
+          color = j % 2 === 0 ? configBoardView.cell.light : configBoardView.cell.dark;
+          let cell = new ChessCell(boardView.element, new Vector(j, i), 
             configBoardView.cell,
             color
-          ]);
+          );
           this.cells.push(cell);
         } else if (i % 2 !== 0) {
-          color = j % 2 === 0 ? configBoardView.dark : configBoardView.light;
-          let cell = new ChessCell(boardView.element, new Vector(j, i), [
+          color = j % 2 === 0 ? configBoardView.cell.dark : configBoardView.cell.light;
+          let cell = new ChessCell(boardView.element, new Vector(j, i), 
             configBoardView.cell,
             color
-          ]);
+          );
           this.cells.push(cell);
         }
       }
@@ -210,7 +210,6 @@ class ChessField extends Component {
     );
     figItem.setFigureState(newFigPos, this.cellBox);
     this.isDragable = true;
-    console.log(this.isDragable);
   }
 
   setDragable(status: boolean): void {
@@ -240,6 +239,16 @@ class ChessField extends Component {
 
   setChessMode(chessMode: string): void {
     this.chessMode = chessMode;
+  }
+
+  showKingCheck(coords: Vector): void {
+    if (coords) {
+      this.cells.forEach((cell) => cell.removeKingCell());
+      const kingCell = this.cells.find(
+      (cell) => cell.getCellCoord().x === coords.x && cell.getCellCoord().y === coords.y
+      );
+      kingCell.setKingCell();
+    }
   }
 }
 
