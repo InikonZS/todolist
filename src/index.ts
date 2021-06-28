@@ -12,6 +12,7 @@ import {Navigation} from './navPanel';
 import { ChessPage } from './chessPage';
 import './style.css';
 import { popupService1 } from './component/popupService/popupService1'
+import { IPageComponent } from './utilities/interfaces';
 
 
 
@@ -48,15 +49,20 @@ class App extends Component {
     popupService.init(this.popupLayer.element);
 
     this.router.processHash();
+    this.auth.onLogout = () =>{
+      console.log('logged out')
+      this.chat.leave()
+    }
   }
 
-  addPage(linkName: string, pageName:string, pageComponent:Component){
+  addPage(linkName: string, pageName:string, pageComponent:IPageComponent){
     let route = new Route(pageName, linkName, ()=>{
-      pageComponent.element.style.display = '';
+      pageComponent.show();
       this.navigation.setActive(pageName);
     },()=>{
-      pageComponent.element.style.display = 'none';
+      pageComponent.hide();
     });
+
     this.navigation.addLink(linkName, pageName);
     this.router.addRoute(route);
   }
