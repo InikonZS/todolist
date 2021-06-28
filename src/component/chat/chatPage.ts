@@ -24,6 +24,8 @@ import { ChessGameSettings } from './chess-game-settings';
 let langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
 
+//test push
+
 export const chessModeConfig = {
   network: 'network',
   oneScreen: 'oneScreen',
