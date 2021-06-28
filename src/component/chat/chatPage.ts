@@ -20,6 +20,7 @@ import { popupService1 } from '../popupService/popupService1';
 import { GameSelect } from './game-select';
 import { GenericPopup } from './genericPopup';
 import { ChessGameSettings } from './chess-game-settings';
+import { apiRequest } from 'utilities/utils';
 
 let langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
@@ -28,6 +29,8 @@ export interface IChannelData{
   name:string;
   msgArr:Array<string>;
 }
+
+const apiUrl = 'http://localhost:4040/authService/';
 
 export const chessModeConfig = {
   network: 'network',
@@ -332,6 +335,12 @@ export class Chat extends Component {
 
   setCurrentUser(user: IAuthData) {
     this.model.setCurrentUser(user);
+  }
+
+  async addChannel(channelData:IChannelData) {    
+    const request = apiRequest(apiUrl, 'addchannel', channelData).then(res=>{     
+    });
+    return request
   }
 }
 
