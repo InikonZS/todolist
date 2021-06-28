@@ -82,27 +82,7 @@ export class RegForm extends Control {
                            lowercase letter and one number`;
     this.node.appendChild(this.note);
     this.submitButton.disable();
-    this.state  = {name:false,pass:false}
-
-    // this.nameInput.node.oninput = async () =>{
-    //   const res = await this.model.regValidation(this.getData());
-    //   res === 'ok' ? this.nameFlag = true : this.nameFlag = false;
-    //   console.log(`${this.nameFlag} name`)
-    //   if(this.nameFlag && this.passFlag) {
-    //     this.submitButton.enable();
-    //   } else {
-    //     this.submitButton.disable();
-    //   }
-    // }
-    // this.passwordInput.node.oninput = async () =>{
-    //   const res = await this.model.passwordValidation(this.getData());
-    //   res === 'ok' ? this.passFlag = true : this.passFlag = false;
-    //   if(this.nameFlag && this.passFlag) {
-    //     this.submitButton.enable();
-    //   } else {
-    //     this.submitButton.disable();
-    //   }
-    // }
+    this.state  = {name:false,pass:false};
     this.submitButton.node.addEventListener('click', () => {
       const alert = document.createElement('div');
       alert.innerText = 'Not valid or this name already exists';

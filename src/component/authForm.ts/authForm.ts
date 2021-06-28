@@ -44,6 +44,7 @@ export class AuthForm extends Control {
 
     }
     this.cancelButton.node.addEventListener('click', () => {
+
       this.node.remove();
     })
   }

@@ -1,3 +1,4 @@
+import { Main } from './../Main';
 import { IAuthData } from '../../authPage';
 import { Component } from 'utilities/Component';
 import { popupService } from '../Popupservice';
@@ -39,7 +40,8 @@ class ChatModel {
   constructor() {
     this.socket = new WebSocket('ws:/localhost:4080');
     this.chessModel = new ChessModel(this.socket);
-    this.socket.onopen = () => {
+    this.socket.onopen = (ev) => {
+      console.log(ev,`soket event`)
       this.joinUser();
     };
 
@@ -96,7 +98,7 @@ class ChatModel {
       if (data.type === 'chess-events') {
         if (data.method === 'removeGame') {
           this.onRemoveChess.emit({
-            status: data.remove, 
+            status: data.remove,
             fen: data.field
           });
         }
@@ -124,6 +126,17 @@ class ChatModel {
       JSON.stringify({
         service: 'chat',
         endpoint: 'joinUser',
+        params: {
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+  leaveUser() {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'leaveUser',
         params: {
           sessionId: localStorage.getItem('todoListApplicationSessionId')
         }
@@ -199,9 +212,14 @@ export class Chat extends Component {
   private chatMain: Component;
   private chatUsers: ChatUsersWrapper;
   private chatAction: Component;
+  isUser : boolean
+  observer: MutationObserver;
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', [ chatConfigView.wrapper ]);
+
+
+    this.isUser = false;
     this.channelBlock = new ChatChannelsWrapper(
       this.element,
       chatConfigView.channelWrapper,
@@ -209,6 +227,7 @@ export class Chat extends Component {
     );
     this.chatMain = new Component(this.element, 'div', [ chatConfigView.main ]);
     this.chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
+
     const chatMessages = new ChatMessagesBlock(
       this.chatMain.element,
       chatConfigView.messageWrapper
@@ -228,6 +247,11 @@ export class Chat extends Component {
     // this.gameInstance = new Cross(chatAction.element);
     this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
     const btnEnter = new Component(this.chatMain.element, 'button');
+    const btnAuth = new Component(this.chatUsers.element,'button')
+    btnAuth.element.textContent = 'ENTER THE LOBBY';
+    btnAuth.element.onclick = () => {
+      this.lobbyEnter();
+    }
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
       this.model.joinPlayer();
@@ -295,11 +319,26 @@ export class Chat extends Component {
         this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel);
       }
     });
+    this.observer = new MutationObserver(()=>{
+      if(this.element.style.display == 'none'){
+        console.log('display none')
+      } else {
+        console.log('Join user')
+        this.lobbyEnter()
+      }
+
+    });
+    this.observer.observe(this.element, { attributes : true, attributeFilter : ['style'] });
   }
 
   setCurrentUser(user: IAuthData) {
     this.model.setCurrentUser(user);
   }
+  lobbyEnter () {
+        this.model.leaveUser()
+        this.model.joinUser();
+    }
+
 }
 
 export class RoomChat {
