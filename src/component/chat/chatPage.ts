@@ -41,17 +41,24 @@ class ChatModel {
   // onChessMove: Signal<IChessData> = new Signal();
   chessModel: ChessModel;
   isConnected: boolean;
+  // open() {
+  //   this.socket = new WebSocket('ws:/localhost:4080');
 
-  constructor() {
+  // }
+
+  open() {
     this.socket = new WebSocket('ws:/localhost:4080');
     this.chessModel = new ChessModel(this.socket);
     this.isConnected = false;
     this.socket.onopen = () => {
+      console.log('onopen');
+      
       this.joinUser();
       this.isConnected = true
       this.onOpen.emit();
     };
     this.socket.onclose = () => {
+      console.log('onclose');
       this.isConnected = false;
       this.onClose.emit();
     }
@@ -121,6 +128,8 @@ class ChatModel {
   }
 
   joinUser() {
+    console.log('join User');
+    
     this.socket.send(
       JSON.stringify({
         service: 'chat',
@@ -200,6 +209,7 @@ class ChatModel {
   }
   close(){
     this.socket.close();
+    this.isConnected = false;
   }
 }
 
@@ -335,9 +345,20 @@ export class Chat extends Component {
     this.model.setCurrentUser(user);
   }
   show() {
+    console.log('show');
+    
     super.show();
+    if(!this.model.isConnected) {
+      console.log('no connect');
+      
+      this.model.open();
+      // this.model.joinUser();
+    }
     if(this.model.isConnected) {
+      console.log('connect');
+      
       this.model.joinUser();
+      // this.model.joinUser();
     }
     //this.model.leaveUser();
 
