@@ -191,6 +191,19 @@ class ChatModel {
   setCurrentUser(user: IAuthData) {
     this.currentUser = user;
   }
+
+  addChannel(name: string) {
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'addChannel',
+        params: {
+          channelName: name,
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
 }
 
 export class Chat extends Component {
