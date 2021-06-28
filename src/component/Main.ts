@@ -2,6 +2,7 @@ import { Component } from "../utilities/Component";
 import { ControlPanel } from "./Controlpanel";
 import { Dashboard } from "./Dashboard";
 import { popupService } from "./Popupservice";
+import { IPageComponent } from '../utilities/interfaces';
 
 const ArrData = [
   {
@@ -18,15 +19,15 @@ const ArrData = [
   },
 ];
 
-export class Main extends Component {
+export class Main extends Component implements IPageComponent {
     controlPanel: ControlPanel;
-  
+
     dashboard: Dashboard;
     constructor(parentNode: HTMLElement | null = null) {
       super(parentNode, 'div', ['main']);
       this.controlPanel = new ControlPanel(this.element);
       this.dashboard = new Dashboard(this.element);
-  
+
       //this.dashboard.model.setData(ArrData);
       this.dashboard.model.getList();
       this.controlPanel.onAddClick = () => {
@@ -46,11 +47,12 @@ export class Main extends Component {
               ...this.dashboard.model.getData(),
               obj,
             ]);*/
-  
-            
+
+
           },
           () => {}
         );
       };
     }
+
   }

@@ -42,16 +42,25 @@ class ChatModel {
   onUserList: Signal<Array<string>> = new Signal();
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
   onRemoveChess: Signal<{status: boolean, fen:string}> = new Signal();
+  onClose : Signal<void> = new Signal();
+  onOpen : Signal<void> = new Signal();
   // onChessMove: Signal<IChessData> = new Signal();
   chessModel: ChessModel;
+  isConnected: boolean;
 
   constructor() {
     this.socket = new WebSocket('ws:/localhost:4080');
     this.chessModel = new ChessModel(this.socket);
+    this.isConnected = false;
     this.socket.onopen = () => {
       this.joinUser();
+      this.isConnected = true
+      this.onOpen.emit();
     };
-
+    this.socket.onclose = () => {
+      this.isConnected = false;
+      this.onClose.emit();
+    }
     this.socket.onmessage = (ev) => {
       let data = JSON.parse(ev.data);
       console.log(data);
@@ -183,6 +192,21 @@ class ChatModel {
   setCurrentUser(user: IAuthData) {
     this.currentUser = user;
   }
+  leaveUser() {
+    console.log(localStorage.getItem('todoListApplicationSessionId'))
+    this.socket.send(
+      JSON.stringify({
+        service: 'chat',
+        endpoint: 'leaveUser',
+        params: {
+          sessionId: localStorage.getItem('todoListApplicationSessionId')
+        }
+      })
+    );
+  }
+  close(){
+    this.socket.close();
+  }
 }
 
 export class Chat extends Component {
@@ -226,7 +250,7 @@ export class Chat extends Component {
 
     this.messageContainer = new Component(this.element);
     // this.gameInstance = new Cross(chatAction.element);
-    
+
     const btnEnter = new Component(this.chatMain.element, 'button');
     btnEnter.element.textContent = 'ENTER THE GAME';
     btnEnter.element.onclick = () => {
@@ -268,6 +292,7 @@ export class Chat extends Component {
     });
 
     this.model.onUserList.add((userList) => {
+      console.log(userList,'userlist')
       this.chatUsers.setSpectators(userList);
     });
 
@@ -306,10 +331,25 @@ export class Chat extends Component {
         // this.chessGame = new ChessGame(this.chatAction.element, langConfig.chess, this.model.chessModel, chessMode);
       }
     });
+    this.model.onClose.add(()=>{
+      this.chatUsers.setSpectators([])
+    })
   }
 
   setCurrentUser(user: IAuthData) {
     this.model.setCurrentUser(user);
+  }
+  show() {
+    super.show();
+    if(this.model.isConnected) {
+      this.model.joinUser();
+    }
+    //this.model.leaveUser();
+
+  }
+  leave() {
+    this.model.leaveUser();
+    this.model.close();
   }
 }
 
