@@ -3,6 +3,7 @@
 }
 
 .chess_board {
+  /* width: calc(100% / 8); */
   width: 480px;
   height: 480px;
   background-color: #555;

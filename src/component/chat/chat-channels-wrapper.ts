@@ -24,6 +24,8 @@ class ChatChannelsWrapper extends Component {
   }
 
   addChannels(channelList: IChannelDTO[]): void  {
+    this.chatChannels.destroy();
+    this.chatChannels = new Component(this.element, 'div', [this.configView.channels]);
     this.channels = channelList.map((channelData: IChannelDTO) => {
       const channel = new ChatChannel(this.chatChannels.element, this.configView.channel);
       channel.element.textContent = channelData.name;

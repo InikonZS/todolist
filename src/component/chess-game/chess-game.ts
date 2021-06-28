@@ -173,10 +173,6 @@ class ChessGame extends Component {
     }
   }
 
-  // setHistoryMove(coords: Array<ICellCoords>, figName: string): void {
-  //   this.history.setHistoryMove(coords, this.timer.getTimeString(), figName);
-  // }
-
   setHistoryMove(coords: Array<Array<Vector>>, figName: Array<string>): void {
     this.history.setHistoryMove(coords, this.timer.getTimeString(), figName);
   }
@@ -232,7 +228,7 @@ class ChessGame extends Component {
 
     this.updateGameField(data.rotate);
     this.removeAllowedMoves();
-    this.chessBoard.showKingCheck(data.king)
+    this.chessBoard.showKingCheck(data.king);
   }
 
   createChessField(data: IChessStart) {
