@@ -24,7 +24,10 @@ import { ChessGameSettings } from './chess-game-settings';
 let langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
 
-//test push
+export interface IChannelData{
+  name:string;
+  msgArr:Array<string>;
+}
 
 export const chessModeConfig = {
   network: 'network',
