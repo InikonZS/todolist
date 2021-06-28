@@ -191,3 +191,7 @@ export interface IChessStop {
   stop: string;
   player: string;
 }
+export interface IPageComponent {
+  show : ()=>void;
+  hide : ()=>void;
+}

@@ -57,12 +57,19 @@ export class Auth extends Component {
   model: AuthModel = new AuthModel();
   reg: RegForm = new RegForm(this.element);
   auth: AuthForm = new AuthForm(this.element)
+  onLogout : () => void;
+  logoutButton: Component;
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', ['main']);
     this.loginInput = new Component(this.element, 'input');
     this.passwordInput = new Component(this.element, 'input');
     this.sendButton = new Component(this.element, 'button', [], 'auth');
+    this.logoutButton = new Component(this.element,'button',[],'logout');
+    this.logoutButton.element.onclick = () => {
+      this.onLogout?.()
+      localStorage.removeItem('todoListApplicationSessionId');
+    }
     this.sendButton.element.onclick = () => {
       this.model.sendAuthData(this.getData());
     }
