@@ -148,7 +148,8 @@ export const chessConfigView = {
     controls: 'chess_controls',
     head: 'chess_head',
     player: 'chess_player',
-    body: 'chess_body'
+    body: 'chess_body',
+    activePlayer: 'player_active'
   },
   btn: {
     btnEnabled: 'chess_button',

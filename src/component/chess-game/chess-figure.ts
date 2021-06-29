@@ -13,9 +13,11 @@ class Figure extends Component {
     figure: string,
     configFigureView: IFigure,
     _figurePos: Vector,
-    rotate: boolean
+    rotate: boolean,
   ) {
     super(parentNode, 'div', [ configFigureView.wrapper ]);
+    this.element.style.width = `${100 / 8}%`;
+    this.element.style.height = `${100 / 8}%`;
     this.figurePos = _figurePos;
     this.figPic = figure;
     const inner = new Component(this.element, 'div', [configFigureView.inner]);
@@ -33,18 +35,18 @@ class Figure extends Component {
     };
   }
 
-  setFigureState(figPos: Vector, cellBox: DOMRect): void {
+  setFigureState(figPos: Vector): void {
     this.figurePos = figPos.clone();
-    this.setFigurePosition(figPos, cellBox);
+    this.setFigurePosition(figPos);
   }
 
   getFigureState(): Vector {
     return this.figurePos.clone();
   }
 
-  setFigurePosition(figPos: Vector, cellBox: DOMRect): void {
-    this.element.style.left = figPos.x * cellBox.width + 'px';
-    this.element.style.top = figPos.y * cellBox.height + 'px';
+  setFigurePosition(figPos: Vector): void {
+    this.element.style.left = `${100 / 8 * figPos.x}%`;
+    this.element.style.top = `${100 / 8 * figPos.y}%`;
   }
 
   setFigureDragable(status: boolean): void {

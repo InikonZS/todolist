@@ -34,8 +34,6 @@ class ChessCell extends Component {
 
   setAllowedMove(): void {
     this.element.classList.add(this.configCell.validMove);
-    console.log(this.configCell.validMove);
-    
   }
 
   removeAllowedMove(): void {

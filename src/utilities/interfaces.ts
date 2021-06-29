@@ -1,4 +1,4 @@
-import Vector from "src/chess/modules/components/vector";
+import Vector from 'src/chess/modules/components/vector';
 
 export interface ICellCoords {
   x: number;
@@ -23,8 +23,8 @@ export interface IChessData {
   winner: string;
   rotate: boolean;
   figure: Array<string>;
-  moves: Array<Array<Vector>>
-  king: Vector
+  moves: Array<Array<Vector>>;
+  king: Vector;
 }
 
 export interface IChannelDTO {
@@ -72,6 +72,7 @@ export interface IChessView {
   head: string;
   player: string;
   body: string;
+  activePlayer: string;
 }
 
 export interface IChessBtn {
@@ -192,6 +193,6 @@ export interface IChessStop {
   player: string;
 }
 export interface IPageComponent {
-  show : ()=>void;
-  hide : ()=>void;
+  show: () => void;
+  hide: () => void;
 }

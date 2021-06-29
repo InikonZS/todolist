@@ -20,7 +20,7 @@ import { popupService1 } from '../popupService/popupService1';
 import { GameSelect } from './game-select';
 import { GenericPopup } from './genericPopup';
 import { ChessGameSettings } from './chess-game-settings';
-import bgImage from '../../assets/logoChess.png';
+import bgImage from '../../assets/bg-chess.png';
 import { apiRequest } from 'utilities/utils';
 
 let langConfig = langConfigEn;

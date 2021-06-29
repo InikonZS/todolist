@@ -5,7 +5,6 @@ import configField, { chessModeConfig, configFigures, fen } from 'utilities/conf
 import { IBoardCellView, IGameField, ICellCoords, IFigure } from 'utilities/interfaces';
 import ChessCell from './chess-cell';
 
-
 class ChessField extends Component {
   private dragableItems: Component;
   private dragableField: Component = null;
@@ -16,7 +15,6 @@ class ChessField extends Component {
   public onFigureDrop: (posStart: Vector, posDrop: Vector) => void = () => {};
   private startCellPos: Vector;
   public onFigureGrab: (pos: Vector) => void = () => {};
-  private cellBox: DOMRect;
   private isDragable: boolean = false;
   private cells: Array<ChessCell> = [];
   private configBoardView: IBoardCellView;
@@ -45,14 +43,18 @@ class ChessField extends Component {
         let color = '';
         if (i % 2 === 0) {
           color = j % 2 === 0 ? configBoardView.cell.light : configBoardView.cell.dark;
-          let cell = new ChessCell(boardView.element, new Vector(j, i), 
+          let cell = new ChessCell(
+            boardView.element,
+            new Vector(j, i),
             configBoardView.cell,
             color
           );
           this.cells.push(cell);
         } else if (i % 2 !== 0) {
           color = j % 2 === 0 ? configBoardView.cell.dark : configBoardView.cell.light;
-          let cell = new ChessCell(boardView.element, new Vector(j, i), 
+          let cell = new ChessCell(
+            boardView.element,
+            new Vector(j, i),
             configBoardView.cell,
             color
           );
@@ -76,7 +78,6 @@ class ChessField extends Component {
 
     for (let i = 0; i < 64; i++) {
       let cell = new Component(this.dragableField.element, 'div', [ this.configFieldView.cell ]);
-      this.cellBox = cell.element.getBoundingClientRect();
       const cellCoord = new Vector(i % 8, Math.floor(i / 8));
       if (fen[i]) {
         const fig = fen[i];
@@ -86,10 +87,8 @@ class ChessField extends Component {
         }
 
         this.addItem(
-          // new Figure(null, configField[i], this.configFigure, cellCoord),
           new Figure(null, this.configFigures.get(fen[i]), this.configFigure, cellCoord, rotate),
-          i,
-          cell.element.getBoundingClientRect()
+          i
         );
       }
 
@@ -128,12 +127,12 @@ class ChessField extends Component {
     };
   }
 
-  addItem(instance: Figure, i: number, parentNode: DOMRect): void {
+  addItem(instance: Figure, i: number): void {
     const figPos = new Vector(i % 8, Math.floor(i / 8));
     let figure = instance;
 
     this.dragableItems.element.appendChild(figure.element);
-    figure.setFigurePosition(figPos, parentNode);
+    figure.setFigurePosition(figPos);
     figure.onDragStart = (startPos: Vector) => {
       if (this.isDragable) {
         this.dragableField.element.style.display = '';
@@ -151,7 +150,9 @@ class ChessField extends Component {
       .map((item) => Number(parseFloat(item)));
     const origin = new Vector(trasformOrigin[0], trasformOrigin[1]);
     let x = Math.floor(e.clientX - this.element.offsetLeft);
-    let y = Math.floor(e.clientY - this.element.offsetTop);
+    let y = Math.floor(
+      e.clientY - this.element.offsetTop + getGlobalScroll(this.element.parentElement)
+    );
     const mousePos = new Vector(x, y).sub(origin);
 
     const matrix = window
@@ -164,6 +165,7 @@ class ChessField extends Component {
     y = matrix[2] * mousePos.x + matrix[3] * mousePos.y;
     let movePos = new Vector(x, y).sub(this.startChildPos).add(origin);
     // this.figure.setFigurePosition(movePos, this.cellBox);
+
     this.figure.element.style.left = movePos.x + 'px';
     this.figure.element.style.top = movePos.y + 'px';
   }
@@ -172,7 +174,7 @@ class ChessField extends Component {
     if (this.figure) {
       let movePos = new Vector(
         e.clientX - this.element.offsetLeft,
-        e.clientY - this.element.offsetTop
+        e.clientY - this.element.offsetTop + getGlobalScroll(this.element)
       ).sub(this.startChildPos);
       this.figure.element.style.left = movePos.x + 'px';
       this.figure.element.style.top = movePos.y + 'px';
@@ -182,6 +184,8 @@ class ChessField extends Component {
   onFigureDropOnCell(e: MouseEvent) {
     e.preventDefault();
     const fieldBox = this.dragableField.element.getBoundingClientRect();
+    console.log(this.element.scrollTop);
+
     const ratio = Math.floor(fieldBox.width / 8);
     if (window.getComputedStyle(this.element).transform !== 'none' && e.buttons == 1) {
       const matrix = window
@@ -190,7 +194,9 @@ class ChessField extends Component {
         .split(', ')
         .map((item) => Number(item));
       let x = Math.floor((e.clientX - this.element.offsetLeft) / ratio);
-      let y = Math.floor((e.clientY - this.element.offsetTop) / ratio);
+      let y = Math.floor(
+        (e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio
+      );
 
       x = matrix[0] * x + matrix[1] * y;
       y = matrix[2] * x + matrix[3] * y;
@@ -198,7 +204,7 @@ class ChessField extends Component {
     } else if (e.buttons == 1) {
       this.startCellPos = new Vector(
         Math.floor((e.clientX - this.element.offsetLeft) / ratio),
-        Math.floor((e.clientY - this.element.offsetTop) / ratio)
+        Math.floor((e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio)
       );
     }
   }
@@ -208,7 +214,7 @@ class ChessField extends Component {
       (figure) =>
         figure.getFigureState().x === oldFigPos.x && figure.getFigureState().y === oldFigPos.y
     );
-    figItem.setFigureState(newFigPos, this.cellBox);
+    figItem.setFigureState(newFigPos);
     this.isDragable = true;
   }
 
@@ -245,7 +251,7 @@ class ChessField extends Component {
     if (coords) {
       this.cells.forEach((cell) => cell.removeKingCell());
       const kingCell = this.cells.find(
-      (cell) => cell.getCellCoord().x === coords.x && cell.getCellCoord().y === coords.y
+        (cell) => cell.getCellCoord().x === coords.x && cell.getCellCoord().y === coords.y
       );
       kingCell.setKingCell();
     }
@@ -253,3 +259,15 @@ class ChessField extends Component {
 }
 
 export default ChessField;
+
+function getGlobalScroll(el: HTMLElement) {
+  const getScroll = (el: HTMLElement, scrollValue: number) => {
+    let nextValue = el.scrollTop + scrollValue;
+
+    if (el.parentElement) {
+      nextValue = getScroll(el.parentElement, nextValue);
+    }
+    return nextValue;
+  };
+  return getScroll(el, 0);
+}

@@ -47,6 +47,7 @@ class ChessGame extends Component {
   private host: string = '';
   private chessMode: string = '';
   private chessModalView: IModalPopup;
+  chessBody: Component;
 
   constructor(
     parentNode: HTMLElement,
@@ -69,6 +70,8 @@ class ChessGame extends Component {
       [ this.chessView.player ],
       this.langConfig.player1
     );
+    this.playerOne.element.classList.add(this.chessView.activePlayer);
+
     this.timer = new Timer(chessHead.element);
     this.playerTwo = new Component(
       chessHead.element,
@@ -76,15 +79,15 @@ class ChessGame extends Component {
       [ this.chessView.player ],
       this.langConfig.player2
     );
-    const chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
+    this.chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
     this.history = new ChessHistoryBlock(
-      chessBody.element,
+      this.chessBody.element,
       chessConfigView.history,
       langConfig.history
     );
 
     this.chessBoard = new ChessField(
-      chessBody.element,
+      this.chessBody.element,
       chessConfigView.figure,
       chessConfigView.boardView,
       chessConfigView.gameField,
@@ -133,6 +136,13 @@ class ChessGame extends Component {
     this.model.onStartGame.add((data) => this.createChessField(data));
     this.model.onStopGame.add((data) => this.createModalDraw(data));
     this.model.onChessFigureGrab.add((data) => this.showAllowedMoves(data));
+
+    window.onresize = () => {
+      this.chessBoard.element.style.setProperty(
+        '--size',
+        Math.min(this.chessBody.element.clientWidth, this.chessBody.element.clientHeight) + 'px'
+      );
+    };
   }
 
   updateGameField(rotate: boolean): void {
@@ -229,6 +239,14 @@ class ChessGame extends Component {
     this.updateGameField(data.rotate);
     this.removeAllowedMoves();
     this.chessBoard.showKingCheck(data.king);
+
+    if (this.playerOne.element.textContent !== data.player) {
+      this.playerOne.element.classList.add(this.chessView.activePlayer);
+      this.playerTwo.element.classList.remove(this.chessView.activePlayer);
+    } else {
+      this.playerOne.element.classList.remove(this.chessView.activePlayer);
+      this.playerTwo.element.classList.add(this.chessView.activePlayer);
+    }
   }
 
   createChessField(data: IChessStart) {
