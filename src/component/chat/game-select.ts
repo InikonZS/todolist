@@ -1,10 +1,12 @@
-import Button from "./button";
-import { Component } from "utilities/Component";
-import { GenericPopup } from "./genericPopup";
+import { Component } from 'utilities/Component';
+import Button from './button';
+import { GenericPopup } from './genericPopup';
 
 export class GameSelect extends GenericPopup<string> {
   buttonChess: Button;
+
   buttonCross:Button;
+
   // popupLayer: Component;
   // popupBlackout: Component;
   popupWrapper: Component;
@@ -12,7 +14,7 @@ export class GameSelect extends GenericPopup<string> {
   // onSelect: (value: string) => void;
 
   constructor(parentNode: HTMLElement) {
-    super(parentNode)
+    super(parentNode);
     // super(parentNode, 'div', ['popup_blackout']);
     // this.popupLayer = new Component(this.element, 'div',['popup_layer']);
     // this.popupBlackout = new Component(this.popupLayer.element, 'div',['popup_blackout']);
@@ -23,11 +25,11 @@ export class GameSelect extends GenericPopup<string> {
 
     this.buttonChess.onClick = () => {
       this.onSelect('chess');
-    }
+    };
 
     this.buttonCross.onClick = () => {
       this.onSelect('cross');
-    }
+    };
   }
 
   destroy() {

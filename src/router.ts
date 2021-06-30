@@ -1,49 +1,54 @@
-import { Component } from "./utilities/Component";
+import { Component } from './utilities/Component';
 
-export class Route{
+export class Route {
   public linkName: string;
+
   public pageName: string;
+
   public onActivate: ()=>void;
+
   public onDeactivate: ()=>void;
-  
-  constructor(pageName:string, linkName:string, onActivate:()=>void, onDeactivate:()=>void){
+
+  constructor(pageName:string, linkName:string, onActivate:()=>void, onDeactivate:()=>void) {
     this.linkName = linkName;
     this.pageName = pageName;
     this.onActivate = onActivate;
     this.onDeactivate = onDeactivate;
   }
 
-  activate(){
+  activate() {
     this.onActivate();
   }
 
-  deactivate(){
+  deactivate() {
     this.onDeactivate();
   }
 }
 
-export class Router{
+export class Router {
   public routes:Array<Route> = [];
-  constructor(){
-    window.onpopstate = ()=>this.processHash();
+
+  constructor() {
+    window.onpopstate = () => this.processHash();
   }
-  processHash(){
-    let hash = window.location.hash.slice(1);
+
+  processHash() {
+    const hash = window.location.hash.slice(1);
     console.log(hash);
     this.activateRouteByName(hash);
   }
 
-  activateRouteByName(name:string){
-    this.routes.forEach(route=>{
-      if (route.pageName == name){
+  activateRouteByName(name:string) {
+    this.routes.forEach((route) => {
+      if (route.pageName === name) {
         route.activate();
       } else {
         route.deactivate();
       }
-    })
+    });
   }
 
-  addRoute(route:Route){
+  addRoute(route:Route) {
     route.deactivate();
     this.routes.push(route);
   }

@@ -6,7 +6,6 @@
 }
 
 .chess_board {
-
   position: relative;
   width: var(--size);
   display: flex;
@@ -30,7 +29,6 @@
 .chess_board_cell {
   width: calc(100% / 8);
   height: calc(100% / 8);
-  /* border: 1px solid #000; */
 }
 
 .cell-light {
@@ -139,8 +137,8 @@
 }
 
 .chess_history_figure {
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -224,9 +222,12 @@
 .player_active::after {
   content: '';
   position: absolute;
-  right: 0;
-  top: 0;
+  right: -25px;
+  top: -10%;
   width: 30px;
   height: 30px;
-  background-color: #ff0000;
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('../../assets/whiteBishop.svg');
 }

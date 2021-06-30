@@ -1,15 +1,16 @@
-import { Component } from "../utilities/Component";
-import { ICellCoords } from "../utilities/interfaces";
+import { Component } from '../utilities/Component';
+import { ICellCoords } from '../utilities/interfaces';
 
 class Cell extends Component {
   public onCellClick: (coords: ICellCoords) => void = () => {};
+
   coords: { x: number; y: number };
 
   constructor(parentNode: HTMLElement, y: number, x: number) {
-    super(parentNode, 'div', [ 'cross_cell' ]);
+    super(parentNode, 'div', ['cross_cell']);
     this.coords = {
-      x: x,
-      y: y
+      x,
+      y,
     };
     this.element.onclick = () => {
       this.onCellClick({ x, y });

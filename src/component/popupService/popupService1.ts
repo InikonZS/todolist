@@ -1,6 +1,6 @@
-import { Component } from "utilities/Component";
+import { Component } from 'utilities/Component';
 // import { GameSelect } from "../chat/game-select";
-import { GenericPopup } from "../chat/genericPopup";
+import { GenericPopup } from '../chat/genericPopup';
 import './popupService.css';
 
 class PopupService1 extends Component {
@@ -18,8 +18,8 @@ class PopupService1 extends Component {
       popup.onSelect = (result: type) => {
         resolve(result);
         popup.destroy();
-      }
-    })
+      };
+    });
   }
 }
 

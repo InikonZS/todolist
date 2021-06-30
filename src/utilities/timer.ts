@@ -1,17 +1,22 @@
 import { Component } from './Component';
 
 class Timer extends Component {
-  private counter: number = 0;
-  private count: number = 10;
+  private counter = 0;
+
+  private count = 10;
+
   private time: number;
-  private startTime: number = 0;
-  private isPlaying: boolean = false;
+
+  private startTime = 0;
+
+  private isPlaying = false;
 
   constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'chess_timer' ]);
+    super(parentNode, 'div', ['chess_timer']);
     // this.element.textContent = '00:10';
     this.element.textContent = '00:00';
   }
+
   start() {
     this.counter = window.setInterval(() => {
       this.time = Math.floor((Date.now() - this.startTime) / 1000);

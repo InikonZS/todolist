@@ -1,6 +1,8 @@
 class Vector {
   public x: number;
+
   public y: number;
+
   constructor(x:number, y:number) {
     this.x = x;
     this.y = y;
@@ -29,7 +31,7 @@ class Vector {
   }
 
   normalize():Vector {
-    let abs = this.abs();
+    const abs = this.abs();
     if (!Number.isNaN(abs) && abs != 0) {
       this.scale(1 / abs);
     }

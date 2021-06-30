@@ -35,6 +35,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  
 }
 
 .chat_action {
@@ -183,4 +184,18 @@
 
 .default_name {
   color: #fff;
+}
+.btn_enter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  color: #fff;
+  background-color: #000000;
+}
+
+.relative_pos {
+  position: relative;
 }

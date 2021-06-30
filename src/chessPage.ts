@@ -8,5 +8,4 @@ export class ChessPage extends Component {
     super(parentNode, 'div', ['main']);
     this.game = new Chess(this.element);
   }
-
 }

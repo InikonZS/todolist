@@ -4,31 +4,31 @@ export const langConfigEn = {
     controls: {
       start: 'Start',
       draw: 'Draw',
-      loss: 'Loss'
+      loss: 'Loss',
     },
     players: {
       player1: 'Player1',
-      player2: 'Player2'
+      player2: 'Player2',
     },
     modals: {
       gameOver: 'Game Over.',
       draw: 'Draw',
       loss: 'Loss',
-      btnContent: 'OK'
-    }
+      btnContent: 'OK',
+    },
   },
   chat: {
     channels: {
-      btn: 'Add'
+      btn: 'Add',
     },
     messages: {
-      btn: 'Send'
+      btn: 'Send',
     },
     users: {
       players: 'Players: ',
-      spectators: 'Spectators: '
-    }
-  }
+      spectators: 'Spectators: ',
+    },
+  },
 };
 
 export const langConfigRu = {
@@ -37,29 +37,29 @@ export const langConfigRu = {
     controls: {
       start: 'Старт',
       draw: 'Ничья',
-      loss: 'Сдаться'
+      loss: 'Сдаться',
     },
     players: {
       player1: 'Игрок1',
-      player2: 'Игрок2'
+      player2: 'Игрок2',
     },
     modals: {
       gameOver: 'Конец игры.',
       draw: 'Ничья',
       loss: 'Проигрыш',
-      btnContent: 'OK'
+      btnContent: 'OK',
     },
   },
   chat: {
     channels: {
-      btn: 'Добавить'
+      btn: 'Добавить',
     },
     messages: {
-      btn: 'Отправить'
+      btn: 'Отправить',
     },
     users: {
       players: 'Игроки: ',
-      spectators: 'Зрители: '
-    }
-  }
+      spectators: 'Зрители: ',
+    },
+  },
 };

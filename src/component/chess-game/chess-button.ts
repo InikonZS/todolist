@@ -3,14 +3,17 @@ import { IChessBtn, ILangViewControl } from 'utilities/interfaces';
 
 class ChessButton extends Component {
   public onClick: () => void = () => {};
+
   private btnConfig: IChessBtn;
+
   constructor(parentNode: HTMLElement, btnConfig: IChessBtn, btnContent: string) {
-    super(parentNode, 'button', [ btnConfig.btnEnabled ], btnContent);
+    super(parentNode, 'button', [btnConfig.btnEnabled], btnContent);
     this.btnConfig = btnConfig;
     this.element.onclick = () => {
       this.onClick();
     };
   }
+
   setLangView(configLang: string):void {
     this.element.textContent = configLang;
   }

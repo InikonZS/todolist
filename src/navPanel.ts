@@ -1,37 +1,41 @@
-import { Component } from "./utilities/Component";
+import { Component } from './utilities/Component';
 
 class NavItem extends Component {
   private link: HTMLAnchorElement;
+
   private hash:string;
-  constructor (parentNode:HTMLElement, text:string, hash:string){
+
+  constructor(parentNode:HTMLElement, text:string, hash:string) {
     super(parentNode, 'div', ['nav_item']);
     this.hash = hash;
-    let link = new Component(this.element, 'a', ['nav_link']);
-    let linkElement = link.element as HTMLAnchorElement;
-    linkElement.href = '#' + hash;
+    const link = new Component(this.element, 'a', ['nav_link']);
+    const linkElement = link.element as HTMLAnchorElement;
+    linkElement.href = `#${hash}`;
     linkElement.textContent = text;
 
     this.link = linkElement;
   }
 
-  getHash(){
+  getHash() {
     return this.hash;
   }
 
-  setActive(){
+  setActive() {
     this.link.classList.add('nav_link__active');
   }
 
-  setInactive(){
+  setInactive() {
     this.link.classList.remove('nav_link__active');
   }
 }
 
 export class Navigation extends Component {
   private navContainer:HTMLElement;
+
   private navItems:Array<NavItem> = [];
+
   constructor(parentNode: HTMLElement | null = null) {
-    super(parentNode, 'div', ["header_wrapper"],
+    super(parentNode, 'div', ['header_wrapper'],
       `
         <div class="header_logo">Logo</div>
         <div class="header_nav">
@@ -48,8 +52,8 @@ export class Navigation extends Component {
           </div>
         </div>
       `);
-    var navContainer = this.element.querySelector<HTMLElement>('.header_nav');
-    if (navContainer !== null){
+    const navContainer = this.element.querySelector<HTMLElement>('.header_nav');
+    if (navContainer !== null) {
       this.navContainer = navContainer;
     } else {
       throw new Error('Element not found');
@@ -57,17 +61,17 @@ export class Navigation extends Component {
   }
 
   addLink(text: string, hash: string) {
-    let navItem = new NavItem(this.navContainer, text, hash);
+    const navItem = new NavItem(this.navContainer, text, hash);
     this.navItems.push(navItem);
   }
 
-  setActive(hash:string){
-    this.navItems.forEach(item=>{
-      if (item.getHash() == hash){
+  setActive(hash:string) {
+    this.navItems.forEach((item) => {
+      if (item.getHash() == hash) {
         item.setActive();
       } else {
         item.setInactive();
       }
-    })
+    });
   }
 }

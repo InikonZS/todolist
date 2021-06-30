@@ -12,7 +12,7 @@ export default interface ICrossData {
   field: Array<string>;
   winner: string;
   sign: string;
-};
+}
 
 export interface IChessData {
   message: string;

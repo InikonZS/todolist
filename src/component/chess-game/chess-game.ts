@@ -1,74 +1,102 @@
-import { IChessStart, IChessStop, IModalPopup } from './../../utilities/interfaces';
-import { IChessData } from 'utilities/interfaces';
-import { Component } from 'utilities/Component';
 import {
+  IChessData,
   ICellCoords,
   IChessLang,
   IChessView,
   ILangViewModal,
-  ILangViewPlayer
+  ILangViewPlayer,
 } from 'utilities/interfaces';
+import { Component } from 'utilities/Component';
+import Timer from 'utilities/timer';
+import configFigures, { chessConfigView, chessModeConfig, fen } from 'utilities/config-chess';
+import Vector from 'utilities/vector';
+import { IChessStart, IChessStop, IModalPopup } from '../../utilities/interfaces';
+
 import ChessCell from './chess-cell';
 import ChessButton from './chess-button';
 import './chess-game.css';
 import ChessHistoryBlock from './chess-history';
 import ChessField from './chess-field';
-import Vector from 'utilities/vector';
-import configFigures, { chessConfigView, chessModeConfig, fen } from 'utilities/config-chess';
 import ModalDraw from './modal-draw';
 import ChessModel from './chess-model';
-import Timer from 'utilities/timer';
 
 class ChessGame extends Component {
   private cells: Array<ChessCell> = [];
+
   public onCellClick: (coords: ICellCoords) => void = () => {};
+
   timer: Timer;
+
   private history: ChessHistoryBlock;
+
   private playerOne: Component;
+
   private playerTwo: Component;
+
   private players: Array<string> = [];
-  private isRotated: boolean = false;
+
+  private isRotated = false;
+
   private chessBoard: ChessField;
+
   private btnStart: ChessButton;
+
   public onStartClick: () => void = () => {};
+
   private btnDraw: ChessButton;
+
   public onDrawClick: () => void = () => {};
+
   private btnLoss: ChessButton;
+
   public onLossClick: () => void = () => {};
+
   public onFigureDrop: (posStart: Vector, posDrop: Vector) => void = () => {};
+
   public onFigureGrab: (pos: Vector) => void = () => {};
+
   private chessView: IChessView;
+
   private langConfig: ILangViewPlayer;
+
   private modalDraw: ModalDraw;
+
   private langConfigModals: ILangViewModal;
+
   public onModalDrawClick: () => void = () => {};
+
   public onModalLossClick: () => void = () => {};
+
   private model: ChessModel;
-  private host: string = '';
-  private chessMode: string = '';
+
+  private host = '';
+
+  private chessMode = '';
+
   private chessModalView: IModalPopup;
+
   chessBody: Component;
 
   constructor(
     parentNode: HTMLElement,
     langConfig: IChessLang,
     chessModel: ChessModel,
-    chessMode: string
+    chessMode: string,
   ) {
-    super(parentNode, 'div', [ chessConfigView.chessView.wrapper ]);
+    super(parentNode, 'div', [chessConfigView.chessView.wrapper]);
     this.model = chessModel;
     this.langConfig = langConfig.players;
     this.langConfigModals = langConfig.modals;
     this.chessView = chessConfigView.chessView;
     this.chessModalView = chessConfigView.modal;
     this.chessMode = chessMode;
-    const chessControls = new Component(this.element, 'div', [ this.chessView.controls ]);
-    const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
+    const chessControls = new Component(this.element, 'div', [this.chessView.controls]);
+    const chessHead = new Component(this.element, 'div', [this.chessView.head]);
     this.playerOne = new Component(
       chessHead.element,
       'div',
-      [ this.chessView.player ],
-      this.langConfig.player1
+      [this.chessView.player],
+      this.langConfig.player1,
     );
     this.playerOne.element.classList.add(this.chessView.activePlayer);
 
@@ -76,14 +104,14 @@ class ChessGame extends Component {
     this.playerTwo = new Component(
       chessHead.element,
       'div',
-      [ this.chessView.player ],
-      this.langConfig.player2
+      [this.chessView.player],
+      this.langConfig.player2,
     );
-    this.chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
+    this.chessBody = new Component(this.element, 'div', [this.chessView.body]);
     this.history = new ChessHistoryBlock(
       this.chessBody.element,
       chessConfigView.history,
-      langConfig.history
+      langConfig.history,
     );
 
     this.chessBoard = new ChessField(
@@ -91,13 +119,13 @@ class ChessGame extends Component {
       chessConfigView.figure,
       chessConfigView.boardView,
       chessConfigView.gameField,
-      configFigures
+      configFigures,
     );
 
     this.btnStart = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.start
+      langConfig.controls.start,
     );
     this.btnStart.buttonDisable();
     this.btnStart.onClick = () => {
@@ -107,7 +135,7 @@ class ChessGame extends Component {
     this.btnDraw = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.draw
+      langConfig.controls.draw,
     );
     this.btnDraw.buttonDisable();
     this.btnDraw.onClick = () => {
@@ -116,7 +144,7 @@ class ChessGame extends Component {
     this.btnLoss = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.loss
+      langConfig.controls.loss,
     );
     this.btnLoss.buttonDisable();
     this.btnLoss.onClick = () => {
@@ -124,7 +152,7 @@ class ChessGame extends Component {
     };
 
     this.chessBoard.onFigureDrop = (posStart: Vector, posDrop: Vector) => {
-      this.model.chessMove(JSON.stringify([ posStart, posDrop ]));
+      this.model.chessMove(JSON.stringify([posStart, posDrop]));
     };
 
     this.chessBoard.onFigureGrab = (pos: Vector) => {
@@ -140,7 +168,7 @@ class ChessGame extends Component {
     window.onresize = () => {
       this.chessBoard.element.style.setProperty(
         '--size',
-        Math.min(this.chessBody.element.clientWidth, this.chessBody.element.clientHeight) + 'px'
+        `${Math.min(this.chessBody.element.clientWidth, this.chessBody.element.clientHeight)}px`,
       );
     };
   }
@@ -158,11 +186,11 @@ class ChessGame extends Component {
     }
   }
 
-  clearData(fen: string) {
+  clearData(fenField: string) {
     this.players = [];
     this.playerOne.element.textContent = this.langConfig.player1;
     this.playerTwo.element.textContent = this.langConfig.player2;
-    this.chessBoard.clearData(this.fromFen(fen));
+    this.chessBoard.clearData(fromFen(fenField));
     this.chessMode = '';
     this.timer.clear();
     this.destroy();
@@ -202,7 +230,7 @@ class ChessGame extends Component {
       this.langConfigModals,
       data.stop,
       data.player,
-      this.players
+      this.players,
     );
     this.modalDraw.onModalDrawClick = () => {
       this.model.chessRemoveGame('remove');
@@ -227,7 +255,7 @@ class ChessGame extends Component {
 
   onFigureMove(data: IChessData): void {
     this.host = data.player;
-    const newField = this.fromFen(data.field);
+    const newField = fromFen(data.field);
 
     this.setHistoryMove(data.moves, data.figure);
     const oldFigPos = new Vector(data.coords[0].x, data.coords[0].y);
@@ -251,24 +279,12 @@ class ChessGame extends Component {
 
   createChessField(data: IChessStart) {
     this.chessBoard.setChessMode(this.chessMode);
-    this.chessBoard.createFieldCells(this.fromFen(data.field));
+    this.chessBoard.createFieldCells(fromFen(data.field));
     this.chessBoard.setDragable(true);
     this.timer.setTimer(data.time);
     this.btnDraw.buttonEnable();
     this.btnLoss.buttonEnable();
     this.btnStart.buttonDisable();
-  }
-
-  fromFen(fen: string): Array<string> {
-    let fromFen: Array<string> = [];
-    fen.split('/').join('').split('').forEach((el) => {
-      if (!isNaN(+el)) {
-        for (let i = 0; i < +el; i++) {
-          fromFen.push('-');
-        }
-      } else fromFen.push(el);
-    });
-    return fromFen.join('').split('').map((item) => (item === '-' ? '' : item));
   }
 
   getPlayers(): Array<string> {
@@ -277,3 +293,15 @@ class ChessGame extends Component {
 }
 
 export default ChessGame;
+
+function fromFen(fen: string): Array<string> {
+  const fromFen: Array<string> = [];
+  fen.split('/').join('').split('').forEach((el) => {
+    if (!Number.isNaN(+el)) {
+      for (let i = 0; i < +el; i++) {
+        fromFen.push('-');
+      }
+    } else fromFen.push(el);
+  });
+  return fromFen.join('').split('').map((item) => (item === '-' ? '' : item));
+}

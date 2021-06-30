@@ -7,7 +7,7 @@ const chatConfigView = {
     constrols: 'chat_channels_controls',
     channels: 'chat_channels_list',
     channel: 'chat_channel',
-    btn: 'default_button'
+    btn: 'default_button',
   },
   messageWrapper: {
     wrapper: 'chat_messages',
@@ -19,13 +19,13 @@ const chatConfigView = {
       header: 'message_header',
       user: 'message_user',
       date: 'message_date',
-      body: 'message_body'
-    }
+      body: 'message_body',
+    },
   },
   inputWrapper: {
     wrapper: 'chat_input',
     field: 'chat_input_field',
-    button: 'chat_send_button'
+    button: 'chat_send_button',
   },
   users: {
     wrapper: 'chat_users',
@@ -34,9 +34,9 @@ const chatConfigView = {
     user: {
       wrapper: 'chat_user',
       avatar: 'default_avatar_small',
-      name: 'default_name'
-    }
-  }
+      name: 'default_name',
+    },
+  },
 };
 
 export default chatConfigView;

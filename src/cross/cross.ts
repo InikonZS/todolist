@@ -5,18 +5,23 @@ import CrossButton from './cross-button';
 import './cross.css';
 import HistoryBlock from './history';
 
-let size = 3;
+const size = 3;
 class Timer extends Component {
-  private counter: number = 0;
-  private count: number = 10;
+  private counter = 0;
+
+  private count = 10;
+
   private time: number;
-  private startTime: number = 0;
-  private isPlaying: boolean = false;
+
+  private startTime = 0;
+
+  private isPlaying = false;
 
   constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'cross_timer' ]);
+    super(parentNode, 'div', ['cross_timer']);
     this.element.textContent = '00:10';
   }
+
   start() {
     this.counter = window.setInterval(() => {
       this.time = Math.floor((Date.now() - this.startTime) / 1000);
@@ -75,34 +80,48 @@ class Timer extends Component {
 
 class Cross extends Component {
   private cells: Array<Cell> = [];
+
   public onCellClick: (coords: ICellCoords) => void = () => {};
+
   timer: Timer;
+
   history: HistoryBlock;
+
   private playerOne: Component;
+
   private playerTwo: Component;
-  private players: number = 0;
-  private isRotated: boolean = false;
+
+  private players = 0;
+
+  private isRotated = false;
+
   private crossCells: Component;
+
   private btnStart: CrossButton;
+
   public onStartClick: () => void = () => {};
+
   private btnDraw: CrossButton;
+
   public onDrawClick: () => void = () => {};
+
   private btnLoss: CrossButton;
+
   public onLossClick: () => void = () => {};
 
   constructor(parentNode: HTMLElement) {
-    super(parentNode, 'div', [ 'cross_wrapper' ]);
-    const crossControls =  new Component(this.element, 'div', [ 'cross_controls' ]);
-    const crossHead = new Component(this.element, 'div', [ 'cross_head' ]);
-    this.playerOne = new Component(crossHead.element, 'div', [ 'cross_player' ], 'Player1');
+    super(parentNode, 'div', ['cross_wrapper']);
+    const crossControls = new Component(this.element, 'div', ['cross_controls']);
+    const crossHead = new Component(this.element, 'div', ['cross_head']);
+    this.playerOne = new Component(crossHead.element, 'div', ['cross_player'], 'Player1');
     this.timer = new Timer(crossHead.element);
-    this.playerTwo = new Component(crossHead.element, 'div', [ 'cross_player' ], 'Player2');
-    const crossBody = new Component(this.element, 'div', [ 'cross_body' ]);
+    this.playerTwo = new Component(crossHead.element, 'div', ['cross_player'], 'Player2');
+    const crossBody = new Component(this.element, 'div', ['cross_body']);
     this.history = new HistoryBlock(crossBody.element);
 
-    this.crossCells = new Component(crossBody.element, 'div', [ 'cross_cells' ]);
+    this.crossCells = new Component(crossBody.element, 'div', ['cross_cells']);
     for (let i = 0; i < size; i++) {
-      const row = new Component(this.crossCells.element, 'div', [ 'cross_row' ]);
+      const row = new Component(this.crossCells.element, 'div', ['cross_row']);
       for (let j = 0; j < size; j++) {
         const cell = new Cell(row.element, i, j);
         cell.onCellClick = (coords: ICellCoords) => {
@@ -117,15 +136,15 @@ class Cross extends Component {
     this.btnStart = new CrossButton(crossControls.element, 'Start');
     this.btnStart.onClick = () => {
       this.onStartClick();
-    }
+    };
     this.btnDraw = new CrossButton(crossControls.element, 'Draw');
     this.btnDraw.onClick = () => {
       this.onDrawClick();
-    }
+    };
     this.btnLoss = new CrossButton(crossControls.element, 'Loss');
     this.btnLoss.onClick = () => {
       this.onLossClick();
-    }
+    };
   }
 
   updateGameField(field: Array<string>): void {

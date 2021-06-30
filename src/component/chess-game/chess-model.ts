@@ -1,13 +1,21 @@
-import { IChessData, ICellCoords, IChessStart, IChessStop } from 'utilities/interfaces';
+import {
+  IChessData, ICellCoords, IChessStart, IChessStop,
+} from 'utilities/interfaces';
 import Signal from 'utilities/signal';
 
 class ChessModel {
   onChessMove: Signal<IChessData> = new Signal();
+
   socket: WebSocket;
+
   onStartGame: Signal<IChessStart> = new Signal();
+
   onStopGame: Signal<IChessStop> = new Signal();
+
   onRemoveGame: Signal<boolean> = new Signal();
+
   onChessFigureGrab: Signal<Array<ICellCoords>> = new Signal();
+
   constructor(socket: WebSocket) {
     this.socket = socket;
   }
@@ -15,7 +23,7 @@ class ChessModel {
   processMessage(data: any) {
     if (data.method === 'chessMove') {
       this.onChessMove.emit({
-        message: data.senderNick + ' -> ' + data.messageText,
+        message: `${data.senderNick} -> ${data.messageText}`,
         coords: JSON.parse(data.messageText),
         player: data.senderNick,
         field: data.field,
@@ -23,7 +31,7 @@ class ChessModel {
         rotate: data.rotate,
         figure: data.figure,
         moves: data.moves,
-        king: data.king
+        king: data.king,
       });
     }
     if (data.method === 'startGame') {
@@ -49,9 +57,9 @@ class ChessModel {
         endpoint: 'chessMove',
         params: {
           messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
+          sessionId: localStorage.getItem('todoListApplicationSessionId'),
+        },
+      }),
     );
   }
 
@@ -62,9 +70,9 @@ class ChessModel {
         endpoint: 'chessFigureGrab',
         params: {
           messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
+          sessionId: localStorage.getItem('todoListApplicationSessionId'),
+        },
+      }),
     );
   }
 
@@ -75,11 +83,12 @@ class ChessModel {
         endpoint: 'chessStartGame',
         params: {
           messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
+          sessionId: localStorage.getItem('todoListApplicationSessionId'),
+        },
+      }),
     );
   }
+
   chessStopGame(message: string) {
     this.socket.send(
       JSON.stringify({
@@ -87,11 +96,12 @@ class ChessModel {
         endpoint: 'chessStopGame',
         params: {
           messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
+          sessionId: localStorage.getItem('todoListApplicationSessionId'),
+        },
+      }),
     );
   }
+
   chessRemoveGame(message: string) {
     this.socket.send(
       JSON.stringify({
@@ -99,9 +109,9 @@ class ChessModel {
         endpoint: 'chessRemoveGame',
         params: {
           messageText: message,
-          sessionId: localStorage.getItem('todoListApplicationSessionId')
-        }
-      })
+          sessionId: localStorage.getItem('todoListApplicationSessionId'),
+        },
+      }),
     );
   }
 }

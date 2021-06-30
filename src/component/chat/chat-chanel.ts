@@ -4,7 +4,7 @@ class ChatChannel extends Component {
   onClick: () => void = () => {};
 
   constructor(parentNode: HTMLElement, configView: string) {
-    super(parentNode, 'div', [ configView ]);
+    super(parentNode, 'div', [configView]);
     this.element.onclick = () => {
       this.onClick();
     };

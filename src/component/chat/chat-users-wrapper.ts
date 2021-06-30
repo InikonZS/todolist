@@ -4,25 +4,31 @@ import ChatUser from './chat-user';
 
 class ChatUsersWrapper extends Component {
   private playersBlock: Component;
+
   private spectatorsBlock: Component;
+
   private spectators: Array<ChatUser> = [];
+
   private players: Array<ChatUser> = [];
+
   private userConfig: IChatUser;
+
   private spectatorHeader: Component;
+
   private playerHeader: any;
 
   constructor(parentNode: HTMLElement, configView: IChatUserWrapper, configLang: IUsersLang) {
-    super(parentNode, 'div', [ configView.wrapper ]);
+    super(parentNode, 'div', [configView.wrapper]);
     this.userConfig = configView.user;
-    this.playersBlock = new Component(this.element, 'div', [ configView.category ]);
+    this.playersBlock = new Component(this.element, 'div', [configView.category]);
     this.playerHeader = new Component(this.playersBlock.element, 'div', [
-      configView.categoryName
+      configView.categoryName,
     ]);
     this.playerHeader.element.textContent = configLang.players;
 
-    this.spectatorsBlock = new Component(this.element, 'div', [ configView.category ]);
+    this.spectatorsBlock = new Component(this.element, 'div', [configView.category]);
     this.spectatorHeader = new Component(this.spectatorsBlock.element, 'div', [
-      configView.categoryName
+      configView.categoryName,
     ]);
     this.spectatorHeader.element.textContent = configLang.spectators;
   }

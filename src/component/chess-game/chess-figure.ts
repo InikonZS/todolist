@@ -4,9 +4,12 @@ import Vector from 'utilities/vector';
 
 class Figure extends Component {
   public onDragStart: (startPos: Vector) => void = () => {};
+
   private figurePos: Vector;
+
   private figPic: string;
-  private isDragable: boolean = false;
+
+  private isDragable = false;
 
   constructor(
     parentNode: HTMLElement,
@@ -15,19 +18,19 @@ class Figure extends Component {
     _figurePos: Vector,
     rotate: boolean,
   ) {
-    super(parentNode, 'div', [ configFigureView.wrapper ]);
+    super(parentNode, 'div', [configFigureView.wrapper]);
     this.element.style.width = `${100 / 8}%`;
     this.element.style.height = `${100 / 8}%`;
     this.figurePos = _figurePos;
     this.figPic = figure;
     const inner = new Component(this.element, 'div', [configFigureView.inner]);
     inner.element.style.backgroundImage = `url(${figure})`;
-    if(rotate) {
-      this.element.classList.add('figure-rotate')
+    if (rotate) {
+      this.element.classList.add('figure-rotate');
     }
 
     this.element.onmousedown = (e) => {
-      let startPos = new Vector(e.offsetX, e.offsetY);
+      const startPos = new Vector(e.offsetX, e.offsetY);
       this.onDragStart(startPos);
     };
     this.element.ondragstart = (e) => {
@@ -52,8 +55,6 @@ class Figure extends Component {
   setFigureDragable(status: boolean): void {
     this.isDragable = status;
   }
-
-
 }
 
 export default Figure;

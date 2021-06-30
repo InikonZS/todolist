@@ -1,11 +1,11 @@
 class Control {
   public node: HTMLElement;
 
-  constructor(parentNode: HTMLElement | null, tagName: string = 'div', className: string = '', content: string = '') {
+  constructor(parentNode: HTMLElement | null, tagName = 'div', className = '', content = '') {
     const el = document.createElement(tagName);
     el.className = className;
     el.textContent = content;
-    if (parentNode){
+    if (parentNode) {
       parentNode.append(el);
     }
     this.node = el;

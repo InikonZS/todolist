@@ -2,8 +2,9 @@ import { Component } from '../../utilities/Component';
 
 class ButtonDefault extends Component {
   public onClick: () => void = () => {};
+
   constructor(parentNode: HTMLElement, configView: string, configLang: string) {
-    super(parentNode, 'button', [ configView ], configLang);
+    super(parentNode, 'button', [configView], configLang);
     this.element.onclick = () => {
       this.onClick();
     };

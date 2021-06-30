@@ -1,5 +1,6 @@
 class Vector {
   public x: number;
+
   public y: number;
 
   constructor(x: number, y: number) {
@@ -30,8 +31,8 @@ class Vector {
   }
 
   normalize(): Vector {
-    let abs = this.abs();
-    if (!Number.isNaN(abs) && abs != 0) {
+    const abs = this.abs();
+    if (!Number.isNaN(abs) && abs !== 0) {
       this.scale(1 / abs);
     }
     return this;

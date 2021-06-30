@@ -1,10 +1,12 @@
-import { Component } from "utilities/Component";
-import { ICellConfig, ICellCoords } from "utilities/interfaces";
-import Vector from "utilities/vector";
+import { Component } from 'utilities/Component';
+import { ICellConfig, ICellCoords } from 'utilities/interfaces';
+import Vector from 'utilities/vector';
 
 class ChessCell extends Component {
   public onCellClick: (coords: ICellCoords) => void = () => {};
+
   private coords: Vector;
+
   private configCell: ICellConfig;
 
   constructor(parentNode: HTMLElement, coords: Vector, configCell: ICellConfig, cellColor: string) {
@@ -12,7 +14,7 @@ class ChessCell extends Component {
     this.element.classList.add(cellColor);
     this.configCell = configCell;
     this.coords = coords;
-    
+
     this.element.onclick = () => {
       this.onCellClick(this.coords);
     };

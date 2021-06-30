@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack serve --open chrome --env development",
-    "lint": "eslint src"
+    "lint": "eslint --ext .ts --fix src"
   },
   "author": "Kris Casper",
   "devDependencies": {

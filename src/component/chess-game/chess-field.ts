@@ -1,62 +1,79 @@
 import Vector from 'utilities/vector';
 import { Component } from 'utilities/Component';
-import Figure from './chess-figure';
 import configField, { chessModeConfig, configFigures, fen } from 'utilities/config-chess';
-import { IBoardCellView, IGameField, ICellCoords, IFigure } from 'utilities/interfaces';
+import {
+  IBoardCellView, IGameField, ICellCoords, IFigure,
+} from 'utilities/interfaces';
+import Figure from './chess-figure';
 import ChessCell from './chess-cell';
 
 class ChessField extends Component {
   private dragableItems: Component;
+
   private dragableField: Component = null;
+
   private figure: Figure;
+
   private items: Array<Figure> = [];
+
   onCellDrop: (item: Component, coords: Vector) => void = () => {};
+
   private startChildPos: Vector;
+
   public onFigureDrop: (posStart: Vector, posDrop: Vector) => void = () => {};
+
   private startCellPos: Vector;
+
   public onFigureGrab: (pos: Vector) => void = () => {};
-  private isDragable: boolean = false;
+
+  private isDragable = false;
+
   private cells: Array<ChessCell> = [];
+
   private configBoardView: IBoardCellView;
+
   private configFieldView: IGameField;
+
   private configFigure: IFigure;
+
   private configFigures: Map<string, string>;
-  private chessMode: string = '';
+
+  private chessMode = '';
 
   constructor(
     parentNode: HTMLElement,
     configFigure: IFigure,
     configBoardView: IBoardCellView,
     configFieldView: IGameField,
-    configFigures: Map<string, string>
+    configFigures: Map<string, string>,
   ) {
-    super(parentNode, 'div', [ configFieldView.board ]);
+    super(parentNode, 'div', [configFieldView.board]);
     this.configBoardView = configBoardView;
     this.configFieldView = configFieldView;
     this.configFigure = configFigure;
     this.configFigures = configFigures;
 
-    const boardView = new Component(this.element, 'div', [ configBoardView.boardView ]);
+    const boardView = new Component(this.element, 'div', [configBoardView.boardView]);
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         let color = '';
         if (i % 2 === 0) {
           color = j % 2 === 0 ? configBoardView.cell.light : configBoardView.cell.dark;
-          let cell = new ChessCell(
+          const cell = new ChessCell(
             boardView.element,
             new Vector(j, i),
             configBoardView.cell,
-            color
+            color,
           );
           this.cells.push(cell);
         } else if (i % 2 !== 0) {
           color = j % 2 === 0 ? configBoardView.cell.dark : configBoardView.cell.light;
-          let cell = new ChessCell(
+          const cell = new ChessCell(
             boardView.element,
             new Vector(j, i),
             configBoardView.cell,
-            color
+            color,
           );
           this.cells.push(cell);
         }
@@ -74,21 +91,21 @@ class ChessField extends Component {
 
   createFieldCells(fen: Array<string>): void {
     this.dragableItems = new Component(this.element, 'div');
-    this.dragableField = new Component(this.element, 'div', [ this.configFieldView.field ]);
+    this.dragableField = new Component(this.element, 'div', [this.configFieldView.field]);
 
     for (let i = 0; i < 64; i++) {
-      let cell = new Component(this.dragableField.element, 'div', [ this.configFieldView.cell ]);
+      const cell = new Component(this.dragableField.element, 'div', [this.configFieldView.cell]);
       const cellCoord = new Vector(i % 8, Math.floor(i / 8));
       if (fen[i]) {
         const fig = fen[i];
         let rotate = false;
         if (this.chessMode === chessModeConfig.oneScreen) {
-          rotate = fen[i] === fen[i].toUpperCase() ? false : true;
+          rotate = fen[i] !== fen[i].toUpperCase();
         }
 
         this.addItem(
           new Figure(null, this.configFigures.get(fen[i]), this.configFigure, cellCoord, rotate),
-          i
+          i,
         );
       }
 
@@ -129,7 +146,7 @@ class ChessField extends Component {
 
   addItem(instance: Figure, i: number): void {
     const figPos = new Vector(i % 8, Math.floor(i / 8));
-    let figure = instance;
+    const figure = instance;
 
     this.dragableItems.element.appendChild(figure.element);
     figure.setFigurePosition(figPos);
@@ -151,7 +168,7 @@ class ChessField extends Component {
     const origin = new Vector(trasformOrigin[0], trasformOrigin[1]);
     let x = Math.floor(e.clientX - this.element.offsetLeft);
     let y = Math.floor(
-      e.clientY - this.element.offsetTop + getGlobalScroll(this.element.parentElement)
+      e.clientY - this.element.offsetTop + getGlobalScroll(this.element.parentElement),
     );
     const mousePos = new Vector(x, y).sub(origin);
 
@@ -163,21 +180,21 @@ class ChessField extends Component {
 
     x = matrix[0] * mousePos.x + matrix[1] * mousePos.y;
     y = matrix[2] * mousePos.x + matrix[3] * mousePos.y;
-    let movePos = new Vector(x, y).sub(this.startChildPos).add(origin);
+    const movePos = new Vector(x, y).sub(this.startChildPos).add(origin);
     // this.figure.setFigurePosition(movePos, this.cellBox);
 
-    this.figure.element.style.left = movePos.x + 'px';
-    this.figure.element.style.top = movePos.y + 'px';
+    this.figure.element.style.left = `${movePos.x}px`;
+    this.figure.element.style.top = `${movePos.y}px`;
   }
 
   onFigureMoveWithoutTransform(e: MouseEvent) {
     if (this.figure) {
-      let movePos = new Vector(
+      const movePos = new Vector(
         e.clientX - this.element.offsetLeft,
-        e.clientY - this.element.offsetTop + getGlobalScroll(this.element)
+        e.clientY - this.element.offsetTop + getGlobalScroll(this.element),
       ).sub(this.startChildPos);
-      this.figure.element.style.left = movePos.x + 'px';
-      this.figure.element.style.top = movePos.y + 'px';
+      this.figure.element.style.left = `${movePos.x}px`;
+      this.figure.element.style.top = `${movePos.y}px`;
     }
   }
 
@@ -195,7 +212,7 @@ class ChessField extends Component {
         .map((item) => Number(item));
       let x = Math.floor((e.clientX - this.element.offsetLeft) / ratio);
       let y = Math.floor(
-        (e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio
+        (e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio,
       );
 
       x = matrix[0] * x + matrix[1] * y;
@@ -204,15 +221,14 @@ class ChessField extends Component {
     } else if (e.buttons == 1) {
       this.startCellPos = new Vector(
         Math.floor((e.clientX - this.element.offsetLeft) / ratio),
-        Math.floor((e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio)
+        Math.floor((e.clientY - this.element.offsetTop + getGlobalScroll(this.element)) / ratio),
       );
     }
   }
 
   setFigurePosition(oldFigPos: Vector, newFigPos: Vector): void {
     const figItem = this.items.find(
-      (figure) =>
-        figure.getFigureState().x === oldFigPos.x && figure.getFigureState().y === oldFigPos.y
+      (figure) => figure.getFigureState().x === oldFigPos.x && figure.getFigureState().y === oldFigPos.y,
     );
     figItem.setFigureState(newFigPos);
     this.isDragable = true;
@@ -251,7 +267,7 @@ class ChessField extends Component {
     if (coords) {
       this.cells.forEach((cell) => cell.removeKingCell());
       const kingCell = this.cells.find(
-        (cell) => cell.getCellCoord().x === coords.x && cell.getCellCoord().y === coords.y
+        (cell) => cell.getCellCoord().x === coords.x && cell.getCellCoord().y === coords.y,
       );
       kingCell.setKingCell();
     }
