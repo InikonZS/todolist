@@ -4,7 +4,7 @@ import {
   IChessLang,
   IChessView,
   ILangViewModal,
-  ILangViewPlayer,
+  ILangViewPlayer
 } from 'utilities/interfaces';
 import { Component } from 'utilities/Component';
 import Timer from 'utilities/timer';
@@ -76,27 +76,32 @@ class ChessGame extends Component {
   private chessModalView: IModalPopup;
 
   chessBody: Component;
+  parent: Component;
 
   constructor(
     parentNode: HTMLElement,
     langConfig: IChessLang,
     chessModel: ChessModel,
     chessMode: string,
+    parentHeight: number,
+    parent: Component
   ) {
-    super(parentNode, 'div', [chessConfigView.chessView.wrapper]);
+    super(parentNode, 'div', [ chessConfigView.chessView.wrapper ]);
+    this.parent = parent;
+    this.element.classList.add('game_action_size');
     this.model = chessModel;
     this.langConfig = langConfig.players;
     this.langConfigModals = langConfig.modals;
     this.chessView = chessConfigView.chessView;
     this.chessModalView = chessConfigView.modal;
     this.chessMode = chessMode;
-    const chessControls = new Component(this.element, 'div', [this.chessView.controls]);
-    const chessHead = new Component(this.element, 'div', [this.chessView.head]);
+    const chessControls = new Component(this.element, 'div', [ this.chessView.controls ]);
+    const chessHead = new Component(this.element, 'div', [ this.chessView.head ]);
     this.playerOne = new Component(
       chessHead.element,
       'div',
-      [this.chessView.player],
-      this.langConfig.player1,
+      [ this.chessView.player ],
+      this.langConfig.player1
     );
     this.playerOne.element.classList.add(this.chessView.activePlayer);
 
@@ -104,14 +109,15 @@ class ChessGame extends Component {
     this.playerTwo = new Component(
       chessHead.element,
       'div',
-      [this.chessView.player],
-      this.langConfig.player2,
+      [ this.chessView.player ],
+      this.langConfig.player2
     );
-    this.chessBody = new Component(this.element, 'div', [this.chessView.body]);
+    this.chessBody = new Component(this.element, 'div', [ this.chessView.body ]);
     this.history = new ChessHistoryBlock(
       this.chessBody.element,
       chessConfigView.history,
       langConfig.history,
+      parentHeight
     );
 
     this.chessBoard = new ChessField(
@@ -120,12 +126,13 @@ class ChessGame extends Component {
       chessConfigView.boardView,
       chessConfigView.gameField,
       configFigures,
+      parentHeight
     );
 
     this.btnStart = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.start,
+      langConfig.controls.start
     );
     this.btnStart.buttonDisable();
     this.btnStart.onClick = () => {
@@ -135,7 +142,7 @@ class ChessGame extends Component {
     this.btnDraw = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.draw,
+      langConfig.controls.draw
     );
     this.btnDraw.buttonDisable();
     this.btnDraw.onClick = () => {
@@ -144,7 +151,7 @@ class ChessGame extends Component {
     this.btnLoss = new ChessButton(
       chessControls.element,
       chessConfigView.btn,
-      langConfig.controls.loss,
+      langConfig.controls.loss
     );
     this.btnLoss.buttonDisable();
     this.btnLoss.onClick = () => {
@@ -152,7 +159,7 @@ class ChessGame extends Component {
     };
 
     this.chessBoard.onFigureDrop = (posStart: Vector, posDrop: Vector) => {
-      this.model.chessMove(JSON.stringify([posStart, posDrop]));
+      this.model.chessMove(JSON.stringify([ posStart, posDrop ]));
     };
 
     this.chessBoard.onFigureGrab = (pos: Vector) => {
@@ -166,10 +173,13 @@ class ChessGame extends Component {
     this.model.onChessFigureGrab.add((data) => this.showAllowedMoves(data));
 
     window.onresize = () => {
-      this.chessBoard.element.style.setProperty(
-        '--size',
-        `${Math.min(this.chessBody.element.clientWidth, this.chessBody.element.clientHeight)}px`,
+      const parentHeight = Math.min(
+        this.parent.element.clientWidth,
+        this.parent.element.clientHeight - 140
       );
+      this.chessBody.element.style.setProperty('--size', parentHeight + 'px');
+      this.chessBoard.changeHeight(parentHeight);
+      this.history.changeHeight(parentHeight);
     };
   }
 
@@ -190,23 +200,24 @@ class ChessGame extends Component {
     this.players = [];
     this.playerOne.element.textContent = this.langConfig.player1;
     this.playerTwo.element.textContent = this.langConfig.player2;
-    this.chessBoard.clearData(fromFen(fenField));
+    // this.chessBoard.clearData();
     this.chessMode = '';
     this.timer.clear();
     this.destroy();
   }
 
-  setPlayer(player: string): void {
-    if (!this.players.length) {
-      this.playerOne.element.textContent = player;
-      this.host = player;
-      this.players.push(player);
-      if (this.chessMode !== chessModeConfig.network) {
-        this.btnStart.buttonEnable();
-      }
-    } else if (this.players.length === 1) {
-      this.playerTwo.element.textContent = player;
-      this.players.push(player);
+  setPlayer(player: string, players: Array<string>): void {
+    console.log(players);
+    this.playerOne.element.textContent = players[0];
+    this.players.push(players[0]);
+
+    if (this.chessMode !== chessModeConfig.network) {
+      this.host = players[0];
+      this.btnStart.buttonEnable();
+    } else if (players[1]) {
+      this.playerTwo.element.textContent = players[1];
+      this.players.push(players[1]);
+      this.host = player !== players[0] ? players[0] : players[1];
       this.btnStart.buttonEnable();
     }
   }
@@ -230,7 +241,7 @@ class ChessGame extends Component {
       this.langConfigModals,
       data.stop,
       data.player,
-      this.players,
+      this.players
     );
     this.modalDraw.onModalDrawClick = () => {
       this.model.chessRemoveGame('remove');
@@ -268,12 +279,14 @@ class ChessGame extends Component {
     this.removeAllowedMoves();
     this.chessBoard.showKingCheck(data.king);
 
-    if (this.playerOne.element.textContent !== data.player) {
-      this.playerOne.element.classList.add(this.chessView.activePlayer);
-      this.playerTwo.element.classList.remove(this.chessView.activePlayer);
-    } else {
-      this.playerOne.element.classList.remove(this.chessView.activePlayer);
-      this.playerTwo.element.classList.add(this.chessView.activePlayer);
+    if (this.chessMode === chessModeConfig.network) {
+      if (this.playerOne.element.textContent !== data.player) {
+        this.playerOne.element.classList.add(this.chessView.activePlayer);
+        this.playerTwo.element.classList.remove(this.chessView.activePlayer);
+      } else {
+        this.playerOne.element.classList.remove(this.chessView.activePlayer);
+        this.playerTwo.element.classList.add(this.chessView.activePlayer);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import Vector from 'utilities/vector';
 import { Component } from 'utilities/Component';
-import configField, { chessModeConfig, configFigures, fen } from 'utilities/config-chess';
+import { chessModeConfig} from 'utilities/config-chess';
 import {
   IBoardCellView, IGameField, ICellCoords, IFigure,
 } from 'utilities/interfaces';
@@ -46,8 +46,10 @@ class ChessField extends Component {
     configBoardView: IBoardCellView,
     configFieldView: IGameField,
     configFigures: Map<string, string>,
+    parentHeight: number
   ) {
     super(parentNode, 'div', [configFieldView.board]);
+    this.element.style.setProperty('--size', parentHeight + 'px');
     this.configBoardView = configBoardView;
     this.configFieldView = configFieldView;
     this.configFigure = configFigure;
@@ -253,7 +255,7 @@ class ChessField extends Component {
   }
 
   clearData(fen: Array<string>): void {
-    this.dragableItems.destroy();
+    this.dragableItems && this.dragableItems.destroy();
     this.dragableField.destroy();
     this.createFieldCells(fen);
     // this.isDragable = false;
@@ -271,6 +273,10 @@ class ChessField extends Component {
       );
       kingCell.setKingCell();
     }
+  }
+
+  changeHeight(size: number): void {
+    this.element.style.setProperty('--size', size + 'px');
   }
 }
 

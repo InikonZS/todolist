@@ -23,8 +23,8 @@ class ChessModel {
   processMessage(data: any) {
     if (data.method === 'chessMove') {
       this.onChessMove.emit({
-        message: `${data.senderNick} -> ${data.messageText}`,
-        coords: JSON.parse(data.messageText),
+        message: `${data.senderNick} -> ${data.message}`,
+        coords: JSON.parse(data.message),
         player: data.senderNick,
         field: data.field,
         winner: data.winner,

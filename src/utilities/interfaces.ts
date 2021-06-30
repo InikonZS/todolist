@@ -196,3 +196,8 @@ export interface IPageComponent {
   show: () => void;
   hide: () => void;
 }
+
+export interface IChannelData {
+  name: string;
+  msgArr: Array<string>;
+}

@@ -14,7 +14,7 @@ class ChatModel {
 
   onCrossMove: Signal<ICrossData> = new Signal();
 
-  onPlayerList: Signal<{ player: string; time: number }> = new Signal();
+  onPlayerList: Signal<{ player: string; time: number; players: Array<string> }> = new Signal();
 
   onUserList: Signal<Array<string>> = new Signal();
 
@@ -26,14 +26,9 @@ class ChatModel {
 
   onOpen : Signal<void> = new Signal();
 
-  // onChessMove: Signal<IChessData> = new Signal();
   chessModel: ChessModel;
 
   isConnected: boolean;
-  // open() {
-  //   this.socket = new WebSocket('ws:/localhost:4080');
-
-  // }
 
   open() {
     this.socket = new WebSocket('ws:/localhost:4080');
@@ -63,7 +58,7 @@ class ChatModel {
         });
       }
       if (data.type === 'player') {
-        this.onPlayerList.emit({ player: data.senderNick, time: data.time });
+        this.onPlayerList.emit({ player: data.senderNick, time: data.time, players: data.players });
       }
 
       if (data.type === 'crossMove') {

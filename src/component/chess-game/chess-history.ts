@@ -10,8 +10,9 @@ class ChessHistoryBlock extends Component {
 
   private historyHeader: Component;
 
-  constructor(parentNode: HTMLElement, config: IHistoryView, configLang: string) {
+  constructor(parentNode: HTMLElement, config: IHistoryView, configLang: string, parentHeight: number) {
     super(parentNode, 'div', [config.node]);
+    this.element.style.setProperty('--size', parentHeight + 'px');
     this.config = config;
     this.historyHeader = new Component(this.element, 'div', [config.title]);
     this.historyHeader.element.textContent = configLang;
@@ -33,6 +34,10 @@ class ChessHistoryBlock extends Component {
 
   setLangView(configLang: string): void {
     this.historyHeader.element.textContent = configLang;
+  }
+
+  changeHeight(size: number): void {
+    this.element.style.setProperty('--size', size + 'px');
   }
 }
 
