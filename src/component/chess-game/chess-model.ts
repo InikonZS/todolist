@@ -1,4 +1,3 @@
-import Vector from 'src/chess/modules/components/vector';
 import {
   IChessData, ICellCoords, IChessStart, IChessStop,
 } from 'utilities/interfaces';
