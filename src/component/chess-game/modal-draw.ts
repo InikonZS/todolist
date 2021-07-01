@@ -36,7 +36,7 @@ class ModalDraw extends Component {
     if (method === 'drawSingleGame') {
       messageDraw = 'You have claimed a draw. Nobody won, nobody lost';
       this.btnOk = new Button(this.modalMessage.element, config.btn, configLang.btnSingle);
-      this.btnOk.element.onclick = () => {
+      this.btnOk.onClick = () => {
         this.onModalDrawClick();
       };
     }
@@ -48,12 +48,12 @@ class ModalDraw extends Component {
     if (method === 'drawAgreeNetwork') {
       messageDraw = 'Your rival has claimed a draw. Please make a choice';
       this.btnAgree = new Button(this.modalMessage.element, config.btn, configLang.btnAgree);
-      this.btnAgree.element.onclick = () => {
+      this.btnAgree.onClick = () => {
         this.onModalDrawClick();
       };
 
       this.btnDisagree = new Button(this.modalMessage.element, config.btn, configLang.btnDisAgree);
-      this.btnDisagree.element.onclick = () => {
+      this.btnDisagree.onClick = () => {
         this.onModalDrawClick();
       };
     }
