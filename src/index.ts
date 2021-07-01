@@ -1,14 +1,11 @@
 import './styles.scss';
-import './header.scss';
-import Signal from './utilities/signal';
 import { PopupService, popupService } from './component/Popupservice';
 import { Component } from './utilities/Component';
 import { Chat } from './component/chat/chatPage';
-import { Header } from './component/Header';
 import { Main } from './component/Main';
 import { Auth } from './authPage';
 import { Route, Router } from './router';
-import { Navigation } from './navPanel';
+import { Navigation } from './component/header/header';
 import { ChessPage } from './chessPage';
 import './style.css';
 import { popupService1 } from './component/popupService/popupService1';
@@ -42,13 +39,13 @@ class App extends Component {
 
     this.auth = new Auth(this.pageContainer.element);
     this.chat = new Chat(this.pageContainer.element);
-    this.main = new Main(this.pageContainer.element);
+    // this.main = new Main(this.pageContainer.element);
     this.chess = new ChessPage(this.pageContainer.element);
 
     this.addPage('chat', 'chat', this.chat);
     this.addPage('авторизация', 'auth', this.auth);
-    this.addPage('тудушки', 'todos', this.main);
-    this.addPage('шахматы', 'shess', this.chess);
+    // this.addPage('тудушки', 'todos', this.main);
+    // this.addPage('шахматы', 'shess', this.chess);
 
     this.popupLayer = new Component(this.element);
     popupService.init(this.popupLayer.element);

@@ -12,7 +12,7 @@ export default interface ICrossData {
   field: Array<string>;
   winner: string;
   sign: string;
-}
+};
 
 export interface IChessData {
   message: string;
@@ -200,4 +200,30 @@ export interface IPageComponent {
 export interface IChannelData {
   name: string;
   msgArr: Array<string>;
+}
+
+export interface IHeaderControls {
+  wrapper: string;
+  btn: string;
+  hidden: string;
+}
+export interface IHeaderUser {
+  wrapper: string;
+  user: string;
+  avatar: string;
+  nickName: string;
+  defaultAvatar: any;
+}
+
+export interface configHeader {
+  wrapper: string;
+  logo: {
+    logo: string;
+    image: any;
+  };
+  nav: {
+    container: string;
+  };
+  controls: IHeaderControls;
+  user: IHeaderUser;
 }
