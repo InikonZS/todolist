@@ -22,6 +22,18 @@ class ChessModel {
 
   processMessage(data: any) {
     if (data.method === 'chessMove') {
+      // !!!-----------change to History
+      const dataFigure = new Array<string>();
+      const dataMoves = new Array();
+      for (let i = 0; i < data.history.length; i++) {
+        dataFigure.push(data.history[i].figure);
+        const move = [];
+        move.push(data.history[i].startCell);
+        move.push(data.history[i].endCell);
+        dataMoves.push(move);
+        //data.time temporaly ignored
+      }
+      // !!!-----------end change
       this.onChessMove.emit({
         message: `${data.senderNick} -> ${data.message}`,
         coords: JSON.parse(data.message),
@@ -29,8 +41,8 @@ class ChessModel {
         field: data.field,
         winner: data.winner,
         rotate: data.rotate,
-        figure: data.figure,
-        moves: data.moves,
+        figure: dataFigure,
+        moves: dataMoves,
         king: data.king,
       });
     }
