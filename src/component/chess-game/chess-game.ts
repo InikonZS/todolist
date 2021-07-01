@@ -76,6 +76,7 @@ class ChessGame extends Component {
   private chessModalView: IModalPopup;
 
   chessBody: Component;
+
   parent: Component;
 
   constructor(
@@ -177,7 +178,7 @@ class ChessGame extends Component {
         this.parent.element.clientWidth,
         this.parent.element.clientHeight - 140
       );
-      this.chessBody.element.style.setProperty('--size', parentHeight + 'px');
+      this.chessBody.element.style.setProperty('--size', `${parentHeight}px`);
       this.chessBoard.changeHeight(parentHeight);
       this.history.changeHeight(parentHeight);
     };
@@ -235,13 +236,16 @@ class ChessGame extends Component {
   }
 
   createModalDraw(data: IChessStop): void {
+    console.log(data.player, this.host);
+    
     this.modalDraw = new ModalDraw(
       this.element,
       chessConfigView.modal,
       this.langConfigModals,
       data.stop,
       data.player,
-      this.players
+      this.players,
+      data.method
     );
     this.modalDraw.onModalDrawClick = () => {
       this.model.chessRemoveGame('remove');

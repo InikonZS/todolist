@@ -1,7 +1,7 @@
-import { IAuthData } from "src/authPage";
-import ICrossData, { IChannelDTO, IuserChatMessage } from "utilities/interfaces";
-import Signal from "utilities/signal";
-import ChessModel from "../chess-game/chess-model";
+import { IAuthData } from 'src/authPage';
+import ICrossData, { IChannelDTO, IuserChatMessage } from 'utilities/interfaces';
+import Signal from 'utilities/signal';
+import ChessModel from '../chess-game/chess-model';
 
 class ChatModel {
   currentUser: IAuthData;

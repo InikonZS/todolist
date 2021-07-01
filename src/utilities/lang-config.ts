@@ -14,7 +14,9 @@ export const langConfigEn = {
       gameOver: 'Game Over.',
       draw: 'Draw',
       loss: 'Loss',
-      btnContent: 'OK',
+      btnSingle: 'OK',
+      btnAgree: 'Agree',
+      btnDisAgree: 'Disagree',
     },
   },
   chat: {
@@ -47,7 +49,9 @@ export const langConfigRu = {
       gameOver: 'Конец игры.',
       draw: 'Ничья',
       loss: 'Проигрыш',
-      btnContent: 'OK',
+      btnSingle: 'OK',
+      btnAgree: 'Согласен',
+      btnDisAgree: 'Не согласен',
     },
   },
   chat: {

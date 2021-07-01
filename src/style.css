@@ -1,3 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
+html, 
+body, 
+button,
+a,
+input,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+button,
+a,
+input {
+  outline: none;
+  border: none;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+li,
+h3 {
+  list-style: none;
+}
+
+.body {
+  background-color: #333;
+  color: #f8f8f8;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+
 .page_main{
   height: calc(100% - 50px);
 }

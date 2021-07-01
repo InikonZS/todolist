@@ -116,7 +116,9 @@ export interface ILangViewModal {
   gameOver: string;
   draw: string;
   loss: string;
-  btnContent: string;
+  btnSingle: string;
+  btnAgree: string;
+  btnDisAgree: string;
 }
 export interface IChannelWrapper {
   wrapper: string;
@@ -191,6 +193,7 @@ export interface IChessStart {
 export interface IChessStop {
   stop: string;
   player: string;
+  method: string;
 }
 export interface IPageComponent {
   show: () => void;

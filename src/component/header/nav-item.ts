@@ -10,9 +10,9 @@ class NavItem extends Component {
   private hash: string;
 
   constructor(parentNode: HTMLElement, text: string, hash: string) {
-    super(parentNode, 'div', [ 'nav_item' ]);
+    super(parentNode, 'div', ['nav_item']);
     this.hash = hash;
-    const link = new Component(this.element, 'a', [ 'nav_link' ]);
+    const link = new Component(this.element, 'a', ['nav_link']);
     const linkElement = link.element as HTMLAnchorElement;
     linkElement.href = `#${hash}`;
     linkElement.textContent = text;

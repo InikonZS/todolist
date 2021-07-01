@@ -24,14 +24,14 @@ class ChessModel {
     if (data.method === 'chessMove') {
       // !!!-----------change to History
       const dataFigure = new Array<string>();
-      const dataMoves = new Array();
+      const dataMoves = [];
       for (let i = 0; i < data.history.length; i++) {
         dataFigure.push(data.history[i].figure);
         const move = [];
         move.push(data.history[i].startCell);
         move.push(data.history[i].endCell);
         dataMoves.push(move);
-        //data.time temporaly ignored
+        // data.time temporaly ignored
       }
       // !!!-----------end change
       this.onChessMove.emit({
@@ -53,8 +53,14 @@ class ChessModel {
     if (data.method === 'chessFigureGrab') {
       this.onChessFigureGrab.emit(data.moves);
     }
-    if (data.method === 'stopGame') {
-      this.onStopGame.emit({ stop: data.stop, player: data.player });
+    if (data.method === 'drawAgreeNetwork') {
+      this.onStopGame.emit({ stop: data.stop, player: data.player, method: data.method });
+    }
+    if (data.method === 'drawNetwork') {
+      this.onStopGame.emit({ stop: data.stop, player: data.player, method: data.method });
+    }
+    if (data.method === 'drawSingleGame') {
+      this.onStopGame.emit({ stop: data.stop, player: data.player, method: data.method });
     }
 
     if (data.method === 'removeGame') {

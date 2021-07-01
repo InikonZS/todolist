@@ -20,8 +20,6 @@ import ChatModel from './chat-model';
 const langConfig = langConfigEn;
 // const chessMode = 'oneScreen';
 
-
-
 const apiUrl = 'http://localhost:4040/authService/';
 
 export class Chat extends Component {
@@ -54,28 +52,28 @@ export class Chat extends Component {
   btnEnter: Component;
 
   constructor(parentNode: HTMLElement | null = null) {
-    super(parentNode, 'div', [ chatConfigView.wrapper ]);
+    super(parentNode, 'div', [chatConfigView.wrapper]);
     this.channelBlock = new ChatChannelsWrapper(
       this.element,
       chatConfigView.channelWrapper,
-      langConfig.chat.channels
+      langConfig.chat.channels,
     );
-    this.chatMain = new Component(this.element, 'div', [ chatConfigView.main ]);
-    this.chatAction = new Component(this.chatMain.element, 'div', [ chatConfigView.action ]);
+    this.chatMain = new Component(this.element, 'div', [chatConfigView.main]);
+    this.chatAction = new Component(this.chatMain.element, 'div', [chatConfigView.action]);
     this.chatAction.element.style.backgroundImage = `url(${bgImage})`;
     const chatMessages = new ChatMessagesBlock(
       this.chatMain.element,
-      chatConfigView.messageWrapper
+      chatConfigView.messageWrapper,
     );
     const chatInputBlock = new ChatInputWrapper(
       this.chatMain.element,
       chatConfigView.inputWrapper,
-      langConfig.chat.messages
+      langConfig.chat.messages,
     );
     this.chatUsers = new ChatUsersWrapper(
       this.element,
       chatConfigView.users,
-      langConfig.chat.users
+      langConfig.chat.users,
     );
 
     this.messageContainer = new Component(this.element);
@@ -188,7 +186,7 @@ export class Chat extends Component {
 
   createBtnEnter() {
     this.chatAction.element.classList.add('relative_pos');
-    this.btnEnter = new Component(this.chatAction.element, 'button', [ 'btn_enter' ]);
+    this.btnEnter = new Component(this.chatAction.element, 'button', ['btn_enter']);
     this.btnEnter.element.textContent = 'ENTER THE GAME';
     this.btnEnter.element.onclick = () => {
       this.destroyBtnEnter();
@@ -207,7 +205,7 @@ export class Chat extends Component {
               this.model.chessModel,
               result.mode,
               parentHeight,
-              this.chatAction
+              this.chatAction,
             );
             this.model.joinPlayer(result.mode);
           });

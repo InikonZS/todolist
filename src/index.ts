@@ -39,7 +39,7 @@ class App extends Component {
 
     this.auth = new Auth(this.pageContainer.element);
     this.chat = new Chat(this.pageContainer.element);
-    // this.main = new Main(this.pageContainer.element);
+    this.main = new Main(this.pageContainer.element);
     this.chess = new ChessPage(this.pageContainer.element);
 
     this.addPage('chat', 'chat', this.chat);

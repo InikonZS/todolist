@@ -5,24 +5,23 @@ const configHeader = {
   wrapper: 'header_wrapper',
   logo: {
     logo: 'header_logo',
-    image: logoImage
+    image: logoImage,
   },
-  nav:{
+  nav: {
     container: 'header_nav',
   },
   controls: {
     wrapper: 'auth_controls',
     btn: 'auth_button',
-    hidden: 'default_hidden'
+    hidden: 'default_hidden',
   },
   user: {
     wrapper: 'header_auth',
     user: 'auth_user',
     avatar: 'auth_avatar',
     nickName: 'auth_nickname',
-    defaultAvatar: defaultAvatar,
-  }
-}
+    defaultAvatar,
+  },
+};
 
 export default configHeader;
-
