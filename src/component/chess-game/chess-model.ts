@@ -35,8 +35,8 @@ class ChessModel {
       }
       // !!!-----------end change
       this.onChessMove.emit({
-        message: `${data.senderNick} -> ${data.message}`,
-        coords: JSON.parse(data.message),
+        message: `${data.senderNick} -> ${data.messageText}`,
+        coords: JSON.parse(data.messageText),
         player: data.senderNick,
         field: data.field,
         winner: data.winner,
