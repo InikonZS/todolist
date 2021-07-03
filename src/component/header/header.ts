@@ -10,7 +10,8 @@ export class Navigation extends Component {
 
   private userBlock: HeaderAuth;
 
-  signIn: Component;
+  public onSignIn: () => void = () => {};
+  public onUserClick: () => void = () => {};
 
   constructor(parentNode: HTMLElement | null = null) {
     super(parentNode, 'div', [configHeader.wrapper]);
@@ -20,11 +21,11 @@ export class Navigation extends Component {
     this.userBlock = new HeaderAuth(this.element, configHeader.user, configHeader.controls);
 
     this.userBlock.onSignIn = () => {
-      console.log('Sign In');
+      this.onSignIn();
     };
 
     this.userBlock.onUserClick = () => {
-      console.log('User click');
+      this.onUserClick();
     };
   }
 

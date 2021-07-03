@@ -21,6 +21,7 @@
   background-color: #ccc;
   color: #000;
   border-radius: 10px;
+  padding: 10px;
 }
 
 .popup_default_button {
@@ -29,50 +30,38 @@
 
 /*select game popup*/
 
-.chess {
-  background-repeat: no-repeat;
-  width: 80%;
-  border-radius: 35px;
-  transition: 0.2s all;
-}
-
-.chess:hover,
-.cross:hover {
-  box-shadow:1px 1px 15px 5px rgba(0,0,0,0.26);
+.game_icon:hover {
+  box-shadow: 1px 1px 15px 5px rgba(0, 0, 0, 0.26);
   transform: scale(1.05);
   transition: 0.2s all;
 }
 
-.chess-wrap, .cross-wrap {
+.game_icon {
   display: flex;
   justify-content: center;
-  width: 100%;
   background-color: transparent;
-  border: none;
-
-}
-.cross {
+  width: 140px;
+  height: 140px;
+  background-size: cover;
   background-repeat: no-repeat;
-  width: 80%;
+  background-position: center center;
   border-radius: 35px;
   transition: 0.2s all;
 }
 
 .games {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   border-radius: 10px;
 }
 
 .title_game_select {
   font-size: 40px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   text-align: center;
   color: #fff;
 }
-
-/*settgins game popup*/
 
 .game-settings-popup {
   display: flex;
@@ -82,20 +71,18 @@
   padding: 2%;
 }
 
-.game-settings {
-  border-radius: 10px;
-  background: #01D7CF;
-  background: -webkit-linear-gradient(top left, #01D7CF, #25D181);
-  background: -moz-linear-gradient(top left, #01D7CF, #25D181);
-  background: linear-gradient(to bottom right, #3a8080, #258cd1);
-  padding: 2% 2% 2% 2%;
+.game_settings_popup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 2%;
 }
 
-.network,
-.bot,
-.one_screen {
+.choice_wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
   width: 33%;
 }
@@ -103,22 +90,33 @@
 .settings_button {
   border-radius: 15px;
   border: none;
-  width: 80%;
+  /* width: 80%; */
+  width: 130px;
   align-self: center;
   background: linear-gradient(308deg, rgb(254 74 51) 0%, rgb(220 104 119) 70%);
   color: #fafafa;
-  padding: 10%;
-  width: 90%;
-  /* margin-top: 7%; */
+  padding: 15px;
+  font-size: 18px;
+  /* padding: 10%; */
+  /* width: 90%; */
 }
 
-.one_screen-icon {
-  background-image: url('../../assets/chess-one-screen.png');
-  background-size: contain;
+.choice_icon_wrapper {
+  /* width: 80%; */
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+}
+
+.choice_icon {
+  background-size: cover;
   background-repeat: no-repeat;
-  width: 85%;
-  height: 135px;
-  align-self: center;
+  /* width: 90%; */
+  width: 120px;
+  height: 120px;
+  /* height: 90%; */
 }
 
 .title_settings-chess {
@@ -128,21 +126,26 @@
   margin-bottom: 5%;
   width: 100%;
 }
-.network-icon {
-  background-image: url('../../assets/chess-game-network.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 85%;
-  height: 135px;
-  align-self: center;
+
+
+@media screen and (max-width: 550px) {
+  .game_settings_popup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .choice_wrapper {
+    margin-top: 20px;
+    width: 100%;
+  }
 }
 
-.bot-icon {
-  background-image: url('../../assets/chess-game-bot.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 85%;
-  height: 135px;
-  align-self: center;
-}
+@media screen and (max-width: 400px) {
+  .games {
+    flex-direction: column;
+  }
 
+  .game_icon {
+    margin-bottom: 10px;
+  }
+}

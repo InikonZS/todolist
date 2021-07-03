@@ -1,12 +1,19 @@
-import Button from "./button";
-import { Component } from "utilities/Component";
+import Button from './button';
+import { Component } from 'utilities/Component';
 
-export class SettingsItem extends Component {
-  button:Button
-  iconSettings: Component;
-  constructor(parentNode: HTMLElement, styleWrapper:string = '',styleIcon:string = '', config: string = '', content:string = '') {
-    super(parentNode, 'div', [styleWrapper]);
-    this.iconSettings = new Component(this.element, 'div', [styleIcon]);
-    this.button = new Button(this.element, config, content);
+class SettingsItem extends Component {
+  public onClick: (mode: string) => void = () => {};
+
+  constructor(parentNode: HTMLElement, iconImg: string, mode: string) {
+    super(parentNode, 'div', [ 'choice_wrapper' ]);
+    const iconWrapper = new Component(this.element, 'div', [ 'choice_icon_wrapper' ]);
+    const icon = new Component(iconWrapper.element, 'div', [ 'choice_icon' ]);
+    icon.element.style.backgroundImage = `url(${iconImg})`;
+    const button = new Button(this.element, 'settings_button', mode);
+    button.onClick = () => {
+      this.onClick(mode);
+    };
   }
 }
+
+export default SettingsItem;

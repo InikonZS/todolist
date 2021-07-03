@@ -10,6 +10,7 @@ import { ChessPage } from './chessPage';
 import './style.css';
 import { popupService1 } from './component/popupService/popupService1';
 import { IPageComponent } from './utilities/interfaces';
+import { GameSelect } from './component/chat/game-select';
 
 class App extends Component {
   // header: Header;
@@ -30,12 +31,12 @@ class App extends Component {
   chess: ChessPage;
 
   constructor(parentNode: HTMLElement, popupService: PopupService) {
-    super(parentNode, 'div', ['page_wrapper']);
+    super(parentNode, 'div', [ 'page_wrapper' ]);
     popupService1.init(this.element);
     // this.header = new Header(this.element);
     this.navigation = new Navigation(this.element);
     this.router = new Router();
-    this.pageContainer = new Component(this.element, 'div', ['page_main']);
+    this.pageContainer = new Component(this.element, 'div', [ 'page_main' ]);
 
     this.auth = new Auth(this.pageContainer.element);
     this.chat = new Chat(this.pageContainer.element);
@@ -55,15 +56,30 @@ class App extends Component {
       console.log('logged out');
       this.chat.leave();
     };
+
+    this.navigation.onSignIn = () => {
+      console.log('nav Sign In');
+      popupService1.showPopup<string>(Auth).then((result) => {
+        console.log(result);
+      });
+    };
+    this.navigation.onUserClick = () => {
+      console.log('nav User Click');
+    };
   }
 
-  addPage(linkName: string, pageName:string, pageComponent:IPageComponent) {
-    const route = new Route(pageName, linkName, () => {
-      pageComponent.show();
-      this.navigation.setActive(pageName);
-    }, () => {
-      pageComponent.hide();
-    });
+  addPage(linkName: string, pageName: string, pageComponent: IPageComponent) {
+    const route = new Route(
+      pageName,
+      linkName,
+      () => {
+        pageComponent.show();
+        this.navigation.setActive(pageName);
+      },
+      () => {
+        pageComponent.hide();
+      }
+    );
 
     this.navigation.addLink(linkName, pageName);
     this.router.addRoute(route);
