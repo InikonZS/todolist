@@ -12,6 +12,7 @@ const apiUrl = 'http://localhost:4040/authService/';
 export interface IAuthData{
   login:string;
   password:string;
+  avatar?:string
 }
 
 class AuthModel {

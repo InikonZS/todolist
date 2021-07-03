@@ -187,6 +187,17 @@ export interface IChessStop {
   player: string;
 }
 export interface IPageComponent {
-  show : ()=>void;
-  hide : ()=>void;
+  show: () => void;
+  hide: () => void;
+}
+
+export interface IUserData {
+  login: string,
+  password: string,
+  avatar: string
+};
+
+export interface IPublicUserInfo{
+  login:string,
+  avatar:string
 }

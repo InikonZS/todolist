@@ -1,4 +1,6 @@
+import { IPublicUserInfo } from './../utilities/interfaces';
 
+import { IUserData } from 'utilities/interfaces';
 import Signal from 'utilities/signal';
 import { apiRequest } from 'utilities/utils';
 
@@ -36,13 +38,13 @@ export class AuthModel {
 
   }
 
-  async registerUser(userData: IAuthData) {
-    /*fetch(`${apiUrl}register?login=${login}&password=${password}`).then(res => res.text()).then((data) => {
+  async registerUser(userData: IUserData) {
+    const request = fetch(`${apiUrl}register`, { method: "POST", body: `login=${userData.login}&password=${userData.password}&avatar=${userData.avatar}` }).then(res => res.text()).then((data) => {
       console.log(data);
-    });*/
-    const request = apiRequest(apiUrl, 'register', userData).then(res => {
-      console.log(res);
     });
+    // const request = apiRequest(apiUrl, 'register', userData).then(res => {
+    //   console.log(res);
+    // });
     return request
 
   }
@@ -67,11 +69,20 @@ export class AuthModel {
     return status
 
   }
-  validateUser(userData: IAuthData) : Promise<string>{
-    const status = apiRequest(apiUrl,'checkUser',userData).then((res)=>{
+  validateUser(userData: IAuthData): Promise<string> {
+    const status = apiRequest(apiUrl, 'checkUser', userData).then((res) => {
       return res.status;
     })
     return status
+  }
+  getPublicUserInfo(userData: IAuthData): Promise<IPublicUserInfo> {
+    const userInfo = apiRequest(apiUrl, 'getPublicUserInfo', userData).then((res) => {
+      return {
+        login: res.login,
+        avatar: res.avatar
+      };
+    })
+    return userInfo
   }
 
 }

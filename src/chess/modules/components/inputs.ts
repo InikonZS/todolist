@@ -24,7 +24,7 @@ class Input extends Control {
     this.error = new Control(this.node, 'div', 'input_error');
     this.onValidate = onValidate;
     this.state = 'no';
-    this.field.node.classList.add('invalid')
+    this.field.node.classList.add('invalid');
     this.field.node.oninput = async () => {
       this.timer && clearTimeout(this.timer);
       this.timer = setTimeout(async () => {

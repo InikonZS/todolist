@@ -1,9 +1,12 @@
+import { Avatar } from './avatar';
 import { IAuthData } from './../../authPage';
 import Control from '../../chess/modules/components/control';
 import Button from '../../chess/modules/components/button';
 import Input from '../../chess/modules/components/inputs';
 import { AuthModel } from '../AuthModel';
 import Signal from '../../chess/modules/components/signal';
+import { IUserData } from 'utilities/interfaces';
+
 
 
 interface IInputState  {
@@ -24,7 +27,9 @@ export class RegForm extends Control {
   nameFlag: boolean;
   passFlag: boolean;
   state: IInputState;
-  //avatar: Input;
+  avatarInput: Input;
+  imgSrc: string;
+  avatar : Avatar = new Avatar(this.node)
   constructor(parentNode: HTMLElement) {
     super(parentNode, 'div', 'authform_wrapper')
     this.flag = false;
@@ -54,6 +59,7 @@ export class RegForm extends Control {
       }
     },
       'enter your name', 'text');
+     this.field.appendChild(this.avatar.node);
       this.passwordInput = new Input(this.field, 'Password', async () => {
         const res = await this.model.passwordValidation(this.getData());
         // return res === 'ok' ? null : 'Invalid password';
@@ -82,27 +88,7 @@ export class RegForm extends Control {
                            lowercase letter and one number`;
     this.node.appendChild(this.note);
     this.submitButton.disable();
-    this.state  = {name:false,pass:false}
-
-    // this.nameInput.node.oninput = async () =>{
-    //   const res = await this.model.regValidation(this.getData());
-    //   res === 'ok' ? this.nameFlag = true : this.nameFlag = false;
-    //   console.log(`${this.nameFlag} name`)
-    //   if(this.nameFlag && this.passFlag) {
-    //     this.submitButton.enable();
-    //   } else {
-    //     this.submitButton.disable();
-    //   }
-    // }
-    // this.passwordInput.node.oninput = async () =>{
-    //   const res = await this.model.passwordValidation(this.getData());
-    //   res === 'ok' ? this.passFlag = true : this.passFlag = false;
-    //   if(this.nameFlag && this.passFlag) {
-    //     this.submitButton.enable();
-    //   } else {
-    //     this.submitButton.disable();
-    //   }
-    // }
+    this.state  = {name:false,pass:false};
     this.submitButton.node.addEventListener('click', () => {
       const alert = document.createElement('div');
       alert.innerText = 'Not valid or this name already exists';
@@ -110,7 +96,7 @@ export class RegForm extends Control {
         console.log(res);
         if (res == 'ok') {
           const res = await this.model.passwordValidation(this.getData());
-          res === 'ok' ? this.model.registerUser(this.getData()) : console.log('wrong');
+          res === 'ok' ? this.model.registerUser(this.getAuthData()) : console.log('wrong');
         } else {
           this.field.appendChild(alert);
         }
@@ -124,6 +110,14 @@ export class RegForm extends Control {
     const obj: IAuthData = {
       login: this.nameInput.getValue(),
       password: this.passwordInput.getValue(),
+    };
+    return obj;
+  }
+  getAuthData(): IUserData {
+    const obj: IUserData = {
+      login: this.nameInput.getValue(),
+      password: this.passwordInput.getValue(),
+      avatar:this.avatarInput.getValue()
     };
     return obj;
   }
