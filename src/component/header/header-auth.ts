@@ -18,15 +18,15 @@ class HeaderAuth extends Component {
   private configControls: IHeaderControls;
 
   constructor(parentNode: HTMLElement, configUser: IHeaderUser, configControls: IHeaderControls) {
-    super(parentNode, 'div', [configUser.wrapper]);
+    super(parentNode, 'div', [ configUser.wrapper ]);
     this.configControls = configControls;
-    this.user = new Component(this.element, 'div', [configUser.user]);
-    this.userAvatar = new Component(this.user.element, 'div', [configUser.avatar]);
+    this.user = new Component(this.element, 'div', [ configUser.user ]);
+    this.userAvatar = new Component(this.user.element, 'div', [ configUser.avatar ]);
     this.userAvatar.element.style.backgroundImage = `url(${configUser.defaultAvatar})`;
-    this.userName = new Component(this.user.element, 'div', [configUser.nickName]);
+    this.userName = new Component(this.user.element, 'div', [ configUser.nickName ]);
     this.userName.element.textContent = 'NickName';
 
-    this.signIn = new Component(this.element, 'div', [configControls.wrapper]);
+    this.signIn = new Component(this.element, 'div', [ configControls.wrapper ]);
     this.signIn.element.textContent = 'Sign In';
     this.signIn.element.onclick = () => {
       this.onSignIn();
@@ -41,8 +41,8 @@ class HeaderAuth extends Component {
     this.userAvatar.element.style.backgroundImage = `url(${avatar})`;
   }
 
-  setuserName(name: string): void {
-    this.userAvatar.element.style.backgroundImage = name;
+  setUserName(name: string): void {
+    this.userName.element.textContent = name;
   }
 
   hideElement(): void {

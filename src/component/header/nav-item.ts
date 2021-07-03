@@ -1,8 +1,4 @@
 import { Component } from '../../utilities/Component';
-import logoImage from '../../assets/logo.png';
-import './header.css';
-import configHeader from 'utilities/config-header';
-import HeaderAuth from './header-auth';
 
 class NavItem extends Component {
   private link: HTMLAnchorElement;

@@ -53,7 +53,7 @@ module.exports = ({ development }) => ({
     ],
   },
   plugins: [
-    ...esLintPlugin(development),
+    // ...esLintPlugin(development),
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new HtmlWebpackPlugin({
       template: './src/index.html'

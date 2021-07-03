@@ -104,3 +104,7 @@
 .auth_user:hover .auth_nickname {
   color: #fff;
 }
+
+.default_hidden {
+  display: none;
+}

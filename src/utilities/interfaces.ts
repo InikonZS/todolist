@@ -230,3 +230,8 @@ export interface configHeader {
   controls: IHeaderControls;
   user: IHeaderUser;
 }
+
+export interface IUserAuth {
+  login: string;
+  avatar: string;
+}

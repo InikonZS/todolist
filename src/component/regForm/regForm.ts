@@ -4,6 +4,8 @@ import Button from '../../chess/modules/components/button';
 import Input from '../../chess/modules/components/inputs';
 import { AuthModel } from '../AuthModel';
 import Signal from '../../chess/modules/components/signal';
+import { textSpanIsEmpty } from 'typescript';
+import { IUserAuth } from 'utilities/interfaces';
 
 interface IInputState {
   name : boolean,
@@ -24,7 +26,8 @@ export class RegForm extends Control {
 
   nav: HTMLDivElement;
 
-  model: AuthModel = new AuthModel();
+  // model: AuthModel = new AuthModel();
+  model: AuthModel;
 
   note: HTMLDivElement;
 
@@ -35,10 +38,13 @@ export class RegForm extends Control {
   passFlag: boolean;
 
   state: IInputState;
+  
+  public onLogIn: (IUserAuth) => void = () => {};
 
   // avatar: Input;
-  constructor(parentNode: HTMLElement) {
+  constructor(parentNode: HTMLElement, model: AuthModel) {
     super(parentNode, 'div', 'authform_wrapper');
+    this.model = model
     this.flag = false;
     this.field = document.createElement('div');
     this.field.classList.add('authform_field');
@@ -121,6 +127,10 @@ export class RegForm extends Control {
         if (res == 'ok') {
           const res = await this.model.passwordValidation(this.getData());
           res === 'ok' ? this.model.registerUser(this.getData()) : console.log('wrong');
+          
+          // model.onLogIn.add((data) => this.onLogIn(data));
+          
+          
         } else {
           this.field.appendChild(alert);
         }
@@ -128,6 +138,10 @@ export class RegForm extends Control {
     });
     this.cancelButton.node.addEventListener('click', () => {
       this.node.remove();
+    });
+
+    model.onLogIn.add((data) => {
+      this.onLogIn(data)
     });
   }
 
@@ -138,4 +152,6 @@ export class RegForm extends Control {
     };
     return obj;
   }
+
+
 }
