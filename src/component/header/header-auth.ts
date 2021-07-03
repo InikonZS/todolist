@@ -41,8 +41,8 @@ class HeaderAuth extends Component {
     this.userAvatar.element.style.backgroundImage = `url(${avatar})`;
   }
 
-  setuserName(name: string): void {
-    this.userAvatar.element.style.backgroundImage = name;
+  setUserName(name: string): void {
+    this.userName.element.textContent = name;
   }
 
   hideElement(): void {

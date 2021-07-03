@@ -99,8 +99,11 @@
 }
 
 .auth_button:hover,
-.auth_controls:hover, 
+.auth_controls:hover,
 .auth_user:hover .auth_avatar,
 .auth_user:hover .auth_nickname {
   color: #fff;
+}
+.default_hidden {
+  display: none;
 }

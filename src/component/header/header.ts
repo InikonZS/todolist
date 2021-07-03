@@ -1,5 +1,6 @@
 import { Component } from 'utilities/Component';
 import configHeader from 'utilities/config-header';
+import { IUserAuth } from 'utilities/interfaces';
 import HeaderAuth from './header-auth';
 import NavItem from './nav-item';
 
@@ -43,4 +44,19 @@ export class Navigation extends Component {
       }
     });
   }
+  setUserData(data: IUserAuth): void {
+    console.log(data);
+
+    this.userBlock.setUserName(data.login);
+    this.userBlock.setAvatar(data.avatar);
+    this.userBlock.hideElement();
+  }
+
+  setDefaultUser(): void {
+    console.log('header out');
+    this.userBlock.setUserName('NickName');
+    this.userBlock.setAvatar('');
+    this.userBlock.showElement();
+  }
+
 }

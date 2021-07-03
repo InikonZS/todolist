@@ -33,6 +33,7 @@ class App extends Component {
   constructor(parentNode: HTMLElement, popupService: PopupService) {
     super(parentNode, 'div', [ 'page_wrapper' ]);
     popupService1.init(this.element);
+    console.log(this.element,'this. element')
     // this.header = new Header(this.element);
     this.navigation = new Navigation(this.element);
     this.router = new Router();
@@ -40,8 +41,8 @@ class App extends Component {
 
     this.auth = new Auth(this.pageContainer.element);
     this.chat = new Chat(this.pageContainer.element);
-    this.main = new Main(this.pageContainer.element);
-    this.chess = new ChessPage(this.pageContainer.element);
+    // this.main = new Main(this.pageContainer.element);
+    // this.chess = new ChessPage(this.pageContainer.element);
 
     this.addPage('chat', 'chat', this.chat);
     this.addPage('авторизация', 'auth', this.auth);
@@ -66,6 +67,8 @@ class App extends Component {
     this.navigation.onUserClick = () => {
       console.log('nav User Click');
     };
+    this.auth.onLogIn.add((data) => this.navigation.setUserData(data));
+    this.auth.onLogOut1.add(() => this.navigation.setDefaultUser())
   }
 
   addPage(linkName: string, pageName: string, pageComponent: IPageComponent) {

@@ -1,6 +1,7 @@
 import { IChatUser, IChatUserWrapper, IUsersLang } from 'utilities/interfaces';
 import { Component } from '../../utilities/Component';
 import ChatUser from './chat-user';
+import { AuthModel } from '../AuthModel';
 
 class ChatUsersWrapper extends Component {
   private playersBlock: Component;
@@ -16,6 +17,7 @@ class ChatUsersWrapper extends Component {
   private spectatorHeader: Component;
 
   private playerHeader: any;
+  authModel : AuthModel
 
   constructor(parentNode: HTMLElement, configView: IChatUserWrapper, configLang: IUsersLang) {
     super(parentNode, 'div', [configView.wrapper]);
@@ -31,6 +33,7 @@ class ChatUsersWrapper extends Component {
       configView.categoryName,
     ]);
     this.spectatorHeader.element.textContent = configLang.spectators;
+    this.authModel = new AuthModel();
   }
 
   setPlayer(avatar: string, playerName: string): void {
@@ -38,13 +41,14 @@ class ChatUsersWrapper extends Component {
     this.players.push(chatPlayer);
   }
 
-  setSpectators(userList: Array<string>): void {
+  setSpectators(userList: Array<{login:string,avatar : string}>): void {
     this.spectators.forEach((user) => user.destroy());
     this.spectators = [];
     console.log(userList);
 
     this.spectators = userList.map((user) => {
-      const chatUser = new ChatUser(this.spectatorsBlock.element, '', user, this.userConfig);
+      console.log(user)
+      const chatUser = new ChatUser(this.spectatorsBlock.element, user.avatar, user.login, this.userConfig);
       return chatUser;
     });
   }

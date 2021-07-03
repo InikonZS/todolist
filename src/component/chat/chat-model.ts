@@ -16,7 +16,7 @@ class ChatModel {
 
   onPlayerList: Signal<{ player: string; time: number; players: Array<string> }> = new Signal();
 
-  onUserList: Signal<Array<string>> = new Signal();
+  onUserList: Signal<Array<{login:string,avatar : string}>> = new Signal();
 
   onChannelList: Signal<Array<IChannelDTO>> = new Signal();
 
@@ -51,7 +51,7 @@ class ChatModel {
       console.log(data);
       if (data.type === 'message') {
         this.onMessage.emit({
-          avatar: '',
+          avatar: data.avatar,
           userName: data.senderNick,
           time: new Date().toLocaleString('ru'),
           message: data.messageText,
