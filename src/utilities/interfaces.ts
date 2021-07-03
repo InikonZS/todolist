@@ -240,6 +240,7 @@ export interface IPublicUserInfo{
   login:string,
   avatar:string
 }
+
 export interface IUserAuth {
   login: string;
   avatar: string;

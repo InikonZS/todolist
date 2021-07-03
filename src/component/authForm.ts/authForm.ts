@@ -20,14 +20,14 @@ export class AuthForm extends Control {
   nav: HTMLDivElement;
 
   // model: AuthModel = new AuthModel();
-  model: AuthModel
+  model: AuthModel;
+
   validation: string;
   checkData: Button;
   avatar: string;
 
 
-
-  constructor(parentNode: HTMLElement,model:AuthModel) {
+  constructor(parentNode: HTMLElement, model: AuthModel) {
     super(parentNode, 'div', 'authform_wrapper');
     this.model = model;
     this.field = document.createElement('div');

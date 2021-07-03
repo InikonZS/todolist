@@ -3,6 +3,8 @@ import configHeader from 'utilities/config-header';
 import { IUserAuth } from 'utilities/interfaces';
 import HeaderAuth from './header-auth';
 import NavItem from './nav-item';
+import './header.css';
+
 
 export class Navigation extends Component {
   private navContainer: Component;
@@ -15,10 +17,11 @@ export class Navigation extends Component {
   public onUserClick: () => void = () => {};
 
   constructor(parentNode: HTMLElement | null = null) {
-    super(parentNode, 'div', [configHeader.wrapper]);
-    const logo = new Component(this.element, 'div', [configHeader.logo.logo]);
+    super(parentNode, 'div', [ configHeader.wrapper ]);
+
+    const logo = new Component(this.element, 'div', [ configHeader.logo.logo ]);
     logo.element.style.backgroundImage = `url(${configHeader.logo.image})`;
-    this.navContainer = new Component(this.element, 'div', [configHeader.nav.container]);
+    this.navContainer = new Component(this.element, 'div', [ configHeader.nav.container ]);
     this.userBlock = new HeaderAuth(this.element, configHeader.user, configHeader.controls);
 
     this.userBlock.onSignIn = () => {
@@ -30,12 +33,12 @@ export class Navigation extends Component {
     };
   }
 
-  addLink(text: string, hash: string) {
+  addLink(text: string, hash: string): void {
     const navItem = new NavItem(this.navContainer.element, text, hash);
     this.navItems.push(navItem);
   }
 
-  setActive(hash: string) {
+  setActive(hash: string): void {
     this.navItems.forEach((item) => {
       if (item.getHash() == hash) {
         item.setActive();
@@ -58,5 +61,4 @@ export class Navigation extends Component {
     this.userBlock.setAvatar('');
     this.userBlock.showElement();
   }
-
 }

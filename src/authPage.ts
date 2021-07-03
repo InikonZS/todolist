@@ -7,7 +7,6 @@ import { AuthForm } from './component/authForm.ts/authForm';
 import { AuthModel } from './component/AuthModel';
 import { IUserAuth } from 'utilities/interfaces';
 
-
 const apiUrl = 'http://localhost:4040/authService/';
 
 export interface IAuthData{
@@ -53,48 +52,52 @@ class AuthModel1 {
 }
 
 export class Auth extends Component {
-  loginInput: Component;
+  // loginInput: Component;
 
-  passwordInput: Component;
+  // passwordInput: Component;
 
   sendButton: Component;
+
   model1: AuthModel1 = new AuthModel1();
   model: AuthModel = new AuthModel();
 
-  reg: RegForm = new RegForm(this.element,this.model);
+  reg: RegForm = new RegForm(this.element, this.model);
 
-  auth: AuthForm = new AuthForm(this.element,this.model);
-  public onLogIn: Signal<IUserAuth> = new Signal();
-  public onLogOut1: Signal<''> = new Signal();
+  auth: AuthForm = new AuthForm(this.element, this.model);
 
   onLogout : () => void;
 
   logoutButton: Component;
 
-  constructor(parentNode: HTMLElement | null = null) {
+  public onLogIn: Signal<IUserAuth> = new Signal();
+  public onLogOut1: Signal<''> = new Signal();
+
+  constructor(parentNode: HTMLElement | null = null, ) {
     super(parentNode, 'div', ['main']);
     // this.loginInput = new Component(this.element, 'input');
     // this.passwordInput = new Component(this.element, 'input');
     // this.sendButton = new Component(this.element, 'button', [], 'auth');
     this.logoutButton = new Component(this.element, 'button', [], 'logout');
     this.logoutButton.element.onclick = () => {
-      this.onLogOut1.emit(null)
+      this.onLogOut1.emit(null);
       this.onLogout?.();
       localStorage.removeItem('todoListApplicationSessionId');
     };
     // this.sendButton.element.onclick = () => {
-    //   this.model.sendAuthData(this.getData());
+    //   this.model1.sendAuthData(this.getData());
     // };
 
     // const testButton = new Component(this.element, 'button', [], 'test access');
     // testButton.element.onclick = () => {
-    //   this.model.testAccess();
+    //   this.model1.testAccess();
     // };
+
     this.reg.onLogIn = (data) => {
       console.log(data);
 
       this.onLogIn.emit(data)
     };
+
   }
 
   // getData(): IAuthData {
